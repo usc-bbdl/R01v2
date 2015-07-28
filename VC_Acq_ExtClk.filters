@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{cb01fb2a-fddd-456b-b877-020dd819cd0a}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Head files">
+      <UniqueIdentifier>{3e58bcaf-3fa9-4a69-be3a-55c1371bfe8c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="experimentUserInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dataLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dataOneSample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UdpClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="utilities.h">
+      <Filter>Head files</Filter>
+    </ClInclude>
+    <ClInclude Include="dataLogger.h">
+      <Filter>Head files</Filter>
+    </ClInclude>
+    <ClInclude Include="dataOneSample.h">
+      <Filter>Head files</Filter>
+    </ClInclude>
+    <ClInclude Include="UdpClient.h">
+      <Filter>Head files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
