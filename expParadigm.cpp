@@ -35,7 +35,7 @@ int expParadigm::startParadigm()
             char fileName[200];
             sprintf_s(
             fileName,
-            "GammaSweep_%4d_%02d_%02d_%02d_%02d_%02d_GammaDyn_%.0f_GammaStat_%.0f_Rep_%d.txt",
+            "C:\\data\\GammaSweep_%4d_%02d_%02d_%02d_%02d_%02d_GammaDyn_%.0f_GammaStat_%.0f_Rep_%d.txt",
             timePtr->tm_year+1900, 
             timePtr->tm_mon+1, 
             timePtr->tm_mday, 
