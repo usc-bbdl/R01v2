@@ -105,16 +105,11 @@ int motorControl::motorWindUp()
     if (isEnable){
 
         DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
-        DAQmxErrChk (DAQmxStartTask(loadCelltaskHandle));
         bool32 isLate = {0};
-        for(int i=1; i<2; i++)
-        {
-            DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,dataTemp,2,NULL,NULL));
-            Sleep(500);
-            DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,windingUpCmnd,NULL,NULL));
-        }
+        Sleep(500);
+        DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,windingUpCmnd,NULL,NULL));
+        Sleep(500);
         DAQmxStopTask(motorTaskHandle);
-        DAQmxStopTask(loadCelltaskHandle);
         isWindUp = TRUE;
         printf("Windup Pass.\n");
     }else  printf("Motors must be first enabled prior to winding up.\n");
