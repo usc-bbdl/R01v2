@@ -5,13 +5,11 @@
 #include <expParadigm.h>
 //#include <UDPClient.h>
 
-
-
 int proceedState(int *state)
 {
     static dataOneSample loadCellOffsets;
     //static UdpClient udpclient;
-    static motorControl motors;
+    static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     static expParadigm paradigm(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     switch(*state)
     {
@@ -29,7 +27,8 @@ int proceedState(int *state)
         break;
     case MOTOR_STATE_OPEN_LOOP:
         //Start NI FPGA, Connect the Neural FPGA force command to the NI FPGA, Start controlling muscle force
-        motors.motorController();
+        motors.motorControllerStart();
+
         printf("Closed-Loop ; Next stage is Run Paradigm and Sample\n");
         *state = MOTOR_STATE_CLOSED_LOOP;
         break;
@@ -40,7 +39,7 @@ int proceedState(int *state)
         break;
     case MOTOR_STATE_RUN_PARADIGM:
         printf("Shutting Down\n");
-        motors.motorDisable();
+        motors.motorControllerEnd();
         *state = MOTOR_STATE_SHUTTING_DOWN;
         printf("Press Enter to Exit\n");
         exit(0);   // Exit The Program

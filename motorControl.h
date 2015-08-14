@@ -4,17 +4,42 @@
 #include <NIDAQmx.h>
 #include <utilities.h>
 #include <iostream>
+#include "pthread.h"
+#include <windows.h>
+#include <process.h>
+
+class TimeData
+{
+      LARGE_INTEGER initialTick, currentTick, frequency;
+public:
+
+    double actualTime;
+    TimeData(void);	
+    ~TimeData(void);
+    int resetTimer();
+    double getCurrentTime(void);
+};
+
 class motorControl
 {
-    TaskHandle  motorTaskHandle, motorEnableHandle;
+    TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
+    double loadCellOffset1, loadCellOffset2,I;
+    TimeData timeData;
+    static pthread_t PIDThread;
+    static void motorControlLoop(void*);
+    void controlLoop(void);
+    HANDLE hIOMutex;
+    bool kill;
 public:
-    motorControl();
+    motorControl(double,double);
     ~motorControl(void);
-    bool isEnable, isWindUp, isControlled;
+    bool isEnable, isWindUp, isControlling;
     int motorEnable();
     int motorWindUp();
     int motorDisable();
-    int motorController();// FROM SURAJ
+    int motorControllerStart();
+    int motorControllerEnd();
 };
 
 #endif
+

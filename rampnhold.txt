@@ -1,5 +1,5 @@
 GammDynamic,GammaStatic,trialLength,reps
-3
-300,240,5,1
+1
+300,240,2,2
 200,190,8,3
 100,140,10,2

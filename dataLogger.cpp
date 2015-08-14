@@ -111,7 +111,7 @@ int dataLogger::startRecording()
                 encoderData2[i/2] = 2 * PI * shaftRadius * encoderData2[i/2] / 365 + 1;
                 fprintf(dataFile,"%.6f,%.6f,%.6f,%.6f\n",loadCellData[i],loadCellData[i+1],encoderData1[i/2],encoderData2[i/2]);
             }
-            printf("Ld Cell1: %+6.2f; Ld Cell2: %+6.2fp; M Len 1: %+6.4f;M Len 2: %+6.4f\r",loadCellData[0],loadCellData[1],encoderData1[0],encoderData2[0]);
+            //printf("Ld Cell1: %+6.2f; Ld Cell2: %+6.2fp; M Len 1: %+6.4f;M Len 2: %+6.4f\r",loadCellData[0],loadCellData[1],encoderData1[0],encoderData2[0]);
             fflush(stdout);
         }
         if(GetAsyncKeyState(VK_ESCAPE))

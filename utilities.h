@@ -2,12 +2,20 @@
 #define UTILITIES_H
 #include <math.h>
 
+
+#define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
+
+const int controlFreq = 10;
 const double PI = 3.14159265358979323846;
 const double shaftRadius = 0.003;// motor shaft radius in cm
 const double loadCellScale1 = (1/sqrt(2.0)) * 6.1463; //From calibration test with weights
 const double loadCellScale2 = (1/sqrt(2.0)) * 5.9382; //From calibration test with weights
 const int sampleFreq = 50000;
-#define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
+const int motorMinVoltage = 0;
+const int motorMaxVoltage = 2;
+const int loadCellMinVoltage = -10;
+const int loadCellMaxVoltage = +10;
+
 
 #define     MOTOR_STATE_INIT 0
 #define     MOTOR_STATE_WINDING_UP 1

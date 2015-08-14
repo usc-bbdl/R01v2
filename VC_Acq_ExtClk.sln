@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "experimentalUserInterface", "VC_Acq_ExtClk.vcxproj", "{E17F6106-F89F-4162-8CE2-7F383B9F23E2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VC_Acq_ExtClk1", "VC_Acq_ExtClk.vcxproj", "{E17F6106-F89F-4162-8CE2-7F383B9F23E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
