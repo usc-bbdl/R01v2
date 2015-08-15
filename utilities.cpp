@@ -17,11 +17,11 @@ int proceedState(int *state)
         printf("Motors Winding Up; Next stage is Open-Loop\n");
         //udpclient.sendMessageToServer("KKK");
         motors.motorEnable();
-        motors.motorWindUp();
         *state = MOTOR_STATE_WINDING_UP;
         break;
     case MOTOR_STATE_WINDING_UP:
         //Start Neural FPGA and Feeding muscle length data
+        motors.motorWindUp();
         *state = MOTOR_STATE_OPEN_LOOP;
         printf("Open-Loop ; Next stage is Closed-Loop\n");
         break;

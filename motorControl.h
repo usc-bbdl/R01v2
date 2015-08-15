@@ -7,6 +7,7 @@
 #include "pthread.h"
 #include <windows.h>
 #include <process.h>
+#include <ctime>
 
 class TimeData
 {
@@ -23,6 +24,7 @@ public:
 class motorControl
 {
     TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
+    TaskHandle  encodertaskHandle[2];
     double loadCellOffset1, loadCellOffset2,I;
     TimeData timeData;
     static pthread_t PIDThread;
