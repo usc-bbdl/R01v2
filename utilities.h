@@ -1,6 +1,7 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 #include <math.h>
+typedef unsigned int UINT32;
 
 const double PI = 3.14159265358979323846;
 const double shaftRadius = 0.003;// motor shaft radius in cm
@@ -17,4 +18,5 @@ const int sampleFreq = 50000;
 #define     MOTOR_STATE_SHUTTING_DOWN 5
 
 int proceedState(int *);
+void waitkey();
 #endif

@@ -1,4 +1,5 @@
 #include <utilities.h>
+#include <stdio.h>
 #include <conio.h>
 #include <dataOneSample.h>
 #include <motorControl.h>
@@ -47,5 +48,8 @@ int proceedState(int *state)
         break;
     }
     return 0;
+}
+void waitkey() {
+	getchar();
 }
 
