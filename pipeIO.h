@@ -12,12 +12,29 @@
 #include "utilities.h"
 
 class pipeIO {
-	okCFrontPanel *dev = NULL;
+	initFPGA *xem = NULL;
+
+	bool           m_bCheck=0;
+	bool           m_bInjectError = 0;
+	int            m_ePattern = 0;
+	UINT32         m_u32BlockSize = 0;
+	UINT32         m_u32SegmentSize = 0;
+	UINT32         m_u32TransferSize = 0;
+	UINT32         m_u32ThrottleIn = 0;
+	UINT32         m_u32ThrottleOut = 0;
+	clock_t        m_cStart = 0;
+	clock_t        m_cStop = 0;
+
+	int inAddr, outAddr;
+	void evalSizes();
 public:
-	pipeIO();
-	int readPipe(char *);
-	int writePipe(char *);
-	int statPipe();
+	pipeIO(initFPGA *);
+	int readPipe(unsigned char *);
+	int writePipe(unsigned char *);
+	void setBlockSize(UINT32);
+	void statAddr(int*, int*);
+	void setAddr(int, int);
+	char* padData(char []);
 };
 
 #endif /* PIPEIO_H_ */

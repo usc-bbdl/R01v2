@@ -22,16 +22,7 @@ class initFPGA {
 
 	//device specific parameters
 	okTDeviceInfo  m_devInfo;
-	bool           m_bCheck=0;
-	bool           m_bInjectError = 0;
-	int            m_ePattern = 0;
-	UINT32         m_u32BlockSize = 0;
-	UINT32         m_u32SegmentSize = 0;
-	UINT32         m_u32TransferSize = 0;
-	UINT32         m_u32ThrottleIn = 0;
-	UINT32         m_u32ThrottleOut = 0;
-	clock_t        m_cStart = 0;
-	clock_t        m_cStop = 0;
+
 public:
 	initFPGA(char *, char *);
 	~initFPGA();
