@@ -1,26 +1,29 @@
 #include "motorControl.h"
 #include <utilities.h>
-//#include "pthread.h"
 
 motorControl::motorControl(double offset1, double offset2)
 {
     I = 5;
-    isEnable = FALSE;
-    isWindUp = FALSE;
-    loadCellOffset1 = offset1;
-    loadCellOffset2 = offset2;
-    isControlling = FALSE;
-}
-motorControl::~motorControl()
-{
-}
-
-int motorControl::motorEnable()
-{
-	char        errBuff[2048]={'\0'};
+    char        errBuff[2048]={'\0'};
     int32       error=0;
 
-    
+    isEnable = FALSE;
+    isWindUp = FALSE;
+    isControlling = FALSE;
+    live = FALSE;
+    loadCellOffset1 = offset1;
+    loadCellOffset2 = offset2;
+    loadCellData[0] = 0;
+    loadCellData[1] = 0;
+    motorRef[0] = 5;
+    motorRef[1] = 6;
+    encoderData1[0] = 0;
+    encoderData2[0] = 0;
+    resetMuscleLength = TRUE;
+    muscleLengthPreviousTick[0] = 1;
+    muscleLengthPreviousTick[1] = 1;
+    muscleLengthOffset [0] = 0;
+    muscleLengthOffset [1] = 0;
     DAQmxErrChk (DAQmxCreateTask("",&loadCelltaskHandle));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai0","loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai1","loadCell2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
@@ -30,45 +33,62 @@ int motorControl::motorEnable()
     DAQmxErrChk (DAQmxCreateTask("",&motorTaskHandle));
     DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao11","motor1",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao10","motor2",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCfgSampClkTiming(motorTaskHandle,"/PXI1Slot7/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
+    DAQmxErrChk (DAQmxCfgSampClkTiming(motorTaskHandle,"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
+
     DAQmxErrChk (DAQmxCreateTask("",&motorEnableHandle));
     DAQmxErrChk (DAQmxCreateDOChan(motorEnableHandle,"PXI1Slot2/port0","motorEnable",DAQmx_Val_ChanForAllLines));
 
     
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[0]));
-    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[0],"PXI1Slot3/ctr4","Enoder 1",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,500,0.0,""));
-    DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[0],"/PXI1Slot7/ai/SampleClock",1000,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
-    DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[0]));
-    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[0],"PXI1Slot3/ctr5","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,500,0.0,""));
-    DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[0],"/PXI1Slot7/ai/SampleClock",1000,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
+    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[0],"PXI1Slot3/ctr4","Enoder 1",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
+    DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[0],"/PXI1Slot7/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
+    DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[1]));
+    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[1],"PXI1Slot3/ctr5","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
+    DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[1],"/PXI1Slot7/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
+Error:
+	if( DAQmxFailed(error) ) {
+		DAQmxGetExtendedErrorInfo(errBuff,2048);
+		DAQmxClearTask(motorTaskHandle);
+		DAQmxClearTask(loadCelltaskHandle);
+		DAQmxClearTask(motorEnableHandle);
 
+		printf("DAQmx Error: %s\n",errBuff);
+        printf("Motor, load cell or encoder initialization error\n");
+	}
+}
+motorControl::~motorControl()
+{
+    DAQmxClearTask(motorEnableHandle);
+    DAQmxClearTask(motorTaskHandle);
+    DAQmxClearTask(loadCelltaskHandle);
+    live = FALSE;
+}
 
-    //uInt32      dataEnable=0xffffffff;
+int motorControl::motorEnable()
+{
     uInt32      dataEnable=0x0000000f;
-    //uInt32      dataEnable=0xff000000;
-    //int32		written;
+    char        errBuff[2048]={'\0'};
+    int32       error=0;
     float64 zeroVoltages[2]={0.0,0.0};
-	DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
-   	DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&dataEnable,NULL,NULL));
+
+    DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
     DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
+    DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&dataEnable,NULL,NULL));
     DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,zeroVoltages,NULL,NULL));
+    Sleep(500);
     DAQmxStopTask(motorTaskHandle);
+    DAQmxStopTask(motorEnableHandle);
     isEnable = TRUE;
 Error:
 	if( DAQmxFailed(error) ) {
 		DAQmxGetExtendedErrorInfo(errBuff,2048);
         DAQmxStopTask(motorTaskHandle);
 		DAQmxClearTask(motorTaskHandle);
-
-        DAQmxStopTask(loadCelltaskHandle);
-		DAQmxClearTask(loadCelltaskHandle);
-
         DAQmxStopTask(motorEnableHandle);
 		DAQmxClearTask(motorEnableHandle);
 
 		printf("DAQmx Error: %s\n",errBuff);
-        printf("Callback Error\n");
-        printf("Motor initialization Error\n");
+        printf("Motor enable Error\n");
 	}
     return 0;
 }
@@ -80,26 +100,31 @@ int motorControl::motorDisable()
     uInt32      dataDisable=0x00000000;
     int32		written;
     float64 zeroVoltages[2]={0.0,0.0};
-    //DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
-    isControlling = FALSE;
-    Sleep(200);
-    //DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
-    DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&dataDisable,&written,NULL));
-    isEnable = FALSE;
-    isWindUp = FALSE;
+    while(isControlling){
+    }
+    DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
+    DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
+    DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&dataDisable,NULL,NULL));
+    
     DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,zeroVoltages,NULL,NULL));
+    Sleep(500);
     DAQmxStopTask(motorTaskHandle);
-	DAQmxClearTask(motorTaskHandle);
+    DAQmxStopTask(motorEnableHandle);
+    isControlling = FALSE;
+    isWindUp = FALSE;
+    live = FALSE;
+    isEnable = FALSE;
+
 Error:
 	if( DAQmxFailed(error) ){
 		printf("DisableMotor Error: %s\n",errBuff);
+        DAQmxGetExtendedErrorInfo(errBuff,2048);
+        printf("DAQmx Error: %s\n",errBuff);
 		DAQmxStopTask(motorEnableHandle);
         DAQmxStopTask(motorTaskHandle);
-        DAQmxStopTask(loadCelltaskHandle);
 
         DAQmxClearTask(motorEnableHandle);
         DAQmxClearTask(motorTaskHandle);
-        DAQmxClearTask(loadCelltaskHandle);
     }
 	return 0;
 }
@@ -110,18 +135,19 @@ int motorControl::motorWindUp()
     float64 windingUpCmnd[2]={0.5,0.5};
     if (isEnable){
         DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
-        bool32 isLate = {0};
-        Sleep(500);
         DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,windingUpCmnd,NULL,NULL));
         Sleep(500);
-        DAQmxStopTask(motorTaskHandle);
         isWindUp = TRUE;
+
+        DAQmxStopTask(motorTaskHandle);
+        
         printf("Windup Pass.\n");
     }else  printf("Motors must be first enabled prior to winding up.\n");
 Error:
 	if( DAQmxFailed(error) ) {
 		DAQmxGetExtendedErrorInfo(errBuff,2048);
         DAQmxStopTask(motorTaskHandle);
+        DAQmxClearTask(motorTaskHandle);
 		printf("DAQmx Error: %s\n",errBuff);
         printf("winding up Error\n");
 	}
@@ -138,16 +164,14 @@ void motorControl::controlLoop(void)
     int32       error=0;
     bool keepReading=TRUE;
     bool32 isLate = {0};
-    float64 loadCellData[2],motorRef[2]={8.4,6.8},motorCommand[2]={0.5,0.5},errorForce[2]={0.0,0.0},integral[2]={0.0,0.0},encoderData1[1]={0.0},encoderData2[1]={0.0};
     double tick=0.0,tock=0.0;
+    float64 motorCommand[2]={0.0,0.0},errorForce[2]= {0.0,0.0},integral[2]={0.0,0.0};
     char        errBuff[2048]={'\0'};
     FILE *dataFile;
     time_t t = time(NULL);
     tm* timePtr = localtime(&t);
     char fileName[200];
-
     
-
     sprintf_s(
             fileName,
             "C:\\data\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",
@@ -159,6 +183,7 @@ void motorControl::controlLoop(void)
             timePtr->tm_sec
             );
     dataFile = fopen(fileName,"w");
+    fprintf(dataFile,"Time, Load Cell1, Load Cell2, Motor Command1, Motor Command2, Muscle Length 1, Muscle Length2, Muscle Velocity1, Muscle Velocity2, is sample missed\n");
     DAQmxErrChk (DAQmxStartTask(loadCelltaskHandle));
     DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
     DAQmxErrChk (DAQmxStartTask(encodertaskHandle[0]));
@@ -166,43 +191,56 @@ void motorControl::controlLoop(void)
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
     float64 goffsetLoadCell[2]={0};
-    while(isControlling)
+    while(live)
     {
         WaitForSingleObject(hIOMutex, INFINITE);
-        //motorRef pipe should be read here
+        //desire Forced, muscle Length, muscle Velocity PIPES should be read here
+        
         DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate));
         DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,2,NULL,NULL));
         DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,motorCommand,NULL,NULL));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderData2,1,NULL,0));
-        encoderData1[0] = 2 * PI * shaftRadius * encoderData1[0] / 365 + 1;
-        encoderData2[0] = 2 * PI * shaftRadius * encoderData2[0] / 365 + 1;
-
         tock = timeData.getCurrentTime();
-        loadCellData[0] = (loadCellData[0] *loadCellScale1) - loadCellOffset1;
-        loadCellData[1] = (loadCellData[1] *loadCellScale2) - loadCellOffset2;
-        errorForce[0] = motorRef[0]-loadCellData[0];
-        errorForce[1] = motorRef[1]-loadCellData[1];
-        integral[0] = integral[0] + errorForce[0]*(tock-tick);
-        integral[1] = integral[1] + errorForce[1]*(tock-tick);
+        if (resetMuscleLength)
+        {
+            muscleLengthOffset[0] = 2 * PI * shaftRadius * encoderData1[0] / 365;
+            muscleLengthOffset[1] = 2 * PI * shaftRadius * encoderData1[0] / 365;
+            resetMuscleLength = FALSE;
+        }
+        muscleLength[0] = (2 * PI * shaftRadius * encoderData1[0] / 365 + 1) - muscleLengthOffset[0];
+        muscleLength[1] = (2 * PI * shaftRadius * encoderData2[0] / 365 + 1) - muscleLengthOffset[1];
+        
+        muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
+        muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
+
+        muscleLengthPreviousTick[0] = muscleLength[0];
+        muscleLengthPreviousTick[1] = muscleLength[1];
+        
+        loadCellData[0] = (loadCellData[0] * loadCellScale1) - loadCellOffset1;
+        loadCellData[1] = (loadCellData[1] * loadCellScale2) - loadCellOffset2;
+        errorForce[0] = motorRef[0] - loadCellData[0];
+        errorForce[1] = motorRef[1] - loadCellData[1];
+        integral[0] = integral[0] + errorForce[0] * (tock - tick);
+        integral[1] = integral[1] + errorForce[1] * (tock - tick);
         motorCommand[0] = integral[0] * I;
         motorCommand[1] = integral[1] * I;
-        if (motorCommand[0]>motorMaxVoltage)
+        if (motorCommand[0] > motorMaxVoltage)
             motorCommand[0] = motorMaxVoltage;
-        if (motorCommand[0]<motorMinVoltage)
+        if (motorCommand[0] < motorMinVoltage)
             motorCommand[0] = motorMinVoltage;
-        if (motorCommand[1]>motorMaxVoltage)
+        if (motorCommand[1] > motorMaxVoltage)
             motorCommand[1] = motorMaxVoltage;
-        if (motorCommand[1]<motorMinVoltage)
+        if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
-        //printf("Ld Cell1: %+6.2f; Ld Cell2: %+6.2fp; M Cmnd 1: %+6.2f;M Cmnd 2: %+6.2f, isLate%d\r",loadCellData[0],loadCellData[1],motorCommand[0],encoderData,isLate);
-        printf("Ld Cell1: %+6.2f; Ld Cell2: %+6.2fp; Enc 1: %+6.5f; Enc: %+6.5f\r",loadCellData[0],loadCellData[1],encoderData1[0],encoderData2[0]);
+        printf("Ld Cell1: %+6.2f; Ld Cell2: %+6.2fp; Enc 1: %+6.5f; Enc: %+6.5f\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1]);
         ReleaseMutex( hIOMutex);
-        fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorCommand[0],motorCommand[1],encoderData1[0],encoderData2[0] ,isLate);
+        fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorCommand[0],motorCommand[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1] ,isLate);
         tick = timeData.getCurrentTime();
     }
+    isControlling = FALSE;
+    DAQmxStopTask(motorTaskHandle);
     fclose(dataFile);
-    DAQmxStopTask(loadCelltaskHandle);
 Error:
 	if( DAQmxFailed(error) ) {
 		DAQmxGetExtendedErrorInfo(errBuff,2048);
@@ -218,7 +256,7 @@ Error:
         DAQmxStopTask(motorEnableHandle);
 		DAQmxClearTask(motorEnableHandle);
 		printf("DAQmx Error: %s\n",errBuff);
-        printf("Callback Error\n");
+        printf("Motor control Error\n");
 	}
 }
 
@@ -227,10 +265,10 @@ int motorControl::motorControllerStart()
     if ((isEnable) && (isWindUp))
     {
         isControlling = TRUE;
+        live = TRUE;
         hIOMutex = CreateMutex(NULL, FALSE, NULL);
 		isControlling = TRUE;
 		_beginthread(motorControl::motorControlLoop,0,this);
-        //int ctrl_handle_Controller = pthread_create(&PIDThread, NULL, motorControl::motorControlLoop, NULL);
     }else
     {
         isControlling = FALSE;
@@ -240,11 +278,11 @@ int motorControl::motorControllerStart()
 }
 int motorControl::motorControllerEnd()
 {
-    //pthread_cancel(PIDThread);
+    live = FALSE;
     motorControl::motorDisable();
     isControlling = FALSE;
-    //DAQmxStopTask(motorTaskHandle);
-	//DAQmxClearTask(motorTaskHandle);
+    DAQmxStopTask(motorTaskHandle);
+	DAQmxClearTask(motorTaskHandle);
     DAQmxStopTask(loadCelltaskHandle);
 	DAQmxClearTask(loadCelltaskHandle);
     DAQmxStopTask(encodertaskHandle);

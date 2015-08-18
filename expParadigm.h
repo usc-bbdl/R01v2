@@ -4,12 +4,13 @@
 #include <windows.h>
 #include <iostream>
 #include <utilities.h>
-//#include <UdpClient.h>
+#include <analogClient.h>
 #include <ctime>
 #include <dataLogger.h>
 
 class expParadigm
 {
+    analogClient *pClient;
     double gammaDyn[100];
     double gammaSta[100];
     int rep[100];
@@ -18,7 +19,7 @@ class expParadigm
     //UdpClient client;
     dataLogger log;
 public:
-    expParadigm(double,double);
+    expParadigm(double,double,analogClient*);
     ~expParadigm(void);
     int startParadigm();
     bool isRunning();

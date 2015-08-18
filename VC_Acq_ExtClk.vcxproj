@@ -19,21 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="analogClient.cpp" />
     <ClCompile Include="dataLogger.cpp" />
     <ClCompile Include="dataOneSample.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="expParadigm.cpp" />
     <ClCompile Include="motorControl.cpp" />
-    <ClCompile Include="UdpClient.cpp" />
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="analogClient.h" />
     <ClInclude Include="dataLogger.h" />
     <ClInclude Include="dataOneSample.h" />
     <ClInclude Include="expParadigm.h" />
     <ClInclude Include="motorControl.h" />
     <ClInclude Include="NIDAQmx.h" />
-    <ClInclude Include="UdpClient.h" />
     <ClInclude Include="utilities.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

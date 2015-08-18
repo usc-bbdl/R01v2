@@ -1,6 +1,8 @@
 #include "expParadigm.h"
-expParadigm::expParadigm(double offset1,double offset2)
+#include <analogClient.h>
+expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
 {
+    pClient = client;
     currentTrialNum = 0;
     currentRepNum = 0;
     log.loadCellOffset1 = offset1;
@@ -49,10 +51,9 @@ int expParadigm::startParadigm()
             log.fileName = fileName;
             log.trialLength = trialLength[i];
             //client.sendMessageToServer("RRR");
-            //client.sendMessageToServer("PPP");
+            pClient->sendMessageToServer(MESSAGE_PERTURB);
             log.reset();
             log.startRecording();
-            //client.sendMessageToServer("TTT");
         }
     }
     return 0;

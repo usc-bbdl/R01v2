@@ -1,7 +1,7 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 #include <math.h>
-
+#include <NIDAQmx.h>
 
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
@@ -13,9 +13,19 @@ const double loadCellScale2 = (1/sqrt(2.0)) * 5.9382; //From calibration test wi
 const int sampleFreq = 50000;
 const int motorMinVoltage = 0;
 const int motorMaxVoltage = 9;
+const int messageMinVoltage = 0;
+const double messageMaxVoltage = 0.03;
 const int loadCellMinVoltage = -10;
 const int loadCellMaxVoltage = +10;
+const int encoderPulsesPerRev = 500;
 
+
+const uInt32     MESSAGE_NO_CONNECTION = 0x00000000;
+const uInt32     MESSAGE_IDLE = 0x00000003;
+const uInt32     MESSAGE_KINEMATIC = 0x00000004;
+const uInt32     MESSAGE_RECORD = 0x00000005;
+const uInt32     MESSAGE_PERTURB = 0x00000006;
+const uInt32     MESSAGE_TERMINATE = 0x00000007;
 
 #define     MOTOR_STATE_INIT 0
 #define     MOTOR_STATE_WINDING_UP 1
