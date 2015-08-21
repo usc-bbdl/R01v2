@@ -45,6 +45,9 @@
     <ClInclude Include="analogClient.h">
       <Filter>Head Files</Filter>
     </ClInclude>
+    <ClInclude Include="okFrontPanelDLL.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">

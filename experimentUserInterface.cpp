@@ -7,7 +7,7 @@
 #include <conio.h>
 #include <utilities.h>
 
-int main()
+int maintest()
 {
     printf("Press Spc to move forward\n\n");
     printf("Press Esc to terminate\n");
