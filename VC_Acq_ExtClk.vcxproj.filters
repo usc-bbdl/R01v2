@@ -22,6 +22,9 @@
     <ClCompile Include="analogClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FPGATest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataLogger.h">

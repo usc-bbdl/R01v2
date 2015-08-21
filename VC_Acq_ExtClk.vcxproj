@@ -24,6 +24,7 @@
     <ClCompile Include="dataOneSample.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="expParadigm.cpp" />
+    <ClCompile Include="FPGATest.cpp" />
     <ClCompile Include="motorControl.cpp" />
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
@@ -166,7 +167,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>odbc32.lib;odbccp32.lib;nidaqmx.lib;okFrontPanelDLL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;nidaqmx.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>C:\Users\PXI_BBDL\Documents\GitHub\R01v2\externalLibraries;$(ProgramFiles)\National Instruments\Shared\ExternalCompilerSupport\C\lib32\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
