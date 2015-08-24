@@ -4,12 +4,15 @@
 #include <motorControl.h>
 #include <expParadigm.h>
 #include <analogClient.h>
+#include <FPGAControl.h>
 
 int proceedState(int *state)
 {
     static dataOneSample loadCellOffsets;
     static analogClient ANALOG_Client;
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
+    static FPGAControl bicepFPGA(BICEP,&motors);
+    static FPGAControl tricepFPGA(TRICEP,&motors);
     static expParadigm paradigm(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&ANALOG_Client);
     switch(*state)
     {
@@ -53,3 +56,20 @@ int proceedState(int *state)
     return 0;
 }
 
+int ReInterpret(float32 in, int32 *out)
+{
+    memcpy(out, &in, sizeof(int32));
+    return 0;
+}
+
+int ReInterpret(int32 in, int32 *out)
+{
+    memcpy(out, &in, sizeof(int32));
+    return 0;
+}
+
+int ReInterpret(int in, float *out)
+{
+    memcpy(out, &in, sizeof(float));
+    return 0;
+}
