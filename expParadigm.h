@@ -7,12 +7,12 @@
 #include <analogClient.h>
 #include <ctime>
 #include <dataLogger.h>
-
+#include "FPGAControl.h"
 class expParadigm
 {
     analogClient *pClient;
-    double gammaDyn[100];
-    double gammaSta[100];
+    float32 gammaDyn[100];
+    float32 gammaSta[100];
     int rep[100];
     int numTrials;
     int trialLength[100];
@@ -21,7 +21,7 @@ class expParadigm
 public:
     expParadigm(double,double,analogClient*);
     ~expParadigm(void);
-    int startParadigm();
+    int startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA);
     bool isRunning();
     int currentTrialNum,  currentRepNum;
     

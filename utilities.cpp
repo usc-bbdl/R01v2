@@ -41,7 +41,7 @@ int proceedState(int *state)
         //ANALOG_Client.sendMessageToServer(MESSAGE_PERTURB);
         Sleep(500);
         //ANALOG_Client.sendMessageToServer(MESSAGE_RECORD);
-        paradigm.startParadigm();
+        paradigm.startParadigm(&bicepFPGA, &tricepFPGA);
         *state = MOTOR_STATE_RUN_PARADIGM;
         break;
     case MOTOR_STATE_RUN_PARADIGM:

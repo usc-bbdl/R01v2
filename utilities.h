@@ -48,6 +48,8 @@ int ReInterpret(int, float *);
 typedef unsigned char       BYTE;
 #define  BICEP 0
 #define TRICEP 1
+#define GGAIN 0.01 //default is (0.9/1000) //0.4/2000 is safe
+#define TBIAS 4
 
 #endif
 

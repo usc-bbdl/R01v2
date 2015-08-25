@@ -3,7 +3,7 @@
 
 motorControl::motorControl(double offset1, double offset2)
 {
-    I = 5;
+    I = 4;
     char        errBuff[2048]={'\0'};
     int32       error=0;
 
@@ -15,8 +15,8 @@ motorControl::motorControl(double offset1, double offset2)
     loadCellOffset2 = offset2;
     loadCellData[0] = 0;
     loadCellData[1] = 0;
-    motorRef[0] = 5;
-    motorRef[1] = 6;
+    motorRef[0] = 0;
+    motorRef[1] = 0;
     encoderData1[0] = 0;
     encoderData2[0] = 0;
     resetMuscleLength = TRUE;
@@ -183,7 +183,7 @@ void motorControl::controlLoop(void)
             timePtr->tm_sec
             );
     dataFile = fopen(fileName,"w");
-    fprintf(dataFile,"Time, Load Cell1, Load Cell2, Motor Command1, Motor Command2, Muscle Length 1, Muscle Length2, Muscle Velocity1, Muscle Velocity2, is sample missed\n");
+    fprintf(dataFile,"Time, Load Cell1, Load Cell2, Motor Command1, Motor Command2, Length 1, Length2, Velocity1, Velocity2, EMG1, EMG2, is sample missed\n");
     DAQmxErrChk (DAQmxStartTask(loadCelltaskHandle));
     DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
     DAQmxErrChk (DAQmxStartTask(encodertaskHandle[0]));
@@ -235,7 +235,7 @@ void motorControl::controlLoop(void)
             motorCommand[1] = motorMinVoltage;
         //printf("Ld Cell1: %+6.2f; Ld Cell2: %+6.2fp; Enc 1: %+6.5f; Enc: %+6.5f\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1]);
         ReleaseMutex( hIOMutex);
-        fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorCommand[0],motorCommand[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1] ,isLate);
+        fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         tick = timeData.getCurrentTime();
     }
     isControlling = FALSE;

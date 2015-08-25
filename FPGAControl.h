@@ -32,9 +32,9 @@ public:
     FPGAControl(int, motorControl *);
     ~FPGAControl();
     int updateGamma(void);
-    float gammaDynamic, gammaStatic;
+    float32 gammaDynamic, gammaStatic;
     void * threadRoutine(void *);
-    float muscleLength, muscleVel , muscleForce , muscleEMG, spindleII , spindleIa ;
+    float muscleLength, muscleVel , muscleForce, muscleForceFPGA , muscleEMG, spindleII , spindleIa ;
 };
 
 #endif

@@ -18,6 +18,7 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
 {
     //SomeFpga    *spindleFPGA;
     //SomeFpga    *muscleFPGA;
+    muscleForceFPGA = 0;
     muscleLength = 0;
     muscleVel = 0;
     muscleForce = 0;
@@ -58,23 +59,26 @@ void FPGAControl::controlLoop(void){
 }
 FPGAControl::~FPGAControl() {
     //delete all dynamic memory here
+    /*
     delete this->spindleFPGA;
     delete this->muscleFPGA;
+    */
 }
 
 int FPGAControl::update() { //This is the function called in the thread
 
 
-    muscleLength = pMotorControl->muscleLength[muscleIndex];
-    muscleVel = pMotorControl->muscleVel[muscleIndex];
+    muscleLength = (float)pMotorControl->muscleLength[muscleIndex];
+    muscleVel = (float)pMotorControl->muscleVel[muscleIndex];
     writeSpindleLengthVel();
     writeMuscleFPGALengthVel();
     writeMuscleFPGALengthVel();
     //readSpindleIaFPGA();
     //readSpindleIIFPGA();
     readMuscleFPGAForce();
-    //readEMG();
-    pMotorControl->motorRef[muscleIndex] = muscleForce;
+    readEMG();
+    pMotorControl->muscleEMG[muscleIndex] = muscleEMG;
+    pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
     switch (this->muscleIndex) {
     case 0:
         printf(" Bicep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
@@ -126,7 +130,7 @@ int FPGAControl::writeMuscleFPGALengthVel()
 {
     float gMusDamp;
     //if(gAlterDamping && (gMusDamp>0.03f)) {
-        gMusDamp = 0.0f;
+    gMusDamp = 200.0f;
     //}
     int32   bitM1VoluntaryBic = 0, bitM1DystoniaBic = 000;
     int32 bitValLce, bitValVel;
@@ -138,8 +142,9 @@ int FPGAControl::writeMuscleFPGALengthVel()
 
 int FPGAControl::readMuscleFPGAForce()
 {
-    muscleFPGA->ReadFpga(0x32, "float32", &muscleForce);
-    muscleForce = muscleForce *0.01;
+    muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
+    float tCtrl = ((muscleForceFPGA) * GGAIN) +  TBIAS;
+    muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
     return 0;
 }
 

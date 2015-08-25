@@ -34,6 +34,7 @@ class motorControl
 public:
     bool resetMuscleLength;
     float64 loadCellData[2],motorRef[2],muscleLength[2],muscleVel[2];
+    float muscleEMG[2];
     motorControl(double,double);
     ~motorControl(void);
     bool isEnable, isWindUp, isControlling;

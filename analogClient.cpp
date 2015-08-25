@@ -16,7 +16,7 @@ analogClient::analogClient(void)
 	//hIOMutex = CreateMutex(NULL, FALSE, NULL);
 	//live = TRUE;
     //newMessage = FALSE;
-    //delayThread = 100;
+    delayThread = 50;
 	//_beginthread(analogClient::staticAnalogClientCallback, 0, this);
 
     Error:
@@ -68,7 +68,7 @@ int analogClient::sendAnalogMessageToServer(uInt32 message)
     {
         messageToServer = MESSAGE_NO_CONNECTION;
     }else{
-        Sleep(50);
+        Sleep(1500);
         DAQmxErrChk (DAQmxWriteDigitalU32(enableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&MESSAGE_IDLE,NULL,NULL));
         messageToServer = MESSAGE_IDLE;
     }
