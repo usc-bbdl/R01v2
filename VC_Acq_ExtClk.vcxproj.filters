@@ -10,9 +10,6 @@
     <ClCompile Include="experimentUserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UdpClient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -20,6 +17,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="expParadigm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="analogClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FPGAControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SomeFpga.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FPGATest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,9 +42,6 @@
     <ClInclude Include="dataOneSample.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="UdpClient.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
     <ClInclude Include="motorControl.h">
       <Filter>Head Files</Filter>
     </ClInclude>
@@ -43,6 +49,18 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="NIDAQmx.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="analogClient.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="okFrontPanelDLL.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPGAControl.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SomeFpga.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

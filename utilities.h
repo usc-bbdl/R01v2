@@ -1,13 +1,31 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 #include <math.h>
+#include <NIDAQmx.h>
 
+#define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
+
+const int controlFreq = 1000;
 const double PI = 3.14159265358979323846;
 const double shaftRadius = 0.003;// motor shaft radius in cm
 const double loadCellScale1 = (1/sqrt(2.0)) * 6.1463; //From calibration test with weights
 const double loadCellScale2 = (1/sqrt(2.0)) * 5.9382; //From calibration test with weights
 const int sampleFreq = 50000;
-#define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
+const int motorMinVoltage = 0;
+const int motorMaxVoltage = 9;
+const int messageMinVoltage = 0;
+const double messageMaxVoltage = 0.03;
+const int loadCellMinVoltage = -10;
+const int loadCellMaxVoltage = +10;
+const int encoderPulsesPerRev = 500;
+
+
+const uInt32     MESSAGE_NO_CONNECTION = 0x00000000;
+const uInt32     MESSAGE_IDLE = 0x00000003;
+const uInt32     MESSAGE_KINEMATIC = 0x00000004;
+const uInt32     MESSAGE_RECORD = 0x00000005;
+const uInt32     MESSAGE_PERTURB = 0x00000006;
+const uInt32     MESSAGE_TERMINATE = 0x00000007;
 
 #define     MOTOR_STATE_INIT 0
 #define     MOTOR_STATE_WINDING_UP 1
@@ -16,5 +34,22 @@ const int sampleFreq = 50000;
 #define     MOTOR_STATE_RUN_PARADIGM 4
 #define     MOTOR_STATE_SHUTTING_DOWN 5
 
+const int   NUM_NEURON = 128;
+const int   SAMPLING_RATE = 1024;
+const int    DATA_EVT_LCEVEL = 9;
+const int    DATA_EVT_GAMMA_DYN = 4;
+const int    DATA_EVT_GAMMA_STA = 5;
+
 int proceedState(int *);
+int ReInterpret(float32, int32 *);
+int ReInterpret(int32, int32 *);
+int ReInterpret(int, float *);
+
+typedef unsigned char       BYTE;
+#define  BICEP 0
+#define TRICEP 1
+#define GGAIN 0.01 //default is (0.9/1000) //0.4/2000 is safe
+#define TBIAS 4
+
 #endif
+

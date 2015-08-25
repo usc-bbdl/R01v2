@@ -3,44 +3,51 @@
 #include <dataOneSample.h>
 #include <motorControl.h>
 #include <expParadigm.h>
-//#include <UDPClient.h>
-
-
+#include <analogClient.h>
+#include <FPGAControl.h>
 
 int proceedState(int *state)
 {
     static dataOneSample loadCellOffsets;
-    //static UdpClient udpclient;
-    static motorControl motors;
-    static expParadigm paradigm(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
+    static analogClient ANALOG_Client;
+    static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
+    static FPGAControl bicepFPGA(BICEP,&motors);
+    static FPGAControl tricepFPGA(TRICEP,&motors);
+    static expParadigm paradigm(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&ANALOG_Client);
     switch(*state)
     {
     case MOTOR_STATE_INIT:
         printf("Motors Winding Up; Next stage is Open-Loop\n");
-        //udpclient.sendMessageToServer("KKK");
         motors.motorEnable();
         motors.motorWindUp();
         *state = MOTOR_STATE_WINDING_UP;
         break;
     case MOTOR_STATE_WINDING_UP:
         //Start Neural FPGA and Feeding muscle length data
+        
         *state = MOTOR_STATE_OPEN_LOOP;
         printf("Open-Loop ; Next stage is Closed-Loop\n");
         break;
     case MOTOR_STATE_OPEN_LOOP:
         //Start NI FPGA, Connect the Neural FPGA force command to the NI FPGA, Start controlling muscle force
-        motors.motorController();
+        motors.motorControllerStart();
+        Sleep(1000);
+        motors.resetMuscleLength = TRUE;
         printf("Closed-Loop ; Next stage is Run Paradigm and Sample\n");
         *state = MOTOR_STATE_CLOSED_LOOP;
         break;
     case MOTOR_STATE_CLOSED_LOOP:
         printf("Running Paradigm; Next stage is Shutting Down\n");
-        paradigm.startParadigm();
+        //ANALOG_Client.sendMessageToServer(MESSAGE_PERTURB);
+        Sleep(500);
+        //ANALOG_Client.sendMessageToServer(MESSAGE_RECORD);
+        paradigm.startParadigm(&bicepFPGA, &tricepFPGA);
         *state = MOTOR_STATE_RUN_PARADIGM;
         break;
     case MOTOR_STATE_RUN_PARADIGM:
         printf("Shutting Down\n");
-        motors.motorDisable();
+        ANALOG_Client.sendMessageToServer(MESSAGE_TERMINATE);
+        motors.motorControllerEnd();
         *state = MOTOR_STATE_SHUTTING_DOWN;
         printf("Press Enter to Exit\n");
         exit(0);   // Exit The Program
@@ -49,3 +56,20 @@ int proceedState(int *state)
     return 0;
 }
 
+int ReInterpret(float32 in, int32 *out)
+{
+    memcpy(out, &in, sizeof(int32));
+    return 0;
+}
+
+int ReInterpret(int32 in, int32 *out)
+{
+    memcpy(out, &in, sizeof(int32));
+    return 0;
+}
+
+int ReInterpret(int in, float *out)
+{
+    memcpy(out, &in, sizeof(float));
+    return 0;
+}
