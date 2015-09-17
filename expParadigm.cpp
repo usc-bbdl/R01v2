@@ -9,10 +9,10 @@ expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
     currentRepNum = 0;
     log.loadCellOffset1 = offset1;
     log.loadCellOffset2 = offset2;
-    char *configFileName = "rampnhold2.txt";
+    char *configFileName = "spindleTest.txt";
     FILE *configFile;
     char *header[200];
-    configFile = fopen("rampnhold2.txt","r");
+    configFile = fopen("spindleTest.txt","r");
     if (configFile == NULL) {
         printf("Could not open data file");
     }
@@ -33,14 +33,18 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
         printf("This trial has %d repetitions\n",rep[i]+1);
         printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
         //UPDATE NI INFORMATION WITH NEW GAMMA DYNAMIC AND STATIC
-        bicepFPGA->gammaDynamic = tricepFPGA->gammaDynamic = gammaDyn[i];
-        bicepFPGA->gammaStatic  = tricepFPGA->gammaStatic  = gammaSta[i];
+        bicepFPGA->gammaDynamic = gammaDyn[i];
+        bicepFPGA->gammaStatic = gammaSta[i];
         bicepFPGA ->updateGamma();
+
+        tricepFPGA->gammaDynamic = gammaDyn[i];
+        tricepFPGA->gammaStatic = gammaSta[i];
+
         tricepFPGA->updateGamma();
         currentTrialNum = i;
         for (int j = 0; j<rep[i]; j++){
             currentRepNum = j;
-            printf("Starting trial#  %d and repetition #%d\n",i+1,j+1);
+            printf("Starting trial#  %d and repetition #%d\n\n",i+1,j+1);
             time_t t = time(NULL);
 	        tm* timePtr = localtime(&t);
             char fileName[200];
@@ -60,11 +64,14 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
             log.fileName = fileName;
             log.trialLength = trialLength[i];
             //client.sendMessageToServer("RRR");
+            Sleep(1000);
             pClient->sendMessageToServer(MESSAGE_PERTURB);
-            log.reset();
-            log.startRecording();
+            //log.reset();
+            //log.startRecording();
+            Sleep((trialLength[i]-2.5)*1000);
         }
     }
+    printf("\n Experiment finished...\n");
     return 0;
 }
 expParadigm::~expParadigm()

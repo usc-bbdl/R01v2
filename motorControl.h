@@ -31,10 +31,12 @@ class motorControl
     HANDLE hIOMutex;
     bool live;
     float64 encoderData1[1],encoderData2[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
+    char header[200];
 public:
     bool resetMuscleLength;
     float64 loadCellData[2],motorRef[2],muscleLength[2],muscleVel[2];
     float muscleEMG[2];
+    float spindleIa[2], spindleII[2];
     motorControl(double,double);
     ~motorControl(void);
     bool isEnable, isWindUp, isControlling;
@@ -43,6 +45,7 @@ public:
     int motorDisable();
     int motorControllerStart();
     int motorControllerEnd();
+    int gammaDynamic, gammaStatic;
 };
 
 #endif
