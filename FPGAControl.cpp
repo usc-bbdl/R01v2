@@ -42,6 +42,7 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
         std::cout<<"\nFATAL: Logical error in FPGAControl Params\n";
         std::abort();
     }
+    initializeParameters();
     //pthread_create(&(this->thread), 0, &FPGAControl::threadRoutine, NULL);
     live = TRUE;
     hIOMutex = CreateMutex(NULL, FALSE, NULL);
@@ -52,6 +53,9 @@ void FPGAControl::FPGAControlLoop(void* a)
 	((FPGAControl*)a)->controlLoop();
 }
 void FPGAControl::controlLoop(void){
+    //gammaDynamic = 200;
+    //gammaStatic = 200;
+    //updateGamma();
     while (live)
     {
         update();
@@ -66,25 +70,32 @@ FPGAControl::~FPGAControl() {
 }
 
 int FPGAControl::update() { //This is the function called in the thread
-
-
     muscleLength = (float)pMotorControl->muscleLength[muscleIndex];
     muscleVel = (float)pMotorControl->muscleVel[muscleIndex];
     writeSpindleLengthVel();
     writeMuscleFPGALengthVel();
-    writeMuscleFPGALengthVel();
-    //readSpindleIaFPGA();
-    //readSpindleIIFPGA();
-    readMuscleFPGAForce();
-    readEMG();
-    pMotorControl->muscleEMG[muscleIndex] = muscleEMG;
-    pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
+    if (dataAcquisitionFlag[0]){
+        readMuscleFPGAForce();
+        pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
+    }
+    if (dataAcquisitionFlag[1]){
+        readEMG();
+        pMotorControl->muscleEMG[muscleIndex] = muscleEMG;
+    }
+    if (dataAcquisitionFlag[2]){
+        readSpindleIaFPGA();
+        pMotorControl->spindleIa[muscleIndex] = spindleIa;
+    }
+    if (dataAcquisitionFlag[3]){
+        readSpindleIIFPGA();
+        pMotorControl->spindleII[muscleIndex] = spindleII;
+    }
     switch (this->muscleIndex) {
     case 0:
-        printf(" Bicep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
+        //printf(" Bicep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
         break;
     case 1:
-        printf("Tricep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
+        //printf("Tricep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
         break;
     }
     return 0;
@@ -123,6 +134,8 @@ int FPGAControl::updateGamma() {
     ReInterpret((float32)(gammaStatic), &bitValGammaSta);
     spindleFPGA->SendPara(bitValGammaDyn, DATA_EVT_GAMMA_DYN);
     spindleFPGA->SendPara(bitValGammaSta, DATA_EVT_GAMMA_STA);
+    pMotorControl->gammaStatic = (int)(gammaStatic);
+    pMotorControl->gammaDynamic = (int)(gammaDynamic);
     return 0;
 }
 
@@ -143,6 +156,7 @@ int FPGAControl::writeMuscleFPGALengthVel()
 int FPGAControl::readMuscleFPGAForce()
 {
     muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
+    //muscleForceFPGA = 0;
     float tCtrl = ((muscleForceFPGA) * GGAIN) +  TBIAS;
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
     return 0;
@@ -151,5 +165,18 @@ int FPGAControl::readMuscleFPGAForce()
 int FPGAControl::readEMG()
 {
     muscleFPGA->ReadFpga(0x20, "float32", &muscleEMG);
+    return 0;
+}
+
+
+int FPGAControl::initializeParameters()
+{
+    //int32 bitValSpindleGain;
+    //int32 value = 60;
+    //ReInterpret(value, &bitValSpindleGain);
+    //this->muscleFPGA->SendPara(bitValSpindleGain, DATA_EVT_SYN_IA_GAIN);
+    //value = 60;
+    //ReInterpret(value, &bitValSpindleGain);
+    //this->muscleFPGA->SendPara(bitValSpindleGain, DATA_EVT_SYN_II_GAIN);
     return 0;
 }

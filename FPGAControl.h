@@ -26,6 +26,7 @@ class FPGAControl {
     int writeMuscleFPGALengthVel(void);
     int readMuscleFPGAForce(void);
     int readEMG(void);
+    int initializeParameters();
 
 public:
     SomeFpga *muscleFPGA, *spindleFPGA;

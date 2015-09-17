@@ -1,12 +1,17 @@
 #include "motorControl.h"
 #include <utilities.h>
-
+#include <stdio.h>
 motorControl::motorControl(double offset1, double offset2)
 {
     I = 4;
     char        errBuff[2048]={'\0'};
     int32       error=0;
-
+    gammaStatic = 0;
+    gammaDynamic = 0;
+    spindleIa[0] = 0;
+    spindleII[0] = 0;
+    spindleIa[1] = 0;
+    spindleII[1] = 0;
     isEnable = FALSE;
     isWindUp = FALSE;
     isControlling = FALSE;
@@ -15,8 +20,8 @@ motorControl::motorControl(double offset1, double offset2)
     loadCellOffset2 = offset2;
     loadCellData[0] = 0;
     loadCellData[1] = 0;
-    motorRef[0] = 0;
-    motorRef[1] = 0;
+    motorRef[0] = 4;
+    motorRef[1] = 4;
     encoderData1[0] = 0;
     encoderData2[0] = 0;
     resetMuscleLength = TRUE;
@@ -24,6 +29,21 @@ motorControl::motorControl(double offset1, double offset2)
     muscleLengthPreviousTick[1] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
+    strcpy(header,"Time, Muscle Length1, Muscle Length2, Load Cell1, Load Cell2");
+    if (dataAcquisitionFlag[0]){
+        strcat (header, ", FPGA Force1, FPGA Force2");
+    }
+    if (dataAcquisitionFlag[1]){
+        strcat (header, ", EMG1, EMG2");
+    }
+    if (dataAcquisitionFlag[2]){
+        strcat (header, ", spindleIa1, spindleIa2");
+    }
+    if (dataAcquisitionFlag[3]){
+        strcat (header, ", spindleII1, spindleII2");
+    }
+    strcat(header,", Gamma Static, Gamma Dynamic, is Sample Missed\n");
+
     DAQmxErrChk (DAQmxCreateTask("",&loadCelltaskHandle));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai0","loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai1","loadCell2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
@@ -171,7 +191,8 @@ void motorControl::controlLoop(void)
     time_t t = time(NULL);
     tm* timePtr = localtime(&t);
     char fileName[200];
-    
+    char dataSample[500]="";
+    char dataTemp[20]="";
     sprintf_s(
             fileName,
             "C:\\data\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",
@@ -183,7 +204,11 @@ void motorControl::controlLoop(void)
             timePtr->tm_sec
             );
     dataFile = fopen(fileName,"w");
-    fprintf(dataFile,"Time, Load Cell1, Load Cell2, Motor Command1, Motor Command2, Length 1, Length2, Velocity1, Velocity2, EMG1, EMG2, is sample missed\n");
+    //fprintf(dataFile,"Time, Load Cell1, Load Cell2, Motor Command1, Motor Command2, Length 1, Length2, Velocity1, Velocity2, EMG1, EMG2, is sample missed\n");
+    //fprintf(dataFile,"Time, Load Cell1, Load Cell2, Length 1, Length2, Velocity1, Velocity2, EMG1, EMG2, GammaStat, GammaDyn, is sample missed\n");
+    //fprintf(dataFile,"Time, Load Cell1, Load Cell2, Length 1, Length2, motorRef1, motorRef2, spindleIa1, spindleIa2, spindleII1, spindleII2, EMG1, EMG2, GammaStat, GammaDyn, is sample missed\n");
+    //fprintf(dataFile,"Time, Length 1, Length2, EMG1, EMG2, GammaStat, GammaDyn, is sample missed\n");
+    fprintf(dataFile,header);
     DAQmxErrChk (DAQmxStartTask(loadCelltaskHandle));
     DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
     DAQmxErrChk (DAQmxStartTask(encodertaskHandle[0]));
@@ -208,9 +233,10 @@ void motorControl::controlLoop(void)
             muscleLengthOffset[1] = 2 * PI * shaftRadius * encoderData1[0] / 365;
             resetMuscleLength = FALSE;
         }
-        muscleLength[0] = (2 * PI * shaftRadius * encoderData1[0] / 365 + 1) - muscleLengthOffset[0];
-        muscleLength[1] = (2 * PI * shaftRadius * encoderData2[0] / 365 + 1) - muscleLengthOffset[1];
-        
+        //muscleLength[0] = (2 * PI * shaftRadius * encoderData1[0] / 365 + 1) - muscleLengthOffset[0];
+        //muscleLength[1] = (2 * PI * shaftRadius * encoderData2[0] / 365 + 1) - muscleLengthOffset[1];
+        muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]) * 20 + 1;
+        muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]) * 20 + 1;
         muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
         muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
 
@@ -233,9 +259,31 @@ void motorControl::controlLoop(void)
             motorCommand[1] = motorMaxVoltage;
         if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
-        //printf("Ld Cell1: %+6.2f; Ld Cell2: %+6.2fp; Enc 1: %+6.5f; Enc: %+6.5f\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1]);
+        printf("Ld Cell1: %+6.2f; Enc 1: %+6.5f; Enc: %+6.5f, Dyn: %d, Sta: %d, \r",loadCellData[1],muscleLength[0],muscleLength[1],gammaDynamic, gammaStatic);
         ReleaseMutex( hIOMutex);
-        fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
+        //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
+        //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
+        //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock, muscleLength[0], muscleLength[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
+        sprintf(dataSample,"%.3f,%.6f,%.6f,%.6f,%.6f",tock,muscleLength[0], muscleLength[1], loadCellData[0],loadCellData[1]);
+        if (dataAcquisitionFlag[0]){
+            sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorRef[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[1]){
+            sprintf(dataTemp,",%.6f,%.6f",muscleEMG[0], muscleEMG[1]);
+            strcat (dataSample, dataTemp);
+        }
+         if (dataAcquisitionFlag[2]){
+            sprintf(dataTemp,",%.6f,%.6f",spindleIa[0], spindleIa[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[3]){
+            sprintf(dataTemp,",%.6f,%.6f",spindleII[0], spindleII[1]);
+            strcat (dataSample, dataTemp);
+        }
+        sprintf(dataTemp,",%d,%d,%d\n",gammaStatic, gammaDynamic, isLate);
+        strcat (dataSample, dataTemp);
+        fprintf(dataFile,dataSample);
         tick = timeData.getCurrentTime();
     }
     isControlling = FALSE;
