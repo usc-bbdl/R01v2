@@ -1,7 +1,9 @@
+#pragma once
 #ifndef UTILITIES_H
 #define UTILITIES_H
 #include <math.h>
 #include <NIDAQmx.h>
+#include <kinematic\KinematicPerturbation.h>
 
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
@@ -31,10 +33,11 @@ const uInt32     MESSAGE_TERMINATE = 0x00000007;
 #define     MOTOR_STATE_WINDING_UP 1
 #define     MOTOR_STATE_OPEN_LOOP 2
 #define     MOTOR_STATE_CLOSED_LOOP 3
-#define     MOTOR_STATE_RUN_PARADIGM 4
-#define     MOTOR_STATE_SHUTTING_DOWN 5
+#define     MOTOR_STATE_GAMMA_UPDATED 4
+#define     MOTOR_STATE_RUN_PARADIGM 5
+#define     MOTOR_STATE_SHUTTING_DOWN 6
 
-const bool dataAcquisitionFlag[4] = {false,true,true,true}; //force, EMG, spindleIa, spindleII
+const bool dataAcquisitionFlag[4] = {true,true,true,true}; //force, EMG, spindleIa, spindleII
 const int   NUM_NEURON = 128;
 const int   SAMPLING_RATE = 1024;
 const int    DATA_EVT_LCEVEL = 9;
@@ -56,8 +59,8 @@ int ReInterpret(int, float *);
 typedef unsigned char       BYTE;
 #define  BICEP 0
 #define TRICEP 1
-#define GGAIN 0.001 //default is (0.9/1000) //0.4/2000 is safe
-#define TBIAS 6
+extern float GGAIN; //default is (0.9/1000) //0.4/2000 is safe
+extern float TBIAS;
 
 #endif
 

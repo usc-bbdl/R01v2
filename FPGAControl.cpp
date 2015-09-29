@@ -53,9 +53,9 @@ void FPGAControl::FPGAControlLoop(void* a)
 	((FPGAControl*)a)->controlLoop();
 }
 void FPGAControl::controlLoop(void){
-    //gammaDynamic = 200;
-    //gammaStatic = 200;
-    //updateGamma();
+    gammaDynamic = 5;
+    gammaStatic = 5;
+    updateGamma();
     while (live)
     {
         update();

@@ -5,6 +5,10 @@
 #include <expParadigm.h>
 #include <analogClient.h>
 #include <FPGAControl.h>
+#include <kinematic\KinematicPerturbation.h>
+
+float GGAIN = 0.001; //default is (0.9/1000) //0.4/2000 is safe
+float TBIAS = 6;
 
 int proceedState(int *state)
 {
@@ -37,6 +41,18 @@ int proceedState(int *state)
         *state = MOTOR_STATE_CLOSED_LOOP;
         break;
     case MOTOR_STATE_CLOSED_LOOP:
+        //Start NI FPGA, Connect the Neural FPGA force command to the NI FPGA, Start controlling muscle force
+        bicepFPGA.gammaDynamic = 400;
+        bicepFPGA.gammaStatic = 400;
+        bicepFPGA.updateGamma();
+        tricepFPGA.gammaDynamic = 400;
+        tricepFPGA.gammaStatic = 400;
+        tricepFPGA.updateGamma();
+        GGAIN = 0.003;
+        printf("Gamma updated. Running feeling experiment.\n");
+        *state = MOTOR_STATE_GAMMA_UPDATED;
+        break;
+    case MOTOR_STATE_GAMMA_UPDATED:
         printf("Running Paradigm; Next stage is Shutting Down\n");
         //ANALOG_Client.sendMessageToServer(MESSAGE_PERTURB);
         Sleep(500);

@@ -35,7 +35,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
         //UPDATE NI INFORMATION WITH NEW GAMMA DYNAMIC AND STATIC
         bicepFPGA->gammaDynamic = gammaDyn[i];
         bicepFPGA->gammaStatic = gammaSta[i];
-        bicepFPGA ->updateGamma();
+        bicepFPGA->updateGamma();
 
         tricepFPGA->gammaDynamic = gammaDyn[i];
         tricepFPGA->gammaStatic = gammaSta[i];

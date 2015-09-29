@@ -6,9 +6,13 @@
 #include <conio.h>
 #include <utilities.h>
 #include <okFrontPanelDLL.h>
+#include <servoControl.h>
 
 int main()
 {
+    servoControl a;
+    a.goDefault();
+    return 0;
     printf("Press Spc to move forward\n\n");
     printf("Press Esc to terminate\n");
     printf("Initialization; Next stage is Motors Winding up\n");

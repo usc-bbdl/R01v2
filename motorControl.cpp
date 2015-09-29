@@ -3,7 +3,7 @@
 #include <stdio.h>
 motorControl::motorControl(double offset1, double offset2)
 {
-    I = 4;
+    I = 3;
     char        errBuff[2048]={'\0'};
     int32       error=0;
     gammaStatic = 0;
