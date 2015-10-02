@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "servoControl.h"
 #include <windows.h>
 #include <math.h>

@@ -5,7 +5,6 @@
 #include <expParadigm.h>
 #include <analogClient.h>
 #include <FPGAControl.h>
-#include <kinematic\KinematicPerturbation.h>
 
 float GGAIN = 0.001; //default is (0.9/1000) //0.4/2000 is safe
 float TBIAS = 6;

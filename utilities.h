@@ -3,7 +3,7 @@
 #define UTILITIES_H
 #include <math.h>
 #include <NIDAQmx.h>
-#include <kinematic\KinematicPerturbation.h>
+//#include <kinematic\KinematicPerturbation.h>
 
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 

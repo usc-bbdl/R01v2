@@ -10,9 +10,6 @@
 
 int main()
 {
-    servoControl a;
-    a.goDefault();
-    return 0;
     printf("Press Spc to move forward\n\n");
     printf("Press Esc to terminate\n");
     printf("Initialization; Next stage is Motors Winding up\n");
