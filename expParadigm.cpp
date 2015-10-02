@@ -42,6 +42,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
         tricepFPGA->gammaStatic = gammaSta[i];
 
         tricepFPGA->updateGamma();
+        Sleep(3000);
         currentTrialNum = i;
         for (int j = 0; j<rep[i]; j++){
             currentRepNum = j;
@@ -70,7 +71,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
             servo.rampHold();
             //log.reset();
             //log.startRecording();
-            Sleep((trialLength[i]-2.5)*1000);
+            Sleep(3000);
         }
     }
     printf("\n Experiment finished...\n");

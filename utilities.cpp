@@ -6,8 +6,8 @@
 #include <analogClient.h>
 #include <FPGAControl.h>
 
-float GGAIN = 0.001; //default is (0.9/1000) //0.4/2000 is safe
-float TBIAS = 6;
+float GGAIN = 0.003; //default is (0.9/1000) //0.4/2000 is safe
+float TBIAS = 9;
 
 int proceedState(int *state)
 {
@@ -41,13 +41,6 @@ int proceedState(int *state)
         break;
     case MOTOR_STATE_CLOSED_LOOP:
         //Start NI FPGA, Connect the Neural FPGA force command to the NI FPGA, Start controlling muscle force
-        bicepFPGA.gammaDynamic = 400;
-        bicepFPGA.gammaStatic = 400;
-        bicepFPGA.updateGamma();
-        tricepFPGA.gammaDynamic = 400;
-        tricepFPGA.gammaStatic = 400;
-        tricepFPGA.updateGamma();
-        GGAIN = 0.003;
         printf("Gamma updated. Running feeling experiment.\n");
         *state = MOTOR_STATE_GAMMA_UPDATED;
         break;
