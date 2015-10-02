@@ -41,6 +41,7 @@
     #define CONTROL_PERIOD		(10) // msec (Large value is more slow)
     #define DEFAULT_ID			1
     #define DEFAULT_POS			1
+    #define P_MOVING			46
 
 
     class servoControl {
@@ -49,18 +50,18 @@
         void PrintCommStatus(int);
         void PrintErrorCode();
         void formatCMD(int, int); // WARNING: function is a work in progress - do no call.
-        void setPosition(int);
-        void setVelocity(int);
-       
+              
     
-    public: servoControl(int);
-	    servoControl();
+    public: void setPosition(int);
+            void setVelocity(int);
+            ~servoControl();
+            servoControl(int ID = 1);
             int commCheck();
             int servoPing();
             int isMoving();
-            void goDefault();
-            int servoTwitch(int, int);
-	    ~servoControl();
+            void waitMoving(int overRide = 0);
+            void goDefault(int defPos = 512);
+            int servoTwitch(int, int);	        
     };
 
 #endif

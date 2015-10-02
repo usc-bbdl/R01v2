@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "servoControl.h"
 #include <windows.h>
 #include <math.h>
@@ -20,32 +21,13 @@ servoControl::servoControl(int ID) {
 		    printf( "Serial Port %d is open (%d BAUD)...\n", DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
     
     //set servo ID and check if servo is alive
-    dxl_set_txpacket_id(servoID);
+    //dxl_set_txpacket_id(servoID);
     servoPing();
-    commCheck();
-}
-
-servoControl::servoControl() {
-    servoID = 1;
-    //initialize the dynamixel servo SERIAL connection using the FTDI driver
-    if( dxl_initialize(DEFAULT_PORTNUM, DEFAULT_BAUDNUM) == 0 )
-	{
-		printf( "Failed to open USB2Dynamixel!\n" );
-		//printf( "Press any key to terminate...\n" );
-		//getch();
-		//return 0;
-	}
-	    else
-		    printf( "Serial Port %d is open (%d BAUD)...\n", DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
-    
-    //set servo ID and check if servo is alive
-    dxl_set_txpacket_id(servoID);
-    servoPing();
-    commCheck();
+    //commCheck();
+    goDefault();
 }
 
 int servoControl::commCheck() {
-
     CommStatus = dxl_get_result();
 	if( CommStatus == COMM_RXSUCCESS )
 	{
@@ -58,47 +40,6 @@ int servoControl::commCheck() {
     return CommStatus;
 }
 
-int servoControl::servoPing() {
-    dxl_ping(servoID);
-    int status = commCheck();
-    if (servoID == BROADCAST_ID)
-        printf("Testing Broadcast connection to Servos: ");
-        else
-            printf("Testing connection to Servo %d: ",servoID);
-    if (status == COMM_RXSUCCESS) {
-        printf("Ping success!\n");
-        return 1;
-    }
-    return 0;
-}
-
-void servoControl::formatCMD(int position, int velocity) {  //function is a work in progress - do no call.
-    dxl_set_txpacket_id(servoID);
-    dxl_set_txpacket_instruction(INST_REG_WRITE);
-    dxl_set_txpacket_parameter(0, P_GOAL_POSITION_L);
-    dxl_set_txpacket_parameter(1, 2);
-
-    //execute formatted command on Motor
-    dxl_set_txpacket_instruction(INST_ACTION);
-    dxl_tx_packet( );
-}
-
-void servoControl::setPosition(int position) {
-    while(!isMoving());
-    dxl_write_word(servoID, P_GOAL_POSITION_L, position);
-}
-
-void servoControl::setVelocity(int velocity) {
-    while(!isMoving());
-    dxl_write_word(servoID, P_GOAL_SPEED_L, velocity);
-}
-
-servoControl::~servoControl() {
-    while(isMoving());
-    dxl_terminate();
-}
-
-//public declarations
 void servoControl::PrintCommStatus(int CommStatus)
 {
 	switch(CommStatus)
@@ -158,20 +99,97 @@ void servoControl::PrintErrorCode()
 		printf("Instruction code error!\n");	
 }
 
-int servoControl::isMoving() {
-    return dxl_read_byte( servoID, P_MOVING );
+int servoControl::servoPing() {
+    dxl_ping(servoID);
+    int status = commCheck();
+    if (servoID == BROADCAST_ID)
+        printf("Testing Broadcast connection to Servos: ");
+        else
+            printf("Testing connection to Servo %d: ",servoID);
+    if (status == COMM_RXSUCCESS) {
+        printf("Ping success!\n");
+        return 1;
+    }
+    return 0;
 }
 
-void servoControl::goDefault() {
-    while(isMoving());
-    setVelocity(0);
-    setPosition(512);
+void servoControl::formatCMD(int position, int velocity) {  //function is a work in progress - do no call.
+    dxl_set_txpacket_id(servoID);
+    dxl_set_txpacket_instruction(INST_REG_WRITE);
+    dxl_set_txpacket_parameter(0, P_GOAL_POSITION_L);
+    dxl_set_txpacket_parameter(1, 2);
+
+    //execute formatted command on Motor
+    dxl_set_txpacket_instruction(INST_ACTION);
+    dxl_tx_packet( );
+}
+
+//public declarations
+
+void servoControl::setPosition(int position) {
+    int checkVal = 3443;
+    waitMoving();
+    dxl_write_word(servoID, P_GOAL_POSITION_L, position);
+    //Sleep(CONTROL_PERIOD);
+    checkVal = dxl_read_word(servoID, P_GOAL_POSITION_L);
+    if( COMM_RXSUCCESS == commCheck() ) {
+        if(checkVal != position) {
+            printf("servoControl ERROR: device position register corrupt!\n");
+        }
+    }
+}
+
+void servoControl::setVelocity(int velocity) {
+    int checkVal = 3443;
+    waitMoving();
+    dxl_write_word(servoID, P_GOAL_SPEED_L, velocity);
+    //Sleep(CONTROL_PERIOD);
+    checkVal = dxl_read_word(servoID, P_GOAL_SPEED_L);
+    if( COMM_RXSUCCESS == commCheck() ) {
+        if(checkVal != velocity) {
+            printf("servoControl ERROR: device velocity register corrupt!\n");
+        }
+    }
+}
+
+
+servoControl::~servoControl() {
+    waitMoving();
+    goDefault();
+    dxl_terminate();
+}
+
+int servoControl::isMoving() {
+    int Moving =  (dxl_read_byte( servoID, P_MOVING ));
+    return Moving;
+}
+
+void servoControl::waitMoving(int overRide) { //change overRide value in the header file to stop waiting
+    int Moving = 1;
+    if(overRide == 0) {
+        do {
+            if (0 == isMoving()) Moving = 0;
+                else Sleep(CONTROL_PERIOD);
+        }while (Moving == 1);
+    }
+}
+
+
+//suraj - revisit
+void servoControl::goDefault(int defPos) {  
+    waitMoving();
+    //printf("goDefault: setting velocity\n");
+    setVelocity(1023);
+    Sleep(CONTROL_PERIOD);
+    //printf("goDefault: setting position\n");
+    setPosition(defPos);
+    //printf("goDefault: Motor in Default position\n");
 }
 
 int servoControl::servoTwitch(int pos, int vel) {
     setVelocity(vel);
     setPosition(pos);
-    sleep(CONTROL_PERIOD);
+    Sleep(CONTROL_PERIOD);
     goDefault();
     return 1;
 }
