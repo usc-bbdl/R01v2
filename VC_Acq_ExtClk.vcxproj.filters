@@ -31,6 +31,9 @@
     <ClCompile Include="FPGATest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="servoControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataLogger.h">
@@ -61,6 +64,9 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="SomeFpga.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="servoControl.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>
