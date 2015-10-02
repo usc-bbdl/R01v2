@@ -8,9 +8,11 @@
 #include <ctime>
 #include <dataLogger.h>
 #include "FPGAControl.h"
+#include <servoControl.h>
 class expParadigm
 {
     analogClient *pClient;
+    servoControl servo;
     float32 gammaDyn[100];
     float32 gammaSta[100];
     int rep[100];

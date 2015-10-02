@@ -11,13 +11,13 @@ servoControl::servoControl(int ID) {
     //initialize the dynamixel servo SERIAL connection using the FTDI driver
     if( dxl_initialize(DEFAULT_PORTNUM, DEFAULT_BAUDNUM) == 0 )
 	{
-		printf( "Failed to open USB2Dynamixel!\n" );
+		printf( "servoControl: Failed to open USB2Dynamixel!\n" );
 		//printf( "Press any key to terminate...\n" );
 		//getch();
 		//return 0;
 	}
 	    else
-		    printf( "Serial Port %d is open (%d BAUD)...\n", DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
+		    printf( "servoControl: Serial Port %d is open (%d BAUD)...\n", DEFAULT_PORTNUM, DEFAULT_BAUDNUM);
     
     //set servo ID and check if servo is alive
     //dxl_set_txpacket_id(servoID);
@@ -44,31 +44,31 @@ void servoControl::PrintCommStatus(int CommStatus)
 	switch(CommStatus)
 	{
 	case COMM_TXFAIL:
-		printf("COMM_TXFAIL: Failed transmit instruction packet!\n");
+		printf("servoControl: COMM_TXFAIL: Failed transmit instruction packet!\n");
 		break;
 
 	case COMM_TXERROR:
-		printf("COMM_TXERROR: Incorrect instruction packet!\n");
+		printf("servoControl: COMM_TXERROR: Incorrect instruction packet!\n");
 		break;
 
 	case COMM_RXFAIL:
-		printf("COMM_RXFAIL: Failed get status packet from device!\n");
+		printf("servoControl: COMM_RXFAIL: Failed get status packet from device!\n");
 		break;
 
 	case COMM_RXWAITING:
-		printf("COMM_RXWAITING: Now recieving status packet!\n");
+		printf("servoControl: COMM_RXWAITING: Now recieving status packet!\n");
 		break;
 
 	case COMM_RXTIMEOUT:
-		printf("COMM_RXTIMEOUT: There is no status packet!\n");
+		printf("servoControl: COMM_RXTIMEOUT: There is no status packet!\n");
 		break;
 
 	case COMM_RXCORRUPT:
-		printf("COMM_RXCORRUPT: Incorrect status packet!\n");
+		printf("servoControl: COMM_RXCORRUPT: Incorrect status packet!\n");
 		break;
 
 	default:
-		printf("This is unknown error code!\n");
+		printf("servoControl: This is unknown error code!\n");
 		break;
 	}
 }
@@ -77,34 +77,34 @@ void servoControl::PrintCommStatus(int CommStatus)
 void servoControl::PrintErrorCode()
 {
 	if(dxl_get_rxpacket_error(ERRBIT_VOLTAGE) == 1)
-		printf("Input voltage error!\n");
+		printf("servoControl: Input voltage error!\n");
 
 	if(dxl_get_rxpacket_error(ERRBIT_ANGLE) == 1)
-		printf("Angle limit error!\n");
+		printf("servoControl: Angle limit error!\n");
 
 	if(dxl_get_rxpacket_error(ERRBIT_OVERHEAT) == 1)
-		printf("Overheat error!\n");
+		printf("servoControl: Overheat error!\n");
 
 	if(dxl_get_rxpacket_error(ERRBIT_RANGE) == 1)
-		printf("Out of range error!\n");
+		printf("servoControl: Out of range error!\n");
 
 	if(dxl_get_rxpacket_error(ERRBIT_CHECKSUM) == 1)
-		printf("Checksum error!\n");
+		printf("servoControl: Checksum error!\n");
 
 	if(dxl_get_rxpacket_error(ERRBIT_OVERLOAD) == 1)
-		printf("Overload error!\n");
+		printf("servoControl: Overload error!\n");
 
 	if(dxl_get_rxpacket_error(ERRBIT_INSTRUCTION) == 1)
-		printf("Instruction code error!\n");	
+		printf("servoControl: Instruction code error!\n");	
 }
 
 int servoControl::servoPing() {
     dxl_ping(servoID);
     int status = commCheck();
     if (servoID == BROADCAST_ID)
-        printf("Testing Broadcast connection to Servos: ");
+        printf("servoControl: Testing Broadcast connection to Servos: ");
         else
-            printf("Testing connection to Servo %d: ",servoID);
+            printf("servoControl: Testing connection to Servo %d: ",servoID);
     if (status == COMM_RXSUCCESS) {
         printf("Ping success!\n");
         return 1;
@@ -133,7 +133,7 @@ void servoControl::setPosition(int position) {
     checkVal = dxl_read_word(servoID, P_GOAL_POSITION_L);
     if( COMM_RXSUCCESS == commCheck() ) {
         if(checkVal != position) {
-            printf("servoControl ERROR: device position register corrupt!\n");
+            printf("servoControl: ERROR: device position register corrupt!\n");
         }
     }
 }
@@ -146,7 +146,7 @@ void servoControl::setVelocity(int velocity) {
     checkVal = dxl_read_word(servoID, P_GOAL_SPEED_L);
     if( COMM_RXSUCCESS == commCheck() ) {
         if(checkVal != velocity) {
-            printf("servoControl ERROR: device velocity register corrupt!\n");
+            printf("servoControl: ERROR: device velocity register corrupt!\n");
         }
     }
 }
@@ -183,6 +183,13 @@ void servoControl::goDefault(int defPos) {
     //printf("goDefault: setting position\n");
     setPosition(defPos);
     //printf("goDefault: Motor in Default position\n");
+}
+
+void servoControl::rampHold(int initPos, int finalPos, int rampVelocity, int holdPeriod) {
+    setPosition(initPos);
+    setPosition(finalPos);
+    Sleep(holdPeriod);
+    setPosition(initPos);
 }
 
 int servoControl::servoTwitch(int pos, int vel) {

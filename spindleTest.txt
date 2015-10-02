@@ -1,5 +1,5 @@
 GammDynamic,GammaStatic,trialLength,reps
-49
+8
 0,0,5,2
 0,50,5,2
 0,0,5,2

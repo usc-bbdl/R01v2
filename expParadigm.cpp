@@ -1,6 +1,7 @@
 #include "expParadigm.h"
 #include "FPGAControl.h"
 #include <analogClient.h>
+#include <servoControl.h>
 expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
 {
     int gD = 0, gS = 0;
@@ -65,7 +66,8 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
             log.trialLength = trialLength[i];
             //client.sendMessageToServer("RRR");
             Sleep(1000);
-            pClient->sendMessageToServer(MESSAGE_PERTURB);
+            //pClient->sendMessageToServer(MESSAGE_PERTURB);
+            servo.rampHold();
             //log.reset();
             //log.startRecording();
             Sleep((trialLength[i]-2.5)*1000);
