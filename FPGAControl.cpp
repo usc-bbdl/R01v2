@@ -16,6 +16,7 @@ int muscleIndex = 0;
 
 FPGAControl::FPGAControl(int param, motorControl *param2)
 {
+    updateGammaFlag = '0';
     //SomeFpga    *spindleFPGA;
     //SomeFpga    *muscleFPGA;
     muscleForceFPGA = 0;
@@ -72,8 +73,12 @@ FPGAControl::~FPGAControl() {
 int FPGAControl::update() { //This is the function called in the thread
     muscleLength = (float)pMotorControl->muscleLength[muscleIndex];
     muscleVel = (float)pMotorControl->muscleVel[muscleIndex];
-    writeSpindleLengthVel();
-    writeMuscleFPGALengthVel();
+    if (updateGammaFlag == '1') {
+        updateGamma();
+        updateGammaFlag = '0';
+    }
+    writeSpindleLengthVel(); //neck
+    //writeMuscleFPGALengthVel(); //neck
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
         pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
@@ -98,6 +103,7 @@ int FPGAControl::update() { //This is the function called in the thread
         //printf("Tricep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
         break;
     }
+    Sleep(5);
     return 0;
 }
 
@@ -133,7 +139,9 @@ int FPGAControl::updateGamma() {
     ReInterpret((float32)(gammaDynamic), &bitValGammaDyn);
     ReInterpret((float32)(gammaStatic), &bitValGammaSta);
     spindleFPGA->SendPara(bitValGammaDyn, DATA_EVT_GAMMA_DYN);
+    Sleep(50);
     spindleFPGA->SendPara(bitValGammaSta, DATA_EVT_GAMMA_STA);
+    Sleep(50);
     pMotorControl->gammaStatic = (int)(gammaStatic);
     pMotorControl->gammaDynamic = (int)(gammaDynamic);
     return 0;

@@ -191,8 +191,8 @@ void motorControl::controlLoop(void)
     time_t t = time(NULL);
     tm* timePtr = localtime(&t);
     char fileName[200];
-    char dataSample[500]="";
-    char dataTemp[20]="";
+    char dataSample[600]="";
+    char dataTemp[100]="";
     sprintf_s(
             fileName,
             "C:\\data\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",

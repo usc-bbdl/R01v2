@@ -30,6 +30,7 @@ class FPGAControl {
 
 public:
     SomeFpga *muscleFPGA, *spindleFPGA;
+    char updateGammaFlag;
     FPGAControl(int, motorControl *);
     ~FPGAControl();
     int updateGamma(void);
