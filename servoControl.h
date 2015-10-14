@@ -61,7 +61,7 @@
             int isMoving();
             void waitMoving(int overRide = 0);
             void goDefault(int defPos = 512);
-            void rampHold(int initPos = 368, int finalPos = 614, int rampVelocity = 1023, int holdPeriod = 2000); //368, 614
+            void rampHold(int initPos = 368, int finalPos = 614, int rampVelocity = 1023, int holdPeriod = 1500); //368, 614, 1023, 2000
             int servoTwitch(int, int);	        
     };
 

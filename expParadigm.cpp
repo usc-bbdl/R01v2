@@ -41,7 +41,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
         tricepFPGA->gammaDynamic = gammaDyn[i];
         tricepFPGA->gammaStatic = gammaSta[i];
         tricepFPGA->updateGammaFlag = '1';
-        Sleep(3000);
+        //Sleep(500);
 
         currentTrialNum = i;
         for (int j = 0; j<rep[i]; j++){
@@ -66,12 +66,12 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
             log.fileName = fileName;
             log.trialLength = trialLength[i];
             //client.sendMessageToServer("RRR");
-            Sleep(1000);
+            Sleep(1500);
             //pClient->sendMessageToServer(MESSAGE_PERTURB);
             servo.rampHold();
             //log.reset();
             //log.startRecording();
-            Sleep(3000);
+            //Sleep(100);
         }
     }
     printf("\n Experiment finished...\n");
