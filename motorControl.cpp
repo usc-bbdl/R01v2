@@ -236,9 +236,9 @@ void motorControl::controlLoop(void)
         //muscleLength[0] = (2 * PI * shaftRadius * encoderData1[0] / 365 + 1) - muscleLengthOffset[0];
         //muscleLength[1] = (2 * PI * shaftRadius * encoderData2[0] / 365 + 1) - muscleLengthOffset[1];
         muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]) * 20 + 1;
-        muscleLength[0] = muscleLength[0] - 0.0017;
+        muscleLength[0] = muscleLength[0] + 0.0002;
         muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]) * 20 + 1;
-        muscleLength[1] = muscleLength[1]  + 0.016;
+        muscleLength[1] = muscleLength[1]  + 0.0121;
         muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
         muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
 
