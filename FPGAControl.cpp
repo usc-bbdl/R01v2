@@ -142,8 +142,14 @@ int FPGAControl::updateGamma() {
     Sleep(50);
     spindleFPGA->SendPara(bitValGammaSta, DATA_EVT_GAMMA_STA);
     Sleep(50);
-    pMotorControl->gammaStatic = (int)(gammaStatic);
-    pMotorControl->gammaDynamic = (int)(gammaDynamic);
+    if(this->muscleIndex == 0) {
+        pMotorControl->gammaStatic = (int)(gammaStatic);
+        pMotorControl->gammaDynamic = (int)(gammaDynamic);
+    }
+        else {
+            pMotorControl->tgammaStatic = (int)(gammaStatic);
+            pMotorControl->tgammaDynamic = (int)(gammaDynamic);
+        }
     return 0;
 }
 
