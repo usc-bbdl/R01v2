@@ -40,11 +40,11 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
         bicepFPGA->gammaDynamic = gammaDyn[i];
         bicepFPGA->gammaStatic = gammaSta[i];
         bicepFPGA->updateGammaFlag = '1';
-
+        Sleep(500);
         tricepFPGA->gammaDynamic = tgammaDyn[i];
         tricepFPGA->gammaStatic = tgammaSta[i];
         tricepFPGA->updateGammaFlag = '1';
-        Sleep(1000);
+        Sleep(500);
 
         currentTrialNum = i;
         for (int j = 0; j<rep[i]; j++){
