@@ -8,6 +8,8 @@ motorControl::motorControl(double offset1, double offset2)
     int32       error=0;
     gammaStatic = 0;
     gammaDynamic = 0;
+    tgammaStatic = 0;
+    tgammaDynamic = 0;
     spindleIa[0] = 0;
     spindleII[0] = 0;
     spindleIa[1] = 0;
@@ -42,7 +44,7 @@ motorControl::motorControl(double offset1, double offset2)
     if (dataAcquisitionFlag[3]){
         strcat (header, ", spindleII1, spindleII2");
     }
-    strcat(header,", Gamma Static, Gamma Dynamic, is Sample Missed\n");
+    strcat(header,", Gamma Static, Gamma Dynamic, tGamma Static, tGamma Dynamic, is Sample Missed\n");
 
     DAQmxErrChk (DAQmxCreateTask("",&loadCelltaskHandle));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai0","loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
@@ -236,9 +238,9 @@ void motorControl::controlLoop(void)
         //muscleLength[0] = (2 * PI * shaftRadius * encoderData1[0] / 365 + 1) - muscleLengthOffset[0];
         //muscleLength[1] = (2 * PI * shaftRadius * encoderData2[0] / 365 + 1) - muscleLengthOffset[1];
         muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]) * 20 + 1;
-        muscleLength[0] = muscleLength[0] - 0.0017;
+        muscleLength[0] = muscleLength[0] + 0.0002;
         muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]) * 20 + 1;
-        muscleLength[1] = muscleLength[1]  + 0.016;
+        muscleLength[1] = muscleLength[1]  + 0.0121;
         muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
         muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
 
@@ -283,7 +285,7 @@ void motorControl::controlLoop(void)
             sprintf(dataTemp,",%.6f,%.6f",spindleII[0], spindleII[1]);
             strcat (dataSample, dataTemp);
         }
-        sprintf(dataTemp,",%d,%d,%d\n",gammaStatic, gammaDynamic, isLate);
+        sprintf(dataTemp,",%d,%d,%d,%d,%d\n",gammaStatic, gammaDynamic, tgammaStatic, tgammaDynamic, isLate);
         strcat (dataSample, dataTemp);
         fprintf(dataFile,dataSample);
         tick = timeData.getCurrentTime();
