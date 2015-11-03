@@ -15,8 +15,6 @@ class expParadigm
     servoControl servo;
     float32 gammaDyn[100];
     float32 gammaSta[100];
-    float32 tgammaDyn[100];
-    float32 tgammaSta[100];
     int rep[100];
     int numTrials;
     int trialLength[100];

@@ -45,7 +45,7 @@ public:
     int motorDisable();
     int motorControllerStart();
     int motorControllerEnd();
-    int gammaDynamic, gammaStatic, tgammaDynamic, tgammaStatic;
+    int gammaDynamic, gammaStatic;
 };
 
 #endif
