@@ -139,9 +139,9 @@ int FPGAControl::updateGamma() {
     ReInterpret((float32)(gammaDynamic), &bitValGammaDyn);
     ReInterpret((float32)(gammaStatic), &bitValGammaSta);
     spindleFPGA->SendPara(bitValGammaDyn, DATA_EVT_GAMMA_DYN);
-    Sleep(50);
+    Sleep(100);
     spindleFPGA->SendPara(bitValGammaSta, DATA_EVT_GAMMA_STA);
-    Sleep(50);
+    Sleep(100);
     pMotorControl->gammaStatic = (int)(gammaStatic);
     pMotorControl->gammaDynamic = (int)(gammaDynamic);
     return 0;

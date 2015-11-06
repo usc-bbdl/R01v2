@@ -31,6 +31,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
 {
     printf("This experiment has %d trials\n",numTrials);
     for(int i = 0; i < numTrials; i++){ 
+        Sleep(3000);
         printf("This trial has %d repetitions\n",rep[i]+1);
         printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
         //UPDATE NI INFORMATION WITH NEW GAMMA DYNAMIC AND STATIC
@@ -38,10 +39,10 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
         bicepFPGA->gammaStatic = gammaSta[i];
         bicepFPGA->updateGammaFlag = '1';
 
-        tricepFPGA->gammaDynamic = gammaDyn[i];
-        tricepFPGA->gammaStatic = gammaSta[i];
-        tricepFPGA->updateGammaFlag = '1';
-        //Sleep(500);
+        //tricepFPGA->gammaDynamic = gammaDyn[i];
+        //tricepFPGA->gammaStatic = gammaSta[i];
+        //tricepFPGA->updateGammaFlag = '1';
+        Sleep(500);
 
         currentTrialNum = i;
         for (int j = 0; j<rep[i]; j++){
