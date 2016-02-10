@@ -6,8 +6,11 @@ motorControl::motorControl(double offset1, double offset2)
     I = 3;
     char        errBuff[2048]={'\0'};
     int32       error=0;
-    gammaStatic = 0;
-    gammaDynamic = 0;
+    newTrial = 0;
+    gammaStatic1 = 0;
+    gammaDynamic1 = 0;
+    gammaStatic2 = 0;
+    gammaDynamic2 = 0;
     spindleIa[0] = 0;
     spindleII[0] = 0;
     spindleIa[1] = 0;
@@ -37,16 +40,37 @@ motorControl::motorControl(double offset1, double offset2)
         strcat (header, ", EMG1, EMG2");
     }
     if (dataAcquisitionFlag[2]){
-        strcat (header, ", spindleIa1, spindleIa2");
+        strcat (header, ", SpindleIa1, SpindleIa2");
     }
     if (dataAcquisitionFlag[3]){
-        strcat (header, ", spindleII1, spindleII2");
+        strcat (header, ", SpindleII1, SpindleII2");
     }
-    strcat(header,", Gamma Static, Gamma Dynamic, is Sample Missed\n");
+    if (dataAcquisitionFlag[4]){
+        strcat (header, ", Spike Count1, Spike Count2");
+    }
+    if (dataAcquisitionFlag[5]){
+        strcat (header, ", Raster 1-1,  Raster 2-1");
+    }
+    if (dataAcquisitionFlag[6]){
+        strcat (header, ", Raster 1-2,  Raster 2-2");
+    }
+    if (dataAcquisitionFlag[7]){
+        strcat (header, ", Raster 1-3,  Raster 2-3");
+    }
+    if (dataAcquisitionFlag[8]){
+        strcat (header, ", Raster 1-4,  Raster 2-4");
+    }
+    if (dataAcquisitionFlag[9]){
+        strcat (header, ", Raster 1-5,  Raster 2-5");
+    }
+    if (dataAcquisitionFlag[10]){
+        strcat (header, ", Raster 1-6,  Raster 2-6");
+    }
+    strcat(header,", Gamma Static, Gamma Dynamic, is Sample Missed, new Trial\n");
 
     DAQmxErrChk (DAQmxCreateTask("",&loadCelltaskHandle));
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai0","loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai1","loadCell2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai1","loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot7/ai0","loadCell2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCfgSampClkTiming(loadCelltaskHandle,"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,NULL));
     DAQmxErrChk (DAQmxSetRealTimeConvLateErrorsToWarnings(loadCelltaskHandle,1));
 
@@ -230,15 +254,14 @@ void motorControl::controlLoop(void)
         if (resetMuscleLength)
         {
             muscleLengthOffset[0] = 2 * PI * shaftRadius * encoderData1[0] / 365;
-            muscleLengthOffset[1] = 2 * PI * shaftRadius * encoderData1[0] / 365;
+            muscleLengthOffset[1] = 2 * PI * shaftRadius * encoderData1[1] / 365;
+
             resetMuscleLength = FALSE;
         }
-        //muscleLength[0] = (2 * PI * shaftRadius * encoderData1[0] / 365 + 1) - muscleLengthOffset[0];
-        //muscleLength[1] = (2 * PI * shaftRadius * encoderData2[0] / 365 + 1) - muscleLengthOffset[1];
-        muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]) * 20 + 1;
-        muscleLength[0] = muscleLength[0] - 0.0017;
-        muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]) * 20 + 1;
-        muscleLength[1] = muscleLength[1]  + 0.016;
+        muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]);
+        muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*24.7178;
+        muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]);
+        muscleLength[1] = 0.95 + (muscleLength[1] - 0.0058)*24.4399;
         muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
         muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
 
@@ -261,7 +284,7 @@ void motorControl::controlLoop(void)
             motorCommand[1] = motorMaxVoltage;
         if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
-        printf("Ld Cell1: %+6.2f; Enc 1: %+6.5f; Enc: %+6.5f, Dyn: %d, Sta: %d, \r",loadCellData[1],muscleLength[0],muscleLength[1],gammaDynamic, gammaStatic);
+        printf("Ld Cell1: %+6.2f; Enc 1: %+6.5f; Enc: %+6.5f, Dyn: %d, Sta: %d, \r",loadCellData[0],muscleLength[0],muscleLength[1],gammaDynamic1, gammaStatic1);
         ReleaseMutex( hIOMutex);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
@@ -283,7 +306,39 @@ void motorControl::controlLoop(void)
             sprintf(dataTemp,",%.6f,%.6f",spindleII[0], spindleII[1]);
             strcat (dataSample, dataTemp);
         }
-        sprintf(dataTemp,",%d,%d,%d\n",gammaStatic, gammaDynamic, isLate);
+        if (dataAcquisitionFlag[4]){
+            sprintf(dataTemp,",%d,%d",muscleSpikeCount[0], muscleSpikeCount[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[5]){
+            sprintf(dataTemp,",%d,%d",raster_MN_1[0], raster_MN_1[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[6]){
+            sprintf(dataTemp,",%d,%d",raster_MN_2[0], raster_MN_2[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[7]){
+            sprintf(dataTemp,",%d,%d",raster_MN_3[0], raster_MN_3[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[8]){
+            sprintf(dataTemp,",%d,%d",raster_MN_4[0], raster_MN_4[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[9]){
+            sprintf(dataTemp,",%d,%d",raster_MN_5[0], raster_MN_5[1]);
+            strcat (dataSample, dataTemp);
+        }
+        if (dataAcquisitionFlag[10]){
+            sprintf(dataTemp,",%d,%d",raster_MN_6[0], raster_MN_6[1]);
+            strcat (dataSample, dataTemp);
+        }
+        sprintf(dataTemp,",%d,%d,%d,%d,%d,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, isLate,newTrial);
+        if (newTrial == 1)
+        {
+            newTrial = 0;
+        }
         strcat (dataSample, dataTemp);
         fprintf(dataFile,dataSample);
         tick = timeData.getCurrentTime();

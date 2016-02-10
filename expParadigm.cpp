@@ -4,7 +4,7 @@
 #include <servoControl.h>
 expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
 {
-    int gD = 0, gS = 0;
+    int gD1 = 0, gS1 = 0, gD2 = 0, gS2 = 0;
     pClient = client;
     currentTrialNum = 0;
     currentRepNum = 0;
@@ -20,32 +20,90 @@ expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
     fscanf(configFile,"%s\n",&header);
     fscanf(configFile,"%d\n",&numTrials);
     for(int i = 0; i < numTrials; i++){
-        fscanf(configFile,"%d,%d,%d,%d\n", &gD, &gS, &trialLength[i], &rep[i]);
-        gammaDyn[i] = gD;
-        gammaSta[i] = gS;
+        fscanf(configFile,"%d,%d,%d,%d,%d,%d,%d,%d,%d\n", &gD1, &gS1, &gD2, &gS2, &initPos[i], &finalPos[i], &rampVelocity[i],&trialLength[i], &rep[i]);
+        //700 is the command at +90
+        //30 is the command at -90
+        //3.72= ((700-30)/(90-(-90))
+        //To be set more accurately
+        initPos[i]  = 700+3.72*(initPos[i]-90);
+        finalPos[i]  = 700+3.72*(finalPos[i]-90);
+        rampVelocity[i] = 3.72*rampVelocity[i];
+        gammaDyn1[i] = gD1;
+        gammaSta1[i] = gS1;
+        gammaDyn2[i] = gD2;
+        gammaSta2[i] = gS2;
     }
     fclose(configFile);
-  
 }
-int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
+int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController)
 {
+    int holdPeriod= 1000; 
     printf("This experiment has %d trials\n",numTrials);
+
+    bicepFPGA->spindleIaGain = 1.2;
+    bicepFPGA->spindleIIGain = 2;
+    bicepFPGA->spindleIaOffset = 250;
+    bicepFPGA->spindleIIOffset = 50;
+    bicepFPGA->spindleIaSynapseGain = 60;
+    bicepFPGA->spindleIISynapseGain = 60;
+    bicepFPGA->updateParametersFlag = '1';
+    Sleep(500);
+
+
+    tricepFPGA->spindleIaGain = 1.2;
+    tricepFPGA->spindleIIGain = 2;
+    tricepFPGA->spindleIaOffset = 250;
+    tricepFPGA->spindleIIOffset = 50;
+    tricepFPGA->spindleIaSynapseGain = 60;
+    tricepFPGA->spindleIISynapseGain = 60;
+    tricepFPGA->updateParametersFlag = '1';
+    Sleep(500);
     for(int i = 0; i < numTrials; i++){ 
-        Sleep(3000);
-        printf("This trial has %d repetitions\n",rep[i]+1);
-        printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
-        //UPDATE NI INFORMATION WITH NEW GAMMA DYNAMIC AND STATIC
-        bicepFPGA->gammaDynamic = gammaDyn[i];
-        bicepFPGA->gammaStatic = gammaSta[i];
+        printf("This trial has %d repetitions\n",rep[i]);
+        //printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
+        
+        Sleep(500);
+        
+        bicepFPGA->gammaDynamic = gammaDyn1[i];
+        bicepFPGA->gammaStatic = gammaSta1[i];
         bicepFPGA->updateGammaFlag = '1';
+        Sleep(500);
+
+        tricepFPGA->gammaDynamic = gammaDyn2[i];
+        tricepFPGA->gammaStatic = gammaSta2[i];
+        tricepFPGA->updateGammaFlag = '1';
+        Sleep(500);
+        
+        servo.setPerturbationParameters(365, 365, 200, 50);
+        servo.rampHold();
+        Sleep(500);
+        realTimeController->resetMuscleLength = TRUE;
+        realTimeController->newTrial = 1;
+        Sleep(500);
+        
+        //bicepFPGA->spindleIaGain = 10;
+        //bicepFPGA->spindleIIGain = 10;
+        //bicepFPGA->spindleIaOffset = -50;
+        //bicepFPGA->spindleIIOffset = -500;
+        //bicepFPGA->spindleIaSynapseGain = 30;
+        //bicepFPGA->spindleIISynapseGain = 0;
+        //bicepFPGA->updateParametersFlag = '1';
+
+        //bicepFPGA->spindleIaGain = 15;
+        //bicepFPGA->spindleIIGain = 5;
+        //bicepFPGA->spindleIaOffset = 0;
+        //bicepFPGA->spindleIIOffset = 0;
+        //bicepFPGA->spindleIaSynapseGain = 5;
+        //bicepFPGA->spindleIISynapseGain = 2;
+        //bicepFPGA->updateParametersFlag = '1';
 
         //tricepFPGA->gammaDynamic = gammaDyn[i];
         //tricepFPGA->gammaStatic = gammaSta[i];
         //tricepFPGA->updateGammaFlag = '1';
-        Sleep(500);
-
+        //Sleep(100);
         currentTrialNum = i;
         for (int j = 0; j<rep[i]; j++){
+            holdPeriod = (trialLength[i]*1000)/2;
             currentRepNum = j;
             printf("Starting trial#  %d and repetition #%d\n\n",i+1,j+1);
             time_t t = time(NULL);
@@ -60,19 +118,20 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA)
             timePtr->tm_hour, 
             timePtr->tm_min, 
             timePtr->tm_sec,
-            gammaDyn[i],
-            gammaSta[i],
+            gammaDyn1[i],
+            gammaSta1[i],
             j+1
             );
             log.fileName = fileName;
             log.trialLength = trialLength[i];
             //client.sendMessageToServer("RRR");
-            Sleep(1500);
+            //Sleep(75);
             //pClient->sendMessageToServer(MESSAGE_PERTURB);
+            servo.setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
             servo.rampHold();
             //log.reset();
             //log.startRecording();
-            //Sleep(100);
+            //Sleep(holdPeriod);
         }
     }
     printf("\n Experiment finished...\n");

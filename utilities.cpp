@@ -6,8 +6,8 @@
 #include <analogClient.h>
 #include <FPGAControl.h>
 
-float GGAIN = 0.003; //default is (0.9/1000) //0.4/2000 is safe
-float TBIAS = 9;
+float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
+float TBIAS = 2;
 
 int proceedState(int *state)
 {
@@ -49,7 +49,7 @@ int proceedState(int *state)
         //ANALOG_Client.sendMessageToServer(MESSAGE_PERTURB);
         Sleep(500);
         //ANALOG_Client.sendMessageToServer(MESSAGE_RECORD);
-        paradigm.startParadigm(&bicepFPGA, &tricepFPGA);
+        paradigm.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         *state = MOTOR_STATE_RUN_PARADIGM;
         break;
     case MOTOR_STATE_RUN_PARADIGM:

@@ -17,8 +17,10 @@ int muscleIndex = 0;
 FPGAControl::FPGAControl(int param, motorControl *param2)
 {
     updateGammaFlag = '0';
+    updateParametersFlag = '0';
     //SomeFpga    *spindleFPGA;
     //SomeFpga    *muscleFPGA;
+    muscleSpikeCount = 0;
     muscleForceFPGA = 0;
     muscleLength = 0;
     muscleVel = 0;
@@ -29,6 +31,7 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
     this->muscleIndex = param;
     gammaDynamic = 0;
     gammaStatic = 0;
+    spindleIaGain = spindleIIGain = spindleIaOffset = spindleIIOffset = spindleIaSynapseGain = spindleIISynapseGain =0;
     pMotorControl = param2;
     switch (param) {
     case 0:
@@ -44,6 +47,17 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
         std::abort();
     }
     initializeParameters();
+
+    gammaDynamic = 0;
+    gammaStatic = 0;
+    updateGamma();
+    Sleep(500);
+    updateGamma();
+    Sleep(500);
+    updateGamma();
+   
+    Sleep(500);
+    printf("\nMuscle %d gamma update\n\n",muscleIndex);
     //pthread_create(&(this->thread), 0, &FPGAControl::threadRoutine, NULL);
     live = TRUE;
     hIOMutex = CreateMutex(NULL, FALSE, NULL);
@@ -77,6 +91,10 @@ int FPGAControl::update() { //This is the function called in the thread
         updateGamma();
         updateGammaFlag = '0';
     }
+    if (updateParametersFlag == '1') {
+        updateSpindleParameters();
+        updateParametersFlag = '0';
+    }
     writeSpindleLengthVel(); //neck
     //writeMuscleFPGALengthVel(); //neck
     if (dataAcquisitionFlag[0]){
@@ -95,6 +113,36 @@ int FPGAControl::update() { //This is the function called in the thread
         readSpindleIIFPGA();
         pMotorControl->spindleII[muscleIndex] = spindleII;
     }
+    if (dataAcquisitionFlag[4]){
+        readMuscleFPGASpikeCount();
+        pMotorControl->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
+    }
+    if (dataAcquisitionFlag[5]){
+        readMuscleFPGARaster_MN_1();
+        pMotorControl->raster_MN_1[muscleIndex] = raster_MN_1;
+    }
+    if (dataAcquisitionFlag[6]){
+        readMuscleFPGARaster_MN_2();
+        pMotorControl->raster_MN_2[muscleIndex] = raster_MN_2;
+    }
+    if (dataAcquisitionFlag[7]){
+        readMuscleFPGARaster_MN_3();
+        pMotorControl->raster_MN_3[muscleIndex] = raster_MN_3;
+    }
+    if (dataAcquisitionFlag[8]){
+        readMuscleFPGARaster_MN_4();
+        pMotorControl->raster_MN_4[muscleIndex] = raster_MN_4;
+    }
+    if (dataAcquisitionFlag[9]){
+        readMuscleFPGARaster_MN_5();
+        pMotorControl->raster_MN_5[muscleIndex] = raster_MN_5;
+    }
+    if (dataAcquisitionFlag[10]){
+        readMuscleFPGARaster_MN_6();
+        pMotorControl->raster_MN_6[muscleIndex] = raster_MN_6;
+    }
+
+
     switch (this->muscleIndex) {
     case 0:
         //printf(" Bicep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
@@ -142,10 +190,43 @@ int FPGAControl::updateGamma() {
     Sleep(100);
     spindleFPGA->SendPara(bitValGammaSta, DATA_EVT_GAMMA_STA);
     Sleep(100);
-    pMotorControl->gammaStatic = (int)(gammaStatic);
-    pMotorControl->gammaDynamic = (int)(gammaDynamic);
+    if (muscleIndex == 0)
+    {
+        pMotorControl->gammaStatic1 = (int)(gammaStatic);
+        pMotorControl->gammaDynamic1 = (int)(gammaDynamic);
+    }
+    if (muscleIndex == 1)
+    {
+        pMotorControl->gammaStatic2 = (int)(gammaStatic);
+        pMotorControl->gammaDynamic2 = (int)(gammaDynamic);
+    }
     return 0;
 }
+
+int FPGAControl::updateSpindleParameters() {
+    int32 bitValSpindleIaGain, bitValSpindleIIGain,bitValSpindleIaOffset, bitValSpindleIIOffset, bitValSpindleIaSynapseGain, bitValSpindleIISynapseGain;
+    ReInterpret((float32)(spindleIaGain), &bitValSpindleIaGain);
+    ReInterpret((float32)(spindleIIGain), &bitValSpindleIIGain);
+    ReInterpret((float32)(spindleIaOffset), &bitValSpindleIaOffset);
+    ReInterpret((float32)(spindleIIOffset), &bitValSpindleIIOffset);
+    ReInterpret((float32)(spindleIaSynapseGain), &bitValSpindleIaSynapseGain);
+    ReInterpret((float32)(spindleIISynapseGain), &bitValSpindleIISynapseGain);
+
+    spindleFPGA->SendPara(bitValSpindleIaGain, DATA_EVT_SPINDLE_IA_GAIN);
+    Sleep(100);
+    spindleFPGA->SendPara(bitValSpindleIIGain, DATA_EVT_SPINDLE_II_GAIN);
+    Sleep(100);
+    spindleFPGA->SendPara(bitValSpindleIaOffset, DATA_EVT_SPINDLE_IA_OFFSET);
+    Sleep(100);
+    spindleFPGA->SendPara(bitValSpindleIIOffset, DATA_EVT_SPINDLE_II_OFFSET);
+    Sleep(100);
+    muscleFPGA->SendPara(bitValSpindleIaSynapseGain, DATA_EVT_SYN_IA_GAIN);
+    Sleep(100);
+    muscleFPGA->SendPara(bitValSpindleIISynapseGain, DATA_EVT_SYN_II_GAIN);
+    Sleep(100);
+    return 0;
+}
+
 
 int FPGAControl::writeMuscleFPGALengthVel()
 {
@@ -167,12 +248,50 @@ int FPGAControl::readMuscleFPGAForce()
     //muscleForceFPGA = 0;
     float tCtrl = ((muscleForceFPGA) * GGAIN) +  TBIAS;
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
+    //muscleForce = 5;
     return 0;
 }
 
+int FPGAControl::readMuscleFPGASpikeCount()
+{
+    muscleFPGA->ReadFpga(0x30, "int32", &muscleSpikeCount);
+    //muscleForceFPGA = 0;
+    return 0;
+}
+
+int FPGAControl::readMuscleFPGARaster_MN_1()
+{
+    muscleFPGA->ReadFpga(0x22, "int32", &raster_MN_1);
+    return 0;
+}
+int FPGAControl::readMuscleFPGARaster_MN_2()
+{
+    muscleFPGA->ReadFpga(0x24, "int32", &raster_MN_2);
+    return 0;
+}
+int FPGAControl::readMuscleFPGARaster_MN_3()
+{
+    muscleFPGA->ReadFpga(0x26, "int32", &raster_MN_3);
+    return 0;
+}
+int FPGAControl::readMuscleFPGARaster_MN_4()
+{
+    muscleFPGA->ReadFpga(0x28, "int32", &raster_MN_4);
+    return 0;
+}
+int FPGAControl::readMuscleFPGARaster_MN_5()
+{
+    muscleFPGA->ReadFpga(0x2A, "int32", &raster_MN_5);
+    return 0;
+}
+int FPGAControl::readMuscleFPGARaster_MN_6()
+{
+    muscleFPGA->ReadFpga(0x2C, "int32", &raster_MN_6);
+    return 0;
+}
 int FPGAControl::readEMG()
 {
-    muscleFPGA->ReadFpga(0x20, "float32", &muscleEMG);
+    muscleFPGA->ReadFpga(0x34, "float32", &muscleEMG);
     return 0;
 }
 

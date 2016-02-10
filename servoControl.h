@@ -45,12 +45,12 @@
 
 
     class servoControl {
-        int servoID, CommStatus, pos, vel;
+        int servoID, CommStatus;
         
         void PrintCommStatus(int);
         void PrintErrorCode();
         void formatCMD(int, int); // WARNING: function is a work in progress - do no call.
-              
+        int initPos, finalPos, rampVelocity, holdPeriod; 
     
     public: void setPosition(int);
             void setVelocity(int);
@@ -60,9 +60,11 @@
             int servoPing();
             int isMoving();
             void waitMoving(int overRide = 0);
-            void goDefault(int defPos = 512);
-            void rampHold(int initPos = 368, int finalPos = 614, int rampVelocity = 1023, int holdPeriod = 1500); //368, 614, 1023, 2000
-            int servoTwitch(int, int);	        
+            void goDefault(int defPos = 365);
+            //void rampHold(int initPos = 368, int finalPos = 614, int rampVelocity = 1023, int holdPeriod = 1500); //368, 614, 1023, 2000
+            void rampHold(); //368, 614, 1023, 2000
+            int servoTwitch(int, int);
+            void setPerturbationParameters(int, int , int , int);
     };
 
 #endif

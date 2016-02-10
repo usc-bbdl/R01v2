@@ -13,17 +13,19 @@ class expParadigm
 {
     analogClient *pClient;
     servoControl servo;
-    float32 gammaDyn[100];
-    float32 gammaSta[100];
+    float32 gammaDyn1[100],gammaSta1[100],gammaDyn2[100],gammaSta2[100];
     int rep[100];
     int numTrials;
     int trialLength[100];
+    int initPos[100];
+    int finalPos[100];
+    int rampVelocity[100];
     //UdpClient client;
     dataLogger log;
 public:
     expParadigm(double,double,analogClient*);
     ~expParadigm(void);
-    int startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA);
+    int startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController);
     bool isRunning();
     int currentTrialNum,  currentRepNum;
     

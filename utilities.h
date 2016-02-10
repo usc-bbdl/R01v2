@@ -37,19 +37,19 @@ const uInt32     MESSAGE_TERMINATE = 0x00000007;
 #define     MOTOR_STATE_RUN_PARADIGM 5
 #define     MOTOR_STATE_SHUTTING_DOWN 6
 
-const bool dataAcquisitionFlag[4] = {true,true,true,true}; //force, EMG, spindleIa, spindleII
+const bool dataAcquisitionFlag[11] = {true,false,false,false,true,false,false,false,false,false,false}; //force(1), EMG(2), spindleIa(3), spindleII(4),spikeCount(5),raster1(6),raster2(7),raster3(8),raster4(9),raster5(10),raster6(11)
 const int   NUM_NEURON = 128;
 const int   SAMPLING_RATE = 1024;
-const int    DATA_EVT_LCEVEL = 9;
-const int    DATA_EVT_SPINDLE_IA_GAIN = 1;
-const int    DATA_EVT_SPINDLE_IA_OFFSET = 3;
-const int    DATA_EVT_GAMMA_DYN = 4;
-const int    DATA_EVT_GAMMA_STA = 5;
-const int    DATA_EVT_SPINDLE_II_GAIN = 10;
-const int    DATA_EVT_SPINDLE_II_OFFSET = 6;
-const int    DATA_EVT_SYN_IA_GAIN = 3;
-const int    DATA_EVT_SYN_CN_GAIN = 10;
-const int    DATA_EVT_SYN_II_GAIN = 11;
+const int   DATA_EVT_LCEVEL = 9;
+const int   DATA_EVT_SPINDLE_IA_GAIN = 1;
+const int   DATA_EVT_SPINDLE_IA_OFFSET = 3;
+const int   DATA_EVT_GAMMA_DYN = 4;
+const int   DATA_EVT_GAMMA_STA = 5;
+const int   DATA_EVT_SPINDLE_II_GAIN = 10;
+const int   DATA_EVT_SPINDLE_II_OFFSET = 6;
+const int   DATA_EVT_SYN_IA_GAIN = 3;
+const int   DATA_EVT_SYN_CN_GAIN = 10;
+const int   DATA_EVT_SYN_II_GAIN = 11;
 
 int proceedState(int *);
 int ReInterpret(float32, int32 *);

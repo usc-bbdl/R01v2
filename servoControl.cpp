@@ -178,19 +178,32 @@ void servoControl::waitMoving(int overRide) { //change overRide value in the hea
 void servoControl::goDefault(int defPos) {  
     waitMoving();
     //printf("goDefault: setting velocity\n");
-    setVelocity(1023);
+    setVelocity(100);
     Sleep(CONTROL_PERIOD);
     //printf("goDefault: setting position\n");
-    setPosition(defPos);
+    //setPosition(defPos);
+    setPosition(365);
     //printf("goDefault: Motor in Default position\n");
 }
 
-void servoControl::rampHold(int initPos, int finalPos, int rampVelocity, int holdPeriod) {
+void servoControl::rampHold() {
+    setVelocity(rampVelocity);
     setPosition(initPos);
+    waitMoving();
+    Sleep(holdPeriod);
     setPosition(finalPos);
+    waitMoving();
     Sleep(holdPeriod);
     setPosition(initPos);
 }
+
+void servoControl::setPerturbationParameters(int initPos, int finalPos, int rampVelocity, int holdPeriod) {
+    this->initPos = initPos;
+    this->finalPos = finalPos;
+    this->rampVelocity = rampVelocity;
+    this->holdPeriod = holdPeriod;
+}
+
 
 int servoControl::servoTwitch(int pos, int vel) {
     setVelocity(vel);
