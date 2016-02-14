@@ -291,7 +291,7 @@ int FPGAControl::readMuscleFPGARaster_MN_6()
 }
 int FPGAControl::readEMG()
 {
-    muscleFPGA->ReadFpga(0x34, "float32", &muscleEMG);
+    muscleFPGA->ReadFpga(0x20, "float32", &muscleEMG);
     return 0;
 }
 

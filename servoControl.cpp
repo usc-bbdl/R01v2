@@ -126,27 +126,43 @@ void servoControl::formatCMD(int position, int velocity) {  //function is a work
 //public declarations
 
 void servoControl::setPosition(int position) {
-    int checkVal = 3443;
+    int checkVal = 3443, bitPosition = 0;
+    float temp;
     waitMoving();
-    dxl_write_word(servoID, P_GOAL_POSITION_L, position);
-    //Sleep(CONTROL_PERIOD);
-    checkVal = dxl_read_word(servoID, P_GOAL_POSITION_L);
-    if( COMM_RXSUCCESS == commCheck() ) {
-        if(checkVal != position) {
-            printf("servoControl: ERROR: device position register corrupt!\n");
+    if (position < -150 || position > 150) {
+        printf("Invalid Position %d. Value of Position must be between [-150, 150] degrees\n",position);
+    }
+    else {
+        temp = (position + 150)*POS_STEP;
+        bitPosition = ( fabs(temp-ceil(temp)) < fabs(temp-floor(temp)) ) ? abs(ceil(temp)) : abs(floor(temp));
+        dxl_write_word(servoID, P_GOAL_POSITION_L, bitPosition);
+        //Sleep(CONTROL_PERIOD);
+        checkVal = dxl_read_word(servoID, P_GOAL_POSITION_L);
+        if( COMM_RXSUCCESS == commCheck() ) {
+            if(checkVal != bitPosition) {
+                printf("servoControl: ERROR: device position register corrupt!\n");
+            }
         }
     }
 }
 
 void servoControl::setVelocity(int velocity) {
-    int checkVal = 3443;
+    int checkVal = 3443, bitVelocity = 0;
+    float temp;
     waitMoving();
-    dxl_write_word(servoID, P_GOAL_SPEED_L, velocity);
-    //Sleep(CONTROL_PERIOD);
-    checkVal = dxl_read_word(servoID, P_GOAL_SPEED_L);
-    if( COMM_RXSUCCESS == commCheck() ) {
-        if(checkVal != velocity) {
-            printf("servoControl: ERROR: device velocity register corrupt!\n");
+    if (velocity > 476 || velocity < 0) {
+        printf("Invalid Velocity %d. Value of Velocity must be between [0, 476] degrees/sec\n",velocity);
+    }
+    else {
+        temp = velocity*VEL_STEP;
+        bitVelocity = ( (temp-ceil(temp)) < (temp-floor(temp)) ) ? abs(ceil(temp)) : abs(floor(temp));
+        dxl_write_word(servoID, P_GOAL_SPEED_L, bitVelocity);
+        //Sleep(CONTROL_PERIOD);
+        checkVal = dxl_read_word(servoID, P_GOAL_SPEED_L);
+        if( COMM_RXSUCCESS == commCheck() ) {
+            if(checkVal != bitVelocity) {
+                printf("servoControl: ERROR: device velocity register corrupt!\n");
+            }
         }
     }
 }
@@ -175,14 +191,14 @@ void servoControl::waitMoving(int overRide) { //change overRide value in the hea
 
 
 //suraj - revisit
-void servoControl::goDefault(int defPos) {  
+void servoControl::goDefault() {  
     waitMoving();
     //printf("goDefault: setting velocity\n");
-    setVelocity(100);
+    setVelocity(RESET_VELOCITY);
     Sleep(CONTROL_PERIOD);
     //printf("goDefault: setting position\n");
     //setPosition(defPos);
-    setPosition(365);
+    setPosition(0);
     //printf("goDefault: Motor in Default position\n");
 }
 

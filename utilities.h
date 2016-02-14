@@ -37,7 +37,7 @@ const uInt32     MESSAGE_TERMINATE = 0x00000007;
 #define     MOTOR_STATE_RUN_PARADIGM 5
 #define     MOTOR_STATE_SHUTTING_DOWN 6
 
-const bool dataAcquisitionFlag[11] = {true,false,false,false,true,false,false,false,false,false,false}; //force(1), EMG(2), spindleIa(3), spindleII(4),spikeCount(5),raster1(6),raster2(7),raster3(8),raster4(9),raster5(10),raster6(11)
+const bool dataAcquisitionFlag[11] = {true,true,true,true,false,false,false,false,false,false,false}; //force(1), EMG(2), spindleIa(3), spindleII(4),spikeCount(5),raster1(6),raster2(7),raster3(8),raster4(9),raster5(10),raster6(11)
 const int   NUM_NEURON = 128;
 const int   SAMPLING_RATE = 1024;
 const int   DATA_EVT_LCEVEL = 9;

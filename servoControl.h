@@ -15,12 +15,15 @@
     #include <conio.h>
     #include "dynamixel\import\dynamixel.h"  
     #define PI  3.141592f
+    #define POS_STEP 3.41333 //converts position angle to bits
+    #define VEL_STEP 2.15126 //converts angular velocity to bits
     
     // Control addresses
     #define P_GOAL_POSITION_L	30
     #define P_GOAL_POSITION_H	31
     #define P_GOAL_SPEED_L		32
     #define P_GOAL_SPEED_H		33
+    #define RESET_VELOCITY      160 //Set number between [0, 476] - Speed with which servo returns to default position on call of goDefault
     
     // Default setting
     #define DEFAULT_PORTNUM		3 // COM3
@@ -43,14 +46,13 @@
     #define DEFAULT_POS			1
     #define P_MOVING			46
 
-
     class servoControl {
         int servoID, CommStatus;
         
         void PrintCommStatus(int);
         void PrintErrorCode();
         void formatCMD(int, int); // WARNING: function is a work in progress - do no call.
-        int initPos, finalPos, rampVelocity, holdPeriod; 
+        int initPos, finalPos, rampVelocity, holdPeriod; //position must be provided in terms of angle
     
     public: void setPosition(int);
             void setVelocity(int);
@@ -60,7 +62,7 @@
             int servoPing();
             int isMoving();
             void waitMoving(int overRide = 0);
-            void goDefault(int defPos = 365);
+            void goDefault();
             //void rampHold(int initPos = 368, int finalPos = 614, int rampVelocity = 1023, int holdPeriod = 1500); //368, 614, 1023, 2000
             void rampHold(); //368, 614, 1023, 2000
             int servoTwitch(int, int);

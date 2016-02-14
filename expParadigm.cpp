@@ -21,13 +21,6 @@ expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
     fscanf(configFile,"%d\n",&numTrials);
     for(int i = 0; i < numTrials; i++){
         fscanf(configFile,"%d,%d,%d,%d,%d,%d,%d,%d,%d\n", &gD1, &gS1, &gD2, &gS2, &initPos[i], &finalPos[i], &rampVelocity[i],&trialLength[i], &rep[i]);
-        //700 is the command at +90
-        //30 is the command at -90
-        //3.72= ((700-30)/(90-(-90))
-        //To be set more accurately
-        initPos[i]  = 700+3.72*(initPos[i]-90);
-        finalPos[i]  = 700+3.72*(finalPos[i]-90);
-        rampVelocity[i] = 3.72*rampVelocity[i];
         gammaDyn1[i] = gD1;
         gammaSta1[i] = gS1;
         gammaDyn2[i] = gD2;
@@ -74,8 +67,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, 
         tricepFPGA->updateGammaFlag = '1';
         Sleep(500);
         
-        servo.setPerturbationParameters(365, 365, 200, 50);
-        servo.rampHold();
+        servo.goDefault();
         Sleep(500);
         realTimeController->resetMuscleLength = TRUE;
         realTimeController->newTrial = 1;
