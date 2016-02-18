@@ -3,7 +3,6 @@
 #include <dataOneSample.h>
 #include <motorControl.h>
 #include <expParadigm.h>
-#include <analogClient.h>
 #include <FPGAControl.h>
 
 //float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
@@ -13,7 +12,6 @@ float TBIAS = 3;
 int proceedState(int *state)
 {
     static dataOneSample loadCellOffsets;
-    static analogClient ANALOG_Client;
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     static FPGAControl bicepFPGA(BICEP,&motors);
     static FPGAControl tricepFPGA(TRICEP,&motors);
@@ -40,12 +38,14 @@ int proceedState(int *state)
         printf("Closed-Loop ; Next stage is Run Paradigm and Sample\n");
         *state = MOTOR_STATE_CLOSED_LOOP;
         break;
+        /*
     case MOTOR_STATE_CLOSED_LOOP:
         //Start NI FPGA, Connect the Neural FPGA force command to the NI FPGA, Start controlling muscle force
         printf("Gamma updated. Running feeling experiment.\n");
         *state = MOTOR_STATE_GAMMA_UPDATED;
         break;
-    case MOTOR_STATE_GAMMA_UPDATED:
+        */
+    case MOTOR_STATE_CLOSED_LOOP:
         printf("Running Paradigm; Next stage is Shutting Down\n");
         //ANALOG_Client.sendMessageToServer(MESSAGE_PERTURB);
         Sleep(500);
@@ -55,7 +55,6 @@ int proceedState(int *state)
         break;
     case MOTOR_STATE_RUN_PARADIGM:
         printf("Shutting Down\n");
-        ANALOG_Client.sendMessageToServer(MESSAGE_TERMINATE);
         motors.motorControllerEnd();
         *state = MOTOR_STATE_SHUTTING_DOWN;
         printf("Press Enter to Exit\n");

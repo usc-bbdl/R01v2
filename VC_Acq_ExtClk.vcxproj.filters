@@ -19,9 +19,6 @@
     <ClCompile Include="expParadigm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="analogClient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FPGAControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,9 +49,6 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="NIDAQmx.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="analogClient.h">
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="okFrontPanelDLL.h">
