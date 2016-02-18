@@ -35,9 +35,9 @@ const uInt32     MESSAGE_TERMINATE = 0x00000007;
 #define     MOTOR_STATE_CLOSED_LOOP 3
 #define     MOTOR_STATE_GAMMA_UPDATED 4
 #define     MOTOR_STATE_RUN_PARADIGM 5
-#define     MOTOR_STATE_SHUTTING_DOWN 6
+#define     MOTOR_STATE_SHUTTING_DOWN 6 
 
-const bool dataAcquisitionFlag[11] = {true,true,true,true,false,false,false,false,false,false,false}; //force(1), EMG(2), spindleIa(3), spindleII(4),spikeCount(5),raster1(6),raster2(7),raster3(8),raster4(9),raster5(10),raster6(11)
+const bool dataAcquisitionFlag[12] = {false,false,false,false,false,false,false,false,false,true,true,false}; //force(0), EMG(1), spindleIa(2), spindleII(3),spikeCount(4),raster1(5),raster2(6),raster3(7),raster4(8),raster5(9),raster6(10), real-time control cortex(11)
 const int   NUM_NEURON = 128;
 const int   SAMPLING_RATE = 1024;
 const int   DATA_EVT_LCEVEL = 9;
@@ -50,6 +50,8 @@ const int   DATA_EVT_SPINDLE_II_OFFSET = 6;
 const int   DATA_EVT_SYN_IA_GAIN = 3;
 const int   DATA_EVT_SYN_CN_GAIN = 10;
 const int   DATA_EVT_SYN_II_GAIN = 11;
+const int   DATA_EVT_CORTEX_DRIVE = 8;
+const int   DATA_EVT_CORTEX_MIXED_INPUT = 9;
 
 int proceedState(int *);
 int ReInterpret(float32, int32 *);

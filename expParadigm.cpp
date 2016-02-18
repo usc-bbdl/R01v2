@@ -5,6 +5,7 @@
 expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
 {
     int gD1 = 0, gS1 = 0, gD2 = 0, gS2 = 0;
+    int cortex1 = 0, cortex2 =0; 
     pClient = client;
     currentTrialNum = 0;
     currentRepNum = 0;
@@ -18,13 +19,15 @@ expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
         printf("Could not open data file");
     }
     fscanf(configFile,"%s\n",&header);
-    fscanf(configFile,"%d\n",&numTrials);
+    fscanf(configFile,"%d,%d\n",&numTrials);
     for(int i = 0; i < numTrials; i++){
-        fscanf(configFile,"%d,%d,%d,%d,%d,%d,%d,%d,%d\n", &gD1, &gS1, &gD2, &gS2, &initPos[i], &finalPos[i], &rampVelocity[i],&trialLength[i], &rep[i]);
+        fscanf(configFile,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", &gD1, &gS1, &gD2, &gS2,&cortex1,&cortex2, &initPos[i], &finalPos[i], &rampVelocity[i],&trialLength[i], &rep[i]);
         gammaDyn1[i] = gD1;
         gammaSta1[i] = gS1;
         gammaDyn2[i] = gD2;
         gammaSta2[i] = gS2;
+        cortexDrive1[i] = cortex1;
+        cortexDrive2[i] = cortex2;
     }
     fclose(configFile);
 }
@@ -43,6 +46,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, 
     Sleep(500);
 
 
+
     tricepFPGA->spindleIaGain = 1.2;
     tricepFPGA->spindleIIGain = 2;
     tricepFPGA->spindleIaOffset = 250;
@@ -51,6 +55,26 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, 
     tricepFPGA->spindleIISynapseGain = 60;
     tricepFPGA->updateParametersFlag = '1';
     Sleep(500);
+
+    //bicepFPGA->spindleIaGain = 0.2;
+    //bicepFPGA->spindleIIGain = 0.4;
+    //bicepFPGA->spindleIaOffset = 1;
+    //bicepFPGA->spindleIIOffset = 1;
+    //bicepFPGA->spindleIaSynapseGain = 0;
+    //bicepFPGA->spindleIISynapseGain = 0;
+    //bicepFPGA->updateParametersFlag = '1';
+    //Sleep(500);
+
+    
+
+    //tricepFPGA->spindleIaGain = 0.2;
+    //tricepFPGA->spindleIIGain = 0.4;
+    //tricepFPGA->spindleIaOffset = 0;
+    //tricepFPGA->spindleIIOffset = 0;
+    //tricepFPGA->spindleIaSynapseGain = 0;
+    //tricepFPGA->spindleIISynapseGain = 0;
+    //tricepFPGA->updateParametersFlag = '1';
+    //Sleep(500);
     for(int i = 0; i < numTrials; i++){ 
         printf("This trial has %d repetitions\n",rep[i]);
         //printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
@@ -62,9 +86,17 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, 
         bicepFPGA->updateGammaFlag = '1';
         Sleep(500);
 
+        bicepFPGA->cortexDrive = cortexDrive1[i];
+        bicepFPGA->updateCortexFlag = '1';
+        Sleep(500);
+
         tricepFPGA->gammaDynamic = gammaDyn2[i];
         tricepFPGA->gammaStatic = gammaSta2[i];
         tricepFPGA->updateGammaFlag = '1';
+        Sleep(500);
+
+        tricepFPGA->cortexDrive = cortexDrive2[i];
+        tricepFPGA->updateCortexFlag = '1';
         Sleep(500);
         
         servo.goDefault();

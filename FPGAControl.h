@@ -24,6 +24,7 @@ class FPGAControl {
     int readSpindleIaFPGA(void);
     int readSpindleIIFPGA(void);
     int writeMuscleFPGALengthVel(void);
+    int writeCortexCommand(void);
     int readMuscleFPGAForce(void);
     int readEMG(void);
     int initializeParameters();
@@ -36,9 +37,10 @@ class FPGAControl {
     int readMuscleFPGARaster_MN_4(void);
     int readMuscleFPGARaster_MN_5(void);
     int readMuscleFPGARaster_MN_6(void);
+    int updateCortexDrive(void);
 public:
-    SomeFpga *muscleFPGA, *spindleFPGA;
-    char updateGammaFlag,updateParametersFlag;
+    SomeFpga *muscleFPGA, *spindleFPGA, *cortexFPGA;
+    char updateGammaFlag,updateCortexFlag,updateParametersFlag;
     FPGAControl(int, motorControl *);
     ~FPGAControl();
     
@@ -48,6 +50,8 @@ public:
     void * threadRoutine(void *);
     float muscleLength, muscleVel , muscleForce, muscleForceFPGA , muscleEMG, spindleII , spindleIa ;
     int muscleSpikeCount, raster_MN_1,raster_MN_2,raster_MN_3,raster_MN_4,raster_MN_5,raster_MN_6;
+    int32 cortexDrive;
+    float cortexDriveMixed;
 };
 
 #endif

@@ -6,8 +6,9 @@
 #include <analogClient.h>
 #include <FPGAControl.h>
 
-float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
-float TBIAS = 2;
+//float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
+float GGAIN = 0.005; //default is (0.9/1000) //0.4/2000 is safe
+float TBIAS = 3;
 
 int proceedState(int *state)
 {

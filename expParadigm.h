@@ -13,7 +13,7 @@ class expParadigm
 {
     analogClient *pClient;
     servoControl servo;
-    float32 gammaDyn1[100],gammaSta1[100],gammaDyn2[100],gammaSta2[100];
+    float32 gammaDyn1[100],gammaSta1[100],gammaDyn2[100],gammaSta2[100],cortexDrive1[100],cortexDrive2[100];
     int rep[100];
     int numTrials;
     int trialLength[100];

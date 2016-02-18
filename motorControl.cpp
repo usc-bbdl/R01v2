@@ -1,9 +1,13 @@
 #include "motorControl.h"
 #include <utilities.h>
 #include <stdio.h>
+#include <math.h>
+#include <algorithm>
 motorControl::motorControl(double offset1, double offset2)
 {
-    I = 3;
+    I = 2;
+    cortexVoluntaryAmp = 10000;
+    cortexVoluntaryFreq = 0.25;
     char        errBuff[2048]={'\0'};
     int32       error=0;
     newTrial = 0;
@@ -11,6 +15,8 @@ motorControl::motorControl(double offset1, double offset2)
     gammaDynamic1 = 0;
     gammaStatic2 = 0;
     gammaDynamic2 = 0;
+    cortexDrive[0] = 0;
+    cortexDrive[1] = 0;
     spindleIa[0] = 0;
     spindleII[0] = 0;
     spindleIa[1] = 0;
@@ -66,7 +72,7 @@ motorControl::motorControl(double offset1, double offset2)
     if (dataAcquisitionFlag[10]){
         strcat (header, ", Raster 1-6,  Raster 2-6");
     }
-    strcat(header,", Gamma Static, Gamma Dynamic, is Sample Missed, new Trial\n");
+    strcat(header,", Gamma Static, Gamma Dynamic, cortex 1, cortex 2, new Trial\n");
 
     DAQmxErrChk (DAQmxCreateTask("",&loadCelltaskHandle));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai1","loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
@@ -206,6 +212,7 @@ void motorControl::motorControlLoop(void* a)
 void motorControl::controlLoop(void)
 {
     int32       error=0;
+    float cotexDrive = 0.0;
     bool keepReading=TRUE;
     bool32 isLate = {0};
     double tick=0.0,tock=0.0;
@@ -284,7 +291,7 @@ void motorControl::controlLoop(void)
             motorCommand[1] = motorMaxVoltage;
         if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
-        printf("Ld Cell1: %+6.2f; Enc 1: %+6.5f; Enc: %+6.5f, Dyn: %d, Sta: %d, \r",loadCellData[0],muscleLength[0],muscleLength[1],gammaDynamic1, gammaStatic1);
+        printf("F1: %+6.2f; F2: %+6.2f;L1: %+6.2f; L2: %+6.2f;, Dyn: %d, Sta: %d, \r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1],gammaDynamic1, gammaStatic1);
         ReleaseMutex( hIOMutex);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
@@ -311,30 +318,34 @@ void motorControl::controlLoop(void)
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[5]){
-            sprintf(dataTemp,",%d,%d",raster_MN_1[0], raster_MN_1[1]);
+            sprintf(dataTemp,",%u,%u",raster_MN_1[0], raster_MN_1[1]);
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[6]){
-            sprintf(dataTemp,",%d,%d",raster_MN_2[0], raster_MN_2[1]);
+            sprintf(dataTemp,",%u,%u",raster_MN_2[0], raster_MN_2[1]);
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[7]){
-            sprintf(dataTemp,",%d,%d",raster_MN_3[0], raster_MN_3[1]);
+            sprintf(dataTemp,",%u,%u",raster_MN_3[0], raster_MN_3[1]);
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[8]){
-            sprintf(dataTemp,",%d,%d",raster_MN_4[0], raster_MN_4[1]);
+            sprintf(dataTemp,",%u,%u",raster_MN_4[0], raster_MN_4[1]);
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[9]){
-            sprintf(dataTemp,",%d,%d",raster_MN_5[0], raster_MN_5[1]);
+            sprintf(dataTemp,",%u,%u",raster_MN_5[0], raster_MN_5[1]);
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[10]){
-            sprintf(dataTemp,",%d,%d",raster_MN_6[0], raster_MN_6[1]);
+            sprintf(dataTemp,",%u,%u",raster_MN_6[0], raster_MN_6[1]);
             strcat (dataSample, dataTemp);
         }
-        sprintf(dataTemp,",%d,%d,%d,%d,%d,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, isLate,newTrial);
+        if (dataAcquisitionFlag[11]){
+            cortexDrive[0] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick), 0);
+            cortexDrive[1] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick + 3.1416), 0);
+        }
+        sprintf(dataTemp,",%d,%d,%d,%d,%.3f,%.3f,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, cortexDrive[0], cortexDrive[1],newTrial);
         if (newTrial == 1)
         {
             newTrial = 0;
@@ -342,6 +353,7 @@ void motorControl::controlLoop(void)
         strcat (dataSample, dataTemp);
         fprintf(dataFile,dataSample);
         tick = timeData.getCurrentTime();
+
     }
     isControlling = FALSE;
     DAQmxStopTask(motorTaskHandle);

@@ -15,9 +15,11 @@ class SomeFpga
         int SendButton(bool bitVal, int buttonEvt);
         int ReadFpga(BYTE, char *, float *);
         int ReadFpga(BYTE, char *,int *);
+        int ReadFpga(BYTE, char *,uInt32 *);
         //int ReadFpga(int getAddr);
         okCFrontPanel *xem;
         int WriteFpgaLceVel(int32 , int32 , int32 , int32 , int32);    
+        int WriteFpgaCortexDrive(int32, int32);
     private:
         int NUM_NEURON;
         int SAMPLING_RATE;

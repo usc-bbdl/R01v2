@@ -37,10 +37,12 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
     case 0:
         spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "113700021E");
         muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000542");
+        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000547");
         break;
     case 1:
         spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "11160001CG");
         muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "1137000222");
+        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "000000054B");
         break;
     default:
         std::cout<<"\nFATAL: Logical error in FPGAControl Params\n";
@@ -55,7 +57,9 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
     updateGamma();
     Sleep(500);
     updateGamma();
-   
+    Sleep(500);
+    cortexDrive = 0;
+    updateCortexDrive();
     Sleep(500);
     printf("\nMuscle %d gamma update\n\n",muscleIndex);
     //pthread_create(&(this->thread), 0, &FPGAControl::threadRoutine, NULL);
@@ -85,18 +89,23 @@ FPGAControl::~FPGAControl() {
 }
 
 int FPGAControl::update() { //This is the function called in the thread
+    
     muscleLength = (float)pMotorControl->muscleLength[muscleIndex];
     muscleVel = (float)pMotorControl->muscleVel[muscleIndex];
     if (updateGammaFlag == '1') {
         updateGamma();
         updateGammaFlag = '0';
     }
+    if (updateCortexFlag == '1') {
+        updateCortexDrive();
+        updateCortexFlag = '0';
+    }
     if (updateParametersFlag == '1') {
         updateSpindleParameters();
         updateParametersFlag = '0';
     }
-    writeSpindleLengthVel(); //neck
-    //writeMuscleFPGALengthVel(); //neck
+    writeSpindleLengthVel();
+    //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
         pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
@@ -141,7 +150,15 @@ int FPGAControl::update() { //This is the function called in the thread
         readMuscleFPGARaster_MN_6();
         pMotorControl->raster_MN_6[muscleIndex] = raster_MN_6;
     }
-
+    if (dataAcquisitionFlag[11]){
+        cortexDrive = (int32)pMotorControl->cortexDrive[muscleIndex];
+        //writeCortexCommand();
+        updateCortexDrive();
+        if (muscleIndex==0)
+            int a33 = 0;
+        if (muscleIndex==1)
+            int a33 = 1;
+    }
 
     switch (this->muscleIndex) {
     case 0:
@@ -181,6 +198,17 @@ int FPGAControl::readSpindleIIFPGA()
     spindleFPGA->ReadFpga(0x24, "float32", &spindleII);        
     return 0;
 }
+
+int FPGAControl::updateCortexDrive()
+{
+    int32 bitValCortexDrive;
+    ReInterpret((int32)(cortexDrive), &bitValCortexDrive);
+    cortexFPGA->SendPara(bitValCortexDrive, DATA_EVT_CORTEX_DRIVE);
+    //Sleep(100);
+    pMotorControl->cortexDrive[muscleIndex] = (int)(cortexDrive);
+    return 0;
+}
+
 
 int FPGAControl::updateGamma() {
     int32 bitValGammaDyn, bitValGammaSta;
@@ -241,6 +269,13 @@ int FPGAControl::writeMuscleFPGALengthVel()
     muscleFPGA->WriteFpgaLceVel(bitValLce, bitValVel, bitM1VoluntaryBic, bitM1DystoniaBic, DATA_EVT_LCEVEL);
     return 0;
 }
+int FPGAControl::writeCortexCommand()
+{
+    int32 bitValCortexDrive;
+    ReInterpret((float32)(cortexDriveMixed), &bitValCortexDrive);
+    cortexFPGA->WriteFpgaCortexDrive(bitValCortexDrive, DATA_EVT_CORTEX_MIXED_INPUT);
+    return 0;
+}
 
 int FPGAControl::readMuscleFPGAForce()
 {
@@ -254,7 +289,9 @@ int FPGAControl::readMuscleFPGAForce()
 
 int FPGAControl::readMuscleFPGASpikeCount()
 {
-    muscleFPGA->ReadFpga(0x30, "int32", &muscleSpikeCount);
+    int spikeCount;
+    muscleFPGA->ReadFpga(0x30, "int32", &spikeCount);
+    muscleSpikeCount = spikeCount;
     //muscleForceFPGA = 0;
     return 0;
 }
@@ -266,7 +303,7 @@ int FPGAControl::readMuscleFPGARaster_MN_1()
 }
 int FPGAControl::readMuscleFPGARaster_MN_2()
 {
-    muscleFPGA->ReadFpga(0x24, "int32", &raster_MN_2);
+    muscleFPGA->ReadFpga(0x22, "int32", &raster_MN_2);
     return 0;
 }
 int FPGAControl::readMuscleFPGARaster_MN_3()
