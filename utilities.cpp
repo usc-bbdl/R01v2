@@ -1,4 +1,5 @@
 #include <utilities.h>
+#include <stdio.h>
 #include <conio.h>
 #include <dataOneSample.h>
 #include <motorControl.h>
@@ -15,7 +16,7 @@ int proceedState(int *state)
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     static FPGAControl bicepFPGA(BICEP,&motors);
     static FPGAControl tricepFPGA(TRICEP,&motors);
-    static expParadigm paradigm(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&ANALOG_Client);
+    static expParadigm paradigm(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     switch(*state)
     {
     case MOTOR_STATE_INIT:
@@ -47,9 +48,7 @@ int proceedState(int *state)
         */
     case MOTOR_STATE_CLOSED_LOOP:
         printf("Running Paradigm; Next stage is Shutting Down\n");
-        //ANALOG_Client.sendMessageToServer(MESSAGE_PERTURB);
         Sleep(500);
-        //ANALOG_Client.sendMessageToServer(MESSAGE_RECORD);
         paradigm.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         *state = MOTOR_STATE_RUN_PARADIGM;
         break;
@@ -63,6 +62,8 @@ int proceedState(int *state)
     }
     return 0;
 }
+
+
 
 int ReInterpret(float32 in, int32 *out)
 {

@@ -3,7 +3,7 @@
 #define UTILITIES_H
 #include <math.h>
 #include <NIDAQmx.h>
-//#include <kinematic\KinematicPerturbation.h>
+#include <stdio.h>
 
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
@@ -21,13 +21,14 @@ const int loadCellMinVoltage = -10;
 const int loadCellMaxVoltage = +10;
 const int encoderPulsesPerRev = 500;
 
-
+/*
 const uInt32     MESSAGE_NO_CONNECTION = 0x00000000;
 const uInt32     MESSAGE_IDLE = 0x00000003;
 const uInt32     MESSAGE_KINEMATIC = 0x00000004;
 const uInt32     MESSAGE_RECORD = 0x00000005;
 const uInt32     MESSAGE_PERTURB = 0x00000006;
 const uInt32     MESSAGE_TERMINATE = 0x00000007;
+*/
 
 #define     MOTOR_STATE_INIT 0
 #define     MOTOR_STATE_WINDING_UP 1
@@ -63,6 +64,10 @@ typedef unsigned char       BYTE;
 #define TRICEP 1
 extern float GGAIN; //default is (0.9/1000) //0.4/2000 is safe
 extern float TBIAS;
+
+//work in progress
+void configParser(FILE *);
+void testParser(FILE *);
 
 #endif
 

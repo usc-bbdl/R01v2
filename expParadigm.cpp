@@ -1,12 +1,10 @@
 #include "expParadigm.h"
 #include "FPGAControl.h"
-#include <analogClient.h>
 #include <servoControl.h>
-expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
+expParadigm::expParadigm(double offset1,double offset2)
 {
     int gD1 = 0, gS1 = 0, gD2 = 0, gS2 = 0;
     int cortex1 = 0, cortex2 =0; 
-    pClient = client;
     currentTrialNum = 0;
     currentRepNum = 0;
     log.loadCellOffset1 = offset1;
@@ -34,6 +32,8 @@ expParadigm::expParadigm(double offset1,double offset2,analogClient *client)
 int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController)
 {
     int holdPeriod= 1000; 
+    bool stayInTheLoop = TRUE;
+    char key = 0;
     printf("This experiment has %d trials\n",numTrials);
 
     bicepFPGA->spindleIaGain = 1.2;
@@ -75,8 +75,8 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, 
     //tricepFPGA->spindleIISynapseGain = 0;
     //tricepFPGA->updateParametersFlag = '1';
     //Sleep(500);
-    for(int i = 0; i < numTrials; i++){ 
-        printf("This trial has %d repetitions\n",rep[i]);
+    for(int i = 0; i < numTrials && stayInTheLoop == TRUE; i++){ 
+        printf("This trial has %d repetitions\t\n\n",rep[i]);
         //printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
         
         Sleep(500);
@@ -126,7 +126,7 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, 
         //tricepFPGA->updateGammaFlag = '1';
         //Sleep(100);
         currentTrialNum = i;
-        for (int j = 0; j<rep[i]; j++){
+        for (int j = 0; j<rep[i] && stayInTheLoop == TRUE; j++){
             holdPeriod = (trialLength[i]*1000)/2;
             currentRepNum = j;
             printf("Starting trial#  %d and repetition #%d\n\n",i+1,j+1);
@@ -148,17 +148,17 @@ int expParadigm::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, 
             );
             log.fileName = fileName;
             log.trialLength = trialLength[i];
-            //client.sendMessageToServer("RRR");
-            //Sleep(75);
-            //pClient->sendMessageToServer(MESSAGE_PERTURB);
             servo.setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
             servo.rampHold();
-            //log.reset();
-            //log.startRecording();
-            //Sleep(holdPeriod);
+            // Terminate Anytime when Escape Is Pressed...
+            if (kbhit()!=0){
+                key = getch();
+                if (key == 27) { stayInTheLoop = FALSE; }
+            }
         }
     }
-    printf("\n Experiment finished...\n");
+    if (stayInTheLoop == TRUE) printf("\n Experiment finished...\n");
+        else printf("\n\n\n Experiment Terminated...\n\n\n");
     return 0;
 }
 expParadigm::~expParadigm()

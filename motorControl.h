@@ -22,7 +22,7 @@ public:
 
 class motorControl
 {
-    TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle,analogClient;
+    TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
     TaskHandle  encodertaskHandle[2];
     double loadCellOffset1, loadCellOffset2,I;
     TimeData timeData;
