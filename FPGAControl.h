@@ -50,7 +50,7 @@ public:
     void * threadRoutine(void *);
     float muscleLength, muscleVel , muscleForce, muscleForceFPGA , muscleEMG, spindleII , spindleIa ;
     int muscleSpikeCount, raster_MN_1,raster_MN_2,raster_MN_3,raster_MN_4,raster_MN_5,raster_MN_6;
-    int32 cortexDrive;
+    int32 cortexDrive, forceLengthCurve;
     float cortexDriveMixed;
 };
 

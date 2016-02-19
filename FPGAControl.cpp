@@ -59,6 +59,7 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
     updateGamma();
     Sleep(500);
     cortexDrive = 0;
+    forceLengthCurve = 1;
     updateCortexDrive();
     Sleep(500);
     printf("\nMuscle %d gamma update\n\n",muscleIndex);
@@ -105,7 +106,7 @@ int FPGAControl::update() { //This is the function called in the thread
         updateParametersFlag = '0';
     }
     writeSpindleLengthVel();
-    //writeMuscleFPGALengthVel();
+    writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
         pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
@@ -232,14 +233,15 @@ int FPGAControl::updateGamma() {
 }
 
 int FPGAControl::updateSpindleParameters() {
-    int32 bitValSpindleIaGain, bitValSpindleIIGain,bitValSpindleIaOffset, bitValSpindleIIOffset, bitValSpindleIaSynapseGain, bitValSpindleIISynapseGain;
+    int32 bitValSpindleIaGain, bitValSpindleIIGain,bitValSpindleIaOffset, bitValSpindleIIOffset, bitValSpindleIaSynapseGain, bitValSpindleIISynapseGain, bitValForceLength;
     ReInterpret((float32)(spindleIaGain), &bitValSpindleIaGain);
     ReInterpret((float32)(spindleIIGain), &bitValSpindleIIGain);
     ReInterpret((float32)(spindleIaOffset), &bitValSpindleIaOffset);
     ReInterpret((float32)(spindleIIOffset), &bitValSpindleIIOffset);
     ReInterpret((float32)(spindleIaSynapseGain), &bitValSpindleIaSynapseGain);
     ReInterpret((float32)(spindleIISynapseGain), &bitValSpindleIISynapseGain);
-
+    ReInterpret((int32)(forceLengthCurve), &bitValForceLength);
+    
     spindleFPGA->SendPara(bitValSpindleIaGain, DATA_EVT_SPINDLE_IA_GAIN);
     Sleep(100);
     spindleFPGA->SendPara(bitValSpindleIIGain, DATA_EVT_SPINDLE_II_GAIN);
@@ -251,6 +253,8 @@ int FPGAControl::updateSpindleParameters() {
     muscleFPGA->SendPara(bitValSpindleIaSynapseGain, DATA_EVT_SYN_IA_GAIN);
     Sleep(100);
     muscleFPGA->SendPara(bitValSpindleIISynapseGain, DATA_EVT_SYN_II_GAIN);
+    Sleep(100);
+    muscleFPGA->SendPara(bitValForceLength, DATA_EVT_S_WEIGHT);
     Sleep(100);
     return 0;
 }
