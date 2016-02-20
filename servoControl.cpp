@@ -29,7 +29,7 @@ servoControl::servoControl(int ID) {
     //dxl_set_txpacket_id(servoID);
     servoPing();
     //commCheck();
-    //setCompliance(0);
+    setCompliance(1);
     goDefault();
 }
 
@@ -187,8 +187,11 @@ int servoControl::setVelocity(int velocity) {
 }
 
 int servoControl::setCompliance(int level) {
-    const unsigned int sleepTime = 0;
-    const int maxVal[5] = {2, 2, 1, 1, 32}, defVal[5] = {32, 32, 1, 1, 32};
+    const unsigned int sleepTime = 10;
+    const int cSlope = 64;
+    const int cMargin = 1;
+    const int cPunch = 32;
+    const int maxVal[5] = {cSlope, cSlope, cMargin, cMargin, cPunch}, defVal[5] = {32, 32, 1, 1, 32};
     const int addr[5] = {CW_COMPLIANCE_SLOPE, CCW_COMPLIANCE_SLOPE, CW_COMPLIANCE_MARGIN, CCW_COMPLIANCE_MARGIN, CURRENT_PUNCH_L};
     int checkVal, temp, i;
     waitMoving();
