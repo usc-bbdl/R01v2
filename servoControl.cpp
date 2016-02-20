@@ -132,12 +132,13 @@ void servoControl::formatCMD(int position, int velocity) {  //function is a work
 }
 
 //public declarations
-void servoControl::setPosition(int position) {
+int servoControl::setPosition(int position) {
     int checkVal = 3443, bitPosition = 0;
     float temp;
     waitMoving();
     if (position < -150 || position > 150) {
         printf("Invalid Position %d. Value of Position must be between [-150, 150] degrees\n",position);
+        return 0;
     }
     else {
         temp = (position + 150)*POS_STEP;
@@ -148,17 +149,23 @@ void servoControl::setPosition(int position) {
         if( COMM_RXSUCCESS == commCheck() ) {
             if(checkVal != bitPosition) {
                 printf("servoControl: ERROR: device position register corrupt!\n");
+                return 0;
             }
         }
+        else {
+            return 0;
+        }
     }
+    return 1;
 }
 
-void servoControl::setVelocity(int velocity) {
+int servoControl::setVelocity(int velocity) {
     int checkVal = 3443, bitVelocity = 0;
     float temp;
     waitMoving();
     if (velocity > 476 || velocity < 0) {
         printf("Invalid Velocity %d. Value of Velocity must be between [0, 476] degrees/sec\n",velocity);
+        return 0;
     }
     else {
         temp = velocity*VEL_STEP;
@@ -169,64 +176,15 @@ void servoControl::setVelocity(int velocity) {
         if( COMM_RXSUCCESS == commCheck() ) {
             if(checkVal != bitVelocity) {
                 printf("servoControl: ERROR: device velocity register corrupt!\n");
+                return 0;
             }
         }
+        else {
+            return 0;
+        }
     }
+    return 1;
 }
-
-// int servoControl::setPosition(int position) {
-//     int checkVal = 3443, bitPosition = 0;
-//     float temp;
-//     waitMoving();
-//     if (position < -150 || position > 150) {
-//         printf("Invalid Position %d. Value of Position must be between [-150, 150] degrees\n",position);
-//         return 0;
-//     }
-//     else {
-//         temp = (position + 150)*POS_STEP;
-//         bitPosition = ( fabs(temp-ceil(temp)) < fabs(temp-floor(temp)) ) ? abs(ceil(temp)) : abs(floor(temp));
-//         dxl_write_word(servoID, P_GOAL_POSITION_L, bitPosition);
-//         //Sleep(CONTROL_PERIOD);
-//         checkVal = dxl_read_word(servoID, P_GOAL_POSITION_L);
-//         if( COMM_RXSUCCESS == commCheck() ) {
-//             if(checkVal != bitPosition) {
-//                 printf("servoControl: ERROR: device position register corrupt!\n");
-//                 return 0;
-//             }
-//         }
-//         else {
-//             return 0;
-//         }
-//     }
-//     return 1;
-// }
-
-// int servoControl::setVelocity(int velocity) {
-//     int checkVal = 3443, bitVelocity = 0;
-//     float temp;
-//     waitMoving();
-//     if (velocity > 476 || velocity < 0) {
-//         printf("Invalid Velocity %d. Value of Velocity must be between [0, 476] degrees/sec\n",velocity);
-//         return 0;
-//     }
-//     else {
-//         temp = velocity*VEL_STEP;
-//         bitVelocity = ( (temp-ceil(temp)) < (temp-floor(temp)) ) ? abs(ceil(temp)) : abs(floor(temp));
-//         dxl_write_word(servoID, P_GOAL_SPEED_L, bitVelocity);
-//         //Sleep(CONTROL_PERIOD);
-//         checkVal = dxl_read_word(servoID, P_GOAL_SPEED_L);
-//         if( COMM_RXSUCCESS == commCheck() ) {
-//             if(checkVal != bitVelocity) {
-//                 printf("servoControl: ERROR: device velocity register corrupt!\n");
-//                 return 0;
-//             }
-//         }
-//         else {
-//             return 0;
-//         }
-//     }
-//     return 1;
-// }
 
 int servoControl::setCompliance(int level) {
     const unsigned int sleepTime = 0;
@@ -360,12 +318,15 @@ void servoControl::goDefault() {
 
 void servoControl::rampHold() {
     setVelocity(rampVelocity);
+    
     setPosition(initPos);
-    waitMoving();
     Sleep(holdPeriod);
+    waitMoving();
+    
     setPosition(finalPos);
-    waitMoving();
     Sleep(holdPeriod);
+    waitMoving();
+    
     setPosition(initPos);
 }
 

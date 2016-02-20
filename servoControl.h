@@ -67,10 +67,8 @@
 
     public: servoControl(int ID = 1);
             ~servoControl();
-            // int setPosition(int);
-            // int setVelocity(int);
-            void setPosition(int);
-            void setVelocity(int);
+            int setPosition(int);
+            int setVelocity(int);            
             int setCompliance(int);//parameter is compliance level - Default = 0, High = 1;
             int torqueON(void);
             int torqueOFF(void);
