@@ -323,14 +323,12 @@ void servoControl::rampHold() {
     setVelocity(rampVelocity);
     
     setPosition(initPos);
-    Sleep(holdPeriod);
     waitMoving();
+    Sleep(holdPeriod);
     
     setPosition(finalPos);
-    Sleep(holdPeriod);
     waitMoving();
-    
-    setPosition(initPos);
+    Sleep(holdPeriod);    
 }
 
 void servoControl::setPerturbationParameters(int initPos, int finalPos, int rampVelocity, int holdPeriod) {
