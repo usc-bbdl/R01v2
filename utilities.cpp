@@ -36,7 +36,7 @@ int proceedState(int *state)
         motors.motorControllerStart();
         Sleep(1000);
         motors.resetMuscleLength = TRUE;
-        printf("Closed-Loop ; Next stage is Run Paradigm and Sample\n");
+        printf("Closed-Loop ; Next stage is Experiment Paradigm\n");
         *state = MOTOR_STATE_CLOSED_LOOP;
         break;
         /*

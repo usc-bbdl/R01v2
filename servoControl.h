@@ -1,7 +1,11 @@
-//*************************************************************
+//*******************************************************************
 //This is a virtual class that calls functions from dynamixel.h
 //Refer http://support.robotis.com/en/software/dynamixelsdk.htm
-//*************************************************************
+
+//Refer the RX-28 manual at:
+//http://support.robotis.com/en/product/dynamixel/rx_series/rx-28.htm
+//*******************************************************************
+
 
 // Windows version
 
@@ -13,18 +17,25 @@
     #include <math.h>
     #include <stdio.h>
     #include <conio.h>
-    #include "dynamixel\import\dynamixel.h"  
+    #include "dynamixel\import\dynamixel.h"
     #define PI  3.141592f
     #define POS_STEP 3.41333 //converts position angle to bits
     #define VEL_STEP 2.15126 //converts angular velocity to bits
-    
+
     // Control addresses
-    #define P_GOAL_POSITION_L	30
-    #define P_GOAL_POSITION_H	31
-    #define P_GOAL_SPEED_L		32
-    #define P_GOAL_SPEED_H		33
-    #define RESET_VELOCITY      160 //Set number between [0, 476] - Speed with which servo returns to default position on call of goDefault
-    
+    #define TORQUE_SWITCH           24
+    #define CW_COMPLIANCE_MARGIN    26
+    #define CCW_COMPLIANCE_MARGIN   27
+    #define CW_COMPLIANCE_SLOPE     28
+    #define CCW_COMPLIANCE_SLOPE    29
+    #define P_GOAL_POSITION_L	    30
+    #define P_GOAL_POSITION_H	    31
+    #define P_GOAL_SPEED_L		    32
+    #define P_GOAL_SPEED_H		    33
+    #define CURRENT_PUNCH_L         48
+    #define CURRENT_PUNCH_H         49
+    #define RESET_VELOCITY          160 //Set number between [0, 476] - Speed with which servo returns to default position on call of goDefault
+
     // Default setting
     #define DEFAULT_PORTNUM		3 // COM3
     #define DEFAULT_BAUDNUM		34 //157200 BAUD
@@ -48,16 +59,22 @@
 
     class servoControl {
         int servoID, CommStatus;
-        
+
         void PrintCommStatus(int);
         void PrintErrorCode();
         void formatCMD(int, int); // WARNING: function is a work in progress - do no call.
-        int initPos, finalPos, rampVelocity, holdPeriod; //position must be provided in terms of angle
-    
-    public: void setPosition(int);
-            void setVelocity(int);
+        int initPos, finalPos, rampVelocity, holdPeriod, servoTorque; //position must be provided in terms of angle
+
+    public: servoControl(int ID = 1);
             ~servoControl();
-            servoControl(int ID = 1);
+            // int setPosition(int);
+            // int setVelocity(int);
+            void setPosition(int);
+            void setVelocity(int);
+            int setCompliance(int);//parameter is compliance level - Default = 0, High = 1;
+            int torqueON(void);
+            int torqueOFF(void);
+            int isTorque(void);
             int commCheck();
             int servoPing();
             int isMoving();
