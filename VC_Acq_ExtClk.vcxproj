@@ -21,10 +21,10 @@
   <ItemGroup>
     <ClCompile Include="dataLogger.cpp" />
     <ClCompile Include="dataOneSample.cpp" />
-    <ClCompile Include="experimentUserInterface.cpp" />
-    <ClCompile Include="expParadigm.cpp" />
+    <ClCompile Include="expParadigmServoPerturbation.cpp" />
     <ClCompile Include="FPGAControl.cpp" />
     <ClCompile Include="FPGATest.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="motorControl.cpp" />
     <ClCompile Include="servoControl.cpp" />
     <ClCompile Include="SomeFpga.cpp" />
@@ -33,7 +33,7 @@
   <ItemGroup>
     <ClInclude Include="dataLogger.h" />
     <ClInclude Include="dataOneSample.h" />
-    <ClInclude Include="expParadigm.h" />
+    <ClInclude Include="expParadigmServoPerturbation.h" />
     <ClInclude Include="FPGAControl.h" />
     <ClInclude Include="motorControl.h" />
     <ClInclude Include="NIDAQmx.h" />
