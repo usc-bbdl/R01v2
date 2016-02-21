@@ -31,6 +31,9 @@
     <ClCompile Include="expParadigmServoPerturbation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="expParadigmMuscleLengthCalibration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataLogger.h">
@@ -61,6 +64,12 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="expParadigmServoPerturbation.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="expParadigmManualPerturbation.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="expParadigmMuscleLengthCalibration.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

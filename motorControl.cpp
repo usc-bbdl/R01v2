@@ -5,6 +5,8 @@
 #include <algorithm>
 motorControl::motorControl(double offset1, double offset2)
 {
+    encoderBias[0] = encoderBias[1] = 0;
+    encoderGain[0] = encoderGain[1] = 0;
     I = 2;
     cortexVoluntaryAmp = 10000;
     cortexVoluntaryFreq = 0.25;
@@ -266,9 +268,11 @@ void motorControl::controlLoop(void)
             resetMuscleLength = FALSE;
         }
         muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]);
-        muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*24.7178;
+        //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*24.7178;
+        muscleLength[0] = encoderBias[0] + muscleLength[0] *encoderGain[0];
         muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]);
-        muscleLength[1] = 0.95 + (muscleLength[1] - 0.0058)*24.4399;
+        //muscleLength[1] = 0.95 + (muscleLength[1] - 0.0058)*24.4399;
+        muscleLength[1] = encoderBias[1] + muscleLength[1] *encoderGain[1];
         muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
         muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
 

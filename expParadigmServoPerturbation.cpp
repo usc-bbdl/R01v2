@@ -31,7 +31,7 @@ expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double
 }
 int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController)
 {
-    int holdPeriod= 1000; 
+    int holdPeriod= 1000, retVal = -1; 
     bool stayInTheLoop = TRUE;
     char key = 0;
     printf("This experiment has %d trials\n",numTrials);
@@ -155,14 +155,27 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             // Terminate Anytime when Escape Is Pressed...
             if (kbhit()!=0){
                 key = getch();
-                if (key == 27) { stayInTheLoop = FALSE; }
+                if (key == 27) {
+                    stayInTheLoop = FALSE;
+                    retVal = -1;
+                }
+                else if (key == 'q' || key == 'Q') {
+                    stayInTheLoop = FALSE;
+                    retVal = 1;
             }
         }
     }
-    if (stayInTheLoop == TRUE) printf("\n Experiment finished...\n");
-        else printf("\n\n\n Experiment Terminated...\n\n\n");
+    if (stayInTheLoop == TRUE) {
+        printf("\n Experiment finished...\n");
+        return 0;
+    }
+        else {
+            printf("\n\n\n Experiment Terminated...\n\n\n");
+            return retVal;
+        }
     return 0;
 }
 expParadigmServoPerturbation::~expParadigmServoPerturbation()
 {
+    ;
 }

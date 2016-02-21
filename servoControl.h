@@ -81,7 +81,7 @@
             //void rampHold(int initPos = 368, int finalPos = 614, int rampVelocity = 1023, int holdPeriod = 1500); //368, 614, 1023, 2000
             void rampHold(); //368, 614, 1023, 2000
             int servoTwitch(int, int);
-            void setPerturbationParameters(int, int , int , int);
+            void setPerturbationParameters(int initPos, int finalPos, int rampVelocity, int holdPeriod);
     };
 
 #endif

@@ -7,7 +7,6 @@
 #include <utilities.h>
 #include <okFrontPanelDLL.h>
 #include <servoControl.h>
-
 int main()
 {
     printf("Press 'Spc' to move forward\n\n");
@@ -20,7 +19,6 @@ int main()
     }
     okFrontPanelDLL_GetVersion(dll_date, dll_time);
     printf("FrontPanel DLL loaded.  Built: %s  %s\n", dll_date, dll_time);
-
     int gExperimentState = STATE_INIT;
     bool stayInTheLoop = TRUE;
     while(stayInTheLoop)

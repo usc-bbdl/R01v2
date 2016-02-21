@@ -3,18 +3,21 @@
 #include <conio.h>
 #include <dataOneSample.h>
 #include <motorControl.h>
-#include <expParadigm.h>
+#include <expParadigmMuscleLengthCalibration.h>
+#include <expParadigmServoPerturbation.h>
+#include <expParadigmManualPerturbation.h>
+#include <expParadigmVoluntaryMovement.h>
 #include <FPGAControl.h>
 
-//float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
-float GGAIN = 0.0011;//0.005; //default is (0.9/1000) //0.4/2000 is safe
-float TBIAS = 3;
+
 
 int proceedState(int *state)
 {
+    int retVal = 0;
+    static servoControl servo;
     static dataOneSample loadCellOffsets;
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
-    static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
+    static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration;
     static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     static expParadigmManualPerturbation paradigmManualPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     static expParadigmVoluntaryMovement paradigmVoluntaryMovement(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
@@ -44,10 +47,10 @@ int proceedState(int *state)
     case STATE_CLOSED_LOOP:
         int menu = 0;
         printf("Which Paradigm to run?\n");
-        printf("- [1] Muscle Length Calibration\n");
-        printf("- [2] Servo Perturbation\n");
-        printf("- [3] Manual Perturbation\n");
-        printf("- [4] Voluntary Movement\n");
+        printf("\t[1] Muscle Length Calibration\n");
+        printf("\t[2] Servo Perturbation\n");
+        printf("\t[3] Manual Perturbation\n");
+        printf("\t[4] Voluntary Movement\n\n User Input:");
         do{
             scanf("%d", &menu);
             if ((menu>4) || (menu<1))
@@ -59,7 +62,7 @@ int proceedState(int *state)
             *state = STATE_PARADIGM_LENGTH_CALIBRATION;
             printf("Muscle Length Calibration Selected\n");
             break;
-       case 2:
+        case 2:
             *state = STATE_RUN_PARADIGM_SERVO_PERTURBATION;
             printf("Servo Perturbation Selected\n");
             break;
@@ -76,19 +79,19 @@ int proceedState(int *state)
 //        paradigm.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         break;
     case STATE_PARADIGM_LENGTH_CALIBRATION:
-        paradigmMuscleLengthCalibration.startParadigm(&motors);
+        retVal = paradigmMuscleLengthCalibration.startParadigm(&servo,&motors);
         *state = STATE_CLOSED_LOOP;
         break;
     case STATE_RUN_PARADIGM_SERVO_PERTURBATION:
-        paradigmServoPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
+        retVal = paradigmServoPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         *state = STATE_CLOSED_LOOP;
         break;
     case STATE_RUN_PARADIGM_MANUAL_PERTURBATION:
-        paradigmManualPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
+        retVal = paradigmManualPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         *state = STATE_CLOSED_LOOP;
         break;
     case STATE_RUN_PARADIGM_VOLUNTARY_MOVEMENT:
-        paradigmVoluntaryMovement.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
+        retVal = paradigmVoluntaryMovement.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         *state = STATE_CLOSED_LOOP;
         break;
     case STATE_SHUTTING_DOWN:
@@ -100,7 +103,6 @@ int proceedState(int *state)
     }
     return 0;
 }
-
 
 
 int ReInterpret(float32 in, int32 *out)

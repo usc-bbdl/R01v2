@@ -21,6 +21,10 @@ const int loadCellMinVoltage = -10;
 const int loadCellMaxVoltage = +10;
 const int encoderPulsesPerRev = 500;
 
+//float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
+extern float GGAIN = 0.0011;//0.005; //default is (0.9/1000) //0.4/2000 is safe
+extern float TBIAS = 3;
+
 /*
 const uInt32     MESSAGE_NO_CONNECTION = 0x00000000;
 const uInt32     MESSAGE_IDLE = 0x00000003;
