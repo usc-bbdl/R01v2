@@ -9,18 +9,25 @@
 #include <expParadigmVoluntaryMovement.h>
 #include <FPGAControl.h>
 
-
+//float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
+float GGAIN = 0.0011/5;//0.005; //default is (0.9/1000) //0.4/2000 is safe
+float TBIAS = 3;
+bool dataAcquisitionFlag[12] = {true,false,false,false,false,false,false,false,false,false,false,false}; //force(0), EMG(1), spindleIa(2), spindleII(3),spikeCount(4),raster1(5),raster2(6),raster3(7),raster4(8),raster5(9),raster6(10), real-time control cortex(11)
 
 int proceedState(int *state)
 {
     int retVal = 0;
+    int menu = 0;
     static servoControl servo;
     static dataOneSample loadCellOffsets;
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
-    static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration;
-    static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
-    static expParadigmManualPerturbation paradigmManualPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
-    static expParadigmVoluntaryMovement paradigmVoluntaryMovement(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
+    static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);
+    static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&servo);
+    static expParadigmManualPerturbation paradigmManualPerturbation;
+    static expParadigmVoluntaryMovement paradigmVoluntaryMovement(&motors);
+    static FPGAControl bicepFPGA(BICEP,&motors);
+    static FPGAControl tricepFPGA(TRICEP,&motors);
+
     switch(*state)
     {
     case STATE_INIT:
@@ -30,9 +37,7 @@ int proceedState(int *state)
         *state = STATE_WINDING_UP;
         break;
     case STATE_WINDING_UP:
-        //Start Neural FPGA and Feeding muscle length data
-        static FPGAControl bicepFPGA(BICEP,&motors);
-        static FPGAControl tricepFPGA(TRICEP,&motors);
+        //Start Neural FPGA and Feeding muscle length data        
         *state = STATE_OPEN_LOOP;
         printf("Open-Loop ; Next stage is Closed-Loop\n");
         break;
@@ -44,18 +49,18 @@ int proceedState(int *state)
         printf("Closed-Loop ; Next stage is Experiment Paradigm\n");
         *state = STATE_CLOSED_LOOP;
         break;
-    case STATE_CLOSED_LOOP:
-        int menu = 0;
-        printf("Which Paradigm to run?\n");
+    case STATE_CLOSED_LOOP:        
+        printf("\n\nWhat Paradigm do you want to run?\n");
+        printf("\t[0] Exit Program\n");
         printf("\t[1] Muscle Length Calibration\n");
         printf("\t[2] Servo Perturbation\n");
         printf("\t[3] Manual Perturbation\n");
         printf("\t[4] Voluntary Movement\n\n User Input:");
         do{
             scanf("%d", &menu);
-            if ((menu>4) || (menu<1))
+            if (!((menu <= 4) || (menu >= 0)))
                 printf("Wrong input! try Again.\n");
-        }while ((menu>4) || (menu<1));
+        }while (!((menu <= 4) || (menu >= 0)));
         switch(menu)
         {
         case 1:
@@ -68,31 +73,56 @@ int proceedState(int *state)
             break;
         case 3:
             *state = STATE_RUN_PARADIGM_MANUAL_PERTURBATION;
-            printf("Servo Perturbation Selected\n");
+            printf("Manual Perturbation Selected\n");
             break;
         case 4:
             *state = STATE_RUN_PARADIGM_VOLUNTARY_MOVEMENT;
             printf("Voluntary Movement Selected\n");
             break;
+        case 0:
+            *state = STATE_SHUTTING_DOWN;
+            printf("\nPress space to shutdown\n");
+            break;
+        default: break;
         }
 //        Sleep(500);
 //        paradigm.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         break;
     case STATE_PARADIGM_LENGTH_CALIBRATION:
-        retVal = paradigmMuscleLengthCalibration.startParadigm(&servo,&motors);
-        *state = STATE_CLOSED_LOOP;
+        retVal = paradigmMuscleLengthCalibration.startParadigm(&motors);
+        if(retVal != -1)
+            *state = STATE_CLOSED_LOOP;
+            else {
+                *state = STATE_SHUTTING_DOWN;
+                printf("\nPress space to shutdown\n");
+            }
         break;
     case STATE_RUN_PARADIGM_SERVO_PERTURBATION:
         retVal = paradigmServoPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
-        *state = STATE_CLOSED_LOOP;
+        if(retVal != -1)
+            *state = STATE_CLOSED_LOOP;
+            else {
+                *state = STATE_SHUTTING_DOWN;
+                printf("\nPress space to shutdown\n");
+            }
         break;
     case STATE_RUN_PARADIGM_MANUAL_PERTURBATION:
         retVal = paradigmManualPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
-        *state = STATE_CLOSED_LOOP;
+        if(retVal != -1)
+            *state = STATE_CLOSED_LOOP;
+            else {
+                *state = STATE_SHUTTING_DOWN;
+                printf("\nPress space to shutdown\n");
+            }
         break;
     case STATE_RUN_PARADIGM_VOLUNTARY_MOVEMENT:
         retVal = paradigmVoluntaryMovement.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
-        *state = STATE_CLOSED_LOOP;
+        if(retVal != -1)
+            *state = STATE_CLOSED_LOOP;
+            else {
+                *state = STATE_SHUTTING_DOWN;
+                printf("\nPress space to shutdown\n");
+            }
         break;
     case STATE_SHUTTING_DOWN:
         printf("Shutting Down\n");

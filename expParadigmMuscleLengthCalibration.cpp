@@ -3,17 +3,19 @@
 #include <servoControl.h>
 #include <utilities.h>
 #include <NIDAQmx.h>
-#include <utilities.cpp>
 float ggain,tbias;
-expParadigmMuscleLengthCalibration::expParadigmMuscleLengthCalibration()
+expParadigmMuscleLengthCalibration::expParadigmMuscleLengthCalibration(servoControl *param)
 {
-    printf("Enter initial position (degrees):\t");
-    scanf("%d",initPos);
+    servo = param;
+    rampVelocity = 10;
+    holdPeriod = 1000;
+    printf("Enter initial position (degrees): ");
+    std::cin>>initPos;
     printf("\n Enter final position (degrees):\t");
-    scanf("%d",finalPos);
+    std::cin>>finalPos;
     printf("\n");
 }
-int expParadigmMuscleLengthCalibration::startParadigm(servoControl *servo, motorControl *realTimeController)
+int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeController)
 {
   float64 muscleLengthBeforePert[2], muscleLengthAfterPert[2];
   realTimeController->encoderBias[0] = realTimeController->encoderBias[1] = 0;
@@ -47,6 +49,7 @@ int expParadigmMuscleLengthCalibration::startParadigm(servoControl *servo, motor
   realTimeController->encoderGain[1] = gain[1];
   GGAIN = ggain;
   TBIAS = tbias;
+  return 1;
 }
 expParadigmMuscleLengthCalibration::~expParadigmMuscleLengthCalibration()
 {

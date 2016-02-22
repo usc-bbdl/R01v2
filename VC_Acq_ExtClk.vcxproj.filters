@@ -25,13 +25,22 @@
     <ClCompile Include="servoControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="expParadigmServoPerturbation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="expParadigmMuscleLengthCalibration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="expParadigmManualPerturbation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp">
+      <Filter>Head Files</Filter>
+    </ClCompile>
+    <ClCompile Include="expParadigmVoluntaryMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -70,6 +79,9 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="expParadigmMuscleLengthCalibration.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="expParadigmVoluntaryMovement.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

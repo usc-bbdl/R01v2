@@ -1,31 +1,21 @@
-#ifndef EXPPARADIGM_H
-#define EXPPARADIGM_H
+#ifndef EXPPARADIGM_MANUAL_H
+#define EXPPARADIGM_MANUAL_H
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
 #include <utilities.h>
 #include <ctime>
-#include <dataLogger.h>
 #include "FPGAControl.h"
-#include <servoControl.h>
-class expParadigmServoPerturbation
+class expParadigmManualPerturbation
 {
-    servoControl servo;
-    float32 gammaDyn1[100],gammaSta1[100],gammaDyn2[100],gammaSta2[100],cortexDrive1[100],cortexDrive2[100];
-    int rep[100];
-    int numTrials;
-    int trialLength[100];
-    int initPos[100];
-    int finalPos[100];
-    int rampVelocity[100];
-    dataLogger log;
+    float32 gammaDyn1,gammaSta1,gammaDyn2,gammaSta2,cortexDrive1,cortexDrive2;
 public:
-    int currentTrialNum,  currentRepNum;
-    expParadigmServoPerturbation(double,double);
-    ~expParadigmServoPerturbation(void);
+    expParadigmManualPerturbation();
+    ~expParadigmManualPerturbation(void);
     int startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController);    
     bool isRunning();
 };
 #endif
+
 
 

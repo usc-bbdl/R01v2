@@ -39,7 +39,7 @@ int mainTEST()
     SomeFpga *gXemSpindleBic;
     gXemSpindleBic = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "113700021E"); 
 
-    int gExperimentState = MOTOR_STATE_INIT;
+    int gExperimentState = STATE_INIT;
     bool stayInTheLoop = TRUE;
     while(stayInTheLoop)
     {

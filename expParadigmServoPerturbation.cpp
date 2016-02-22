@@ -1,10 +1,11 @@
 #include "expParadigmServoPerturbation.h"
 #include "FPGAControl.h"
 #include <servoControl.h>
-expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double offset2)
+expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double offset2,servoControl *param)
 {
+    servo = param;
     int gD1 = 0, gS1 = 0, gD2 = 0, gS2 = 0;
-    int cortex1 = 0, cortex2 =0; 
+    int cortex1 = 0, cortex2 =0;
     currentTrialNum = 0;
     currentRepNum = 0;
     log.loadCellOffset1 = offset1;
@@ -31,7 +32,7 @@ expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double
 }
 int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController)
 {
-    int holdPeriod= 1000, retVal = -1; 
+    int holdPeriod= 1000, retVal = -1;
     bool stayInTheLoop = TRUE;
     char key = 0;
     printf("This experiment has %d trials\n",numTrials);
@@ -67,7 +68,7 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     //bicepFPGA->updateParametersFlag = '1';
     //Sleep(500);
 
-    
+
 
     //tricepFPGA->spindleIaGain = 0.2;
     //tricepFPGA->spindleIIGain = 0.4;
@@ -77,12 +78,12 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     //tricepFPGA->spindleIISynapseGain = 0;
     //tricepFPGA->updateParametersFlag = '1';
     //Sleep(500);
-    for(int i = 0; i < numTrials && stayInTheLoop == TRUE; i++){ 
+    for(int i = 0; i < numTrials && stayInTheLoop == TRUE; i++){
         printf("This trial has %d repetitions\t\n\n",rep[i]);
         //printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
-        
+
         Sleep(500);
-        
+
         bicepFPGA->gammaDynamic = gammaDyn1[i];
         bicepFPGA->gammaStatic = gammaSta1[i];
         bicepFPGA->updateGammaFlag = '1';
@@ -100,13 +101,13 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         tricepFPGA->cortexDrive = cortexDrive2[i];
         tricepFPGA->updateCortexFlag = '1';
         Sleep(500);
-        
-        servo.goDefault();
+
+        servo->goDefault();
         Sleep(500);
         realTimeController->resetMuscleLength = TRUE;
         realTimeController->newTrial = 1;
         Sleep(500);
-        
+
         //bicepFPGA->spindleIaGain = 10;
         //bicepFPGA->spindleIIGain = 10;
         //bicepFPGA->spindleIaOffset = -50;
@@ -133,16 +134,16 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             currentRepNum = j;
             printf("Starting trial#  %d and repetition #%d\n\n",i+1,j+1);
             time_t t = time(NULL);
-	        tm* timePtr = localtime(&t);
+	          tm* timePtr = localtime(&t);
             char fileName[200];
             sprintf_s(
             fileName,
             "C:\\data\\GammaSweep_%4d_%02d_%02d_%02d_%02d_%02d_GammaDyn_%.0f_GammaStat_%.0f_Rep_%d.txt",
-            timePtr->tm_year+1900, 
-            timePtr->tm_mon+1, 
-            timePtr->tm_mday, 
-            timePtr->tm_hour, 
-            timePtr->tm_min, 
+            timePtr->tm_year+1900,
+            timePtr->tm_mon+1,
+            timePtr->tm_mday,
+            timePtr->tm_hour,
+            timePtr->tm_min,
             timePtr->tm_sec,
             gammaDyn1[i],
             gammaSta1[i],
@@ -150,8 +151,8 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             );
             log.fileName = fileName;
             log.trialLength = trialLength[i];
-            servo.setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
-            servo.rampHold();
+            servo->setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
+            servo->rampHold();
             // Terminate Anytime when Escape Is Pressed...
             if (kbhit()!=0){
                 key = getch();
@@ -162,9 +163,12 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
                 else if (key == 'q' || key == 'Q') {
                     stayInTheLoop = FALSE;
                     retVal = 1;
+                }
             }
         }
     }
+
+
     if (stayInTheLoop == TRUE) {
         printf("\n Experiment finished...\n");
         return 0;
@@ -175,7 +179,9 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         }
     return 0;
 }
+
+
 expParadigmServoPerturbation::~expParadigmServoPerturbation()
 {
-    ;
+    int i;
 }

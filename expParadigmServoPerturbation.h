@@ -1,5 +1,5 @@
-#ifndef EXPPARADIGM_H
-#define EXPPARADIGM_H
+#ifndef EXPPARADIGM_SERVO_H
+#define EXPPARADIGM_SERVO_H
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
@@ -10,7 +10,7 @@
 #include <servoControl.h>
 class expParadigmServoPerturbation
 {
-    servoControl servo;
+    servoControl *servo;
     float32 gammaDyn1[100],gammaSta1[100],gammaDyn2[100],gammaSta2[100],cortexDrive1[100],cortexDrive2[100];
     int rep[100];
     int numTrials;
@@ -21,7 +21,7 @@ class expParadigmServoPerturbation
     dataLogger log;
 public:
     int currentTrialNum,  currentRepNum;
-    expParadigmServoPerturbation(double,double);
+    expParadigmServoPerturbation(double,double,servoControl *);
     ~expParadigmServoPerturbation(void);
     int startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController);    
     bool isRunning();

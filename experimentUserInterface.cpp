@@ -1,4 +1,3 @@
-// experimentUserInterface.cpp : Defines the entry point for the console application.
 //
 #include <stdio.h>
 #include <windows.h>
@@ -7,7 +6,6 @@
 #include <utilities.h>
 #include <okFrontPanelDLL.h>
 #include <servoControl.h>
-
 int main()
 {
     printf("Press 'Spc' to move forward\n\n");
@@ -20,8 +18,7 @@ int main()
     }
     okFrontPanelDLL_GetVersion(dll_date, dll_time);
     printf("FrontPanel DLL loaded.  Built: %s  %s\n", dll_date, dll_time);
-
-    int gExperimentState = MOTOR_STATE_INIT;
+    int gExperimentState = STATE_INIT;
     bool stayInTheLoop = TRUE;
     while(stayInTheLoop)
     {
@@ -32,7 +29,7 @@ int main()
             {
                 case 27:        // Terminate Anytime when Escape Is Pressed...
                     stayInTheLoop = FALSE;
-                    gExperimentState = MOTOR_STATE_RUN_PARADIGM;
+                    gExperimentState = STATE_SHUTTING_DOWN;
                     proceedState(&gExperimentState);
                     break;
                 case ' ':       // Move forward in the state machine

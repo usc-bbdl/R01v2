@@ -1,22 +1,24 @@
 #ifndef PARADIGM_MUSCLE_LENGTH_H
 #define PARADIGM_MUSCLE_LENGTH_H
-//#include <stdio.h>
-//#include <windows.h>
-//#include <iostream>
-//#include <utilities.h>
+#include <stdio.h>
+#include <windows.h>
+#include <iostream>
+#include <utilities.h>
 //#include <ctime>
 //#include <dataLogger.h>
 //#include "FPGAControl.h"
-//#include <servoControl.h>
+#include <servoControl.h>
+#include <motorControl.h>
 class expParadigmMuscleLengthCalibration
 {
+    servoControl *servo;
     int initPos,finalPos;
     double gain[2], bias[2];
-    const rampVelocity = 5, holdPeriod = 1000;
+    int rampVelocity, holdPeriod;
 public:
-    expParadigmMuscleLengthCalibration();
+    expParadigmMuscleLengthCalibration(servoControl *);
     ~expParadigmMuscleLengthCalibration(void);
-    int startParadigm(servoControl *servo, motorControl *realTimeController);
+    int startParadigm(motorControl *);
     bool isRunning();
 };
 #endif
