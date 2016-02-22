@@ -10,9 +10,10 @@
 #include <FPGAControl.h>
 
 //float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
-float GGAIN = 0.0011/5;//0.005; //default is (0.9/1000) //0.4/2000 is safe
-float TBIAS = 3;
-bool dataAcquisitionFlag[12] = {true,false,false,false,false,false,false,false,false,false,false,false}; //force(0), EMG(1), spindleIa(2), spindleII(3),spikeCount(4),raster1(5),raster2(6),raster3(7),raster4(8),raster5(9),raster6(10), real-time control cortex(11)
+float GGAIN = 0.000016923;//0.005; //default is (0.9/1000) //0.4/2000 is safe
+float TBIAS = 1;
+
+bool dataAcquisitionFlag[12] = {true,false,true,true,false,false,false,false,false,false,false,false}; //force(0), EMG(1), spindleIa(2), spindleII(3),spikeCount(4),raster1(5),raster2(6),raster3(7),raster4(8),raster5(9),raster6(10), real-time control cortex(11)
 
 int proceedState(int *state)
 {
@@ -66,22 +67,27 @@ int proceedState(int *state)
         case 1:
             *state = STATE_PARADIGM_LENGTH_CALIBRATION;
             printf("Muscle Length Calibration Selected\n");
+            printf("Press Space to continue\n");
             break;
         case 2:
             *state = STATE_RUN_PARADIGM_SERVO_PERTURBATION;
             printf("Servo Perturbation Selected\n");
+            printf("Press Space to continue\n");
             break;
         case 3:
             *state = STATE_RUN_PARADIGM_MANUAL_PERTURBATION;
             printf("Manual Perturbation Selected\n");
+            printf("Press Space to continue\n");
             break;
         case 4:
             *state = STATE_RUN_PARADIGM_VOLUNTARY_MOVEMENT;
             printf("Voluntary Movement Selected\n");
+            printf("Press Space to continue\n");
             break;
         case 0:
             *state = STATE_SHUTTING_DOWN;
             printf("\nPress space to shutdown\n");
+            printf("Press Space to continue\n");
             break;
         default: break;
         }

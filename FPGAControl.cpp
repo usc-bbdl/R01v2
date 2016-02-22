@@ -7,7 +7,7 @@
 #include "motorControl.h"
 #include <windows.h>
 #include <process.h>
-
+#include <math.h>
 //const char FPGAControl::spindleSerial[2][11] = {"113700021E", "11160001CG"};
 //const char FPGAControl::muscleSerial[2][11]  = {"0000000542", "1137000222"};
 bool killThread = 0;
@@ -16,6 +16,10 @@ int muscleIndex = 0;
 
 FPGAControl::FPGAControl(int param, motorControl *param2)
 {
+    pcsa[0] = 1.77;
+    pcsa[1] = 0.56;
+    theta[0] = 7 * 3.1416 / 180;
+    theta[1] = 6 * 3.1416 / 180;
     updateGammaFlag = '0';
     updateParametersFlag = '0';
     //SomeFpga    *spindleFPGA;
@@ -285,9 +289,9 @@ int FPGAControl::readMuscleFPGAForce()
 {
     muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
     //muscleForceFPGA = 0;
-    float tCtrl = ((muscleForceFPGA) * GGAIN) +  TBIAS;
+    float tCtrl = ((muscleForceFPGA) * GGAIN);
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
-    //muscleForce = 5;
+    muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
     return 0;
 }
 

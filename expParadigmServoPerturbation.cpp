@@ -37,7 +37,7 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     char key = 0;
     printf("This experiment has %d trials\n",numTrials);
 
-    bicepFPGA->spindleIaGain = 1.2;
+    /*bicepFPGA->spindleIaGain = 1.2;
     bicepFPGA->spindleIIGain = 2;
     bicepFPGA->spindleIaOffset = 250;
     bicepFPGA->spindleIIOffset = 50;
@@ -45,11 +45,11 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     bicepFPGA->spindleIISynapseGain = 60;
     bicepFPGA->forceLengthCurve = 1;
     bicepFPGA->updateParametersFlag = '1';
-    Sleep(500);
+    Sleep(500);*/
 
 
 
-    tricepFPGA->spindleIaGain = 1.2;
+    /*tricepFPGA->spindleIaGain = 1.2;
     tricepFPGA->spindleIIGain = 2;
     tricepFPGA->spindleIaOffset = 250;
     tricepFPGA->spindleIIOffset = 50;
@@ -57,7 +57,9 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     tricepFPGA->spindleIISynapseGain = 60;
     tricepFPGA->forceLengthCurve = 1;
     tricepFPGA->updateParametersFlag = '1';
-    Sleep(500);
+    Sleep(500);*/
+
+
 
     //bicepFPGA->spindleIaGain = 0.2;
     //bicepFPGA->spindleIIGain = 0.4;
@@ -107,27 +109,6 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         realTimeController->resetMuscleLength = TRUE;
         realTimeController->newTrial = 1;
         Sleep(500);
-
-        //bicepFPGA->spindleIaGain = 10;
-        //bicepFPGA->spindleIIGain = 10;
-        //bicepFPGA->spindleIaOffset = -50;
-        //bicepFPGA->spindleIIOffset = -500;
-        //bicepFPGA->spindleIaSynapseGain = 30;
-        //bicepFPGA->spindleIISynapseGain = 0;
-        //bicepFPGA->updateParametersFlag = '1';
-
-        //bicepFPGA->spindleIaGain = 15;
-        //bicepFPGA->spindleIIGain = 5;
-        //bicepFPGA->spindleIaOffset = 0;
-        //bicepFPGA->spindleIIOffset = 0;
-        //bicepFPGA->spindleIaSynapseGain = 5;
-        //bicepFPGA->spindleIISynapseGain = 2;
-        //bicepFPGA->updateParametersFlag = '1';
-
-        //tricepFPGA->gammaDynamic = gammaDyn[i];
-        //tricepFPGA->gammaStatic = gammaSta[i];
-        //tricepFPGA->updateGammaFlag = '1';
-        //Sleep(100);
         currentTrialNum = i;
         for (int j = 0; j<rep[i] && stayInTheLoop == TRUE; j++){
             holdPeriod = (trialLength[i]*1000)/2;

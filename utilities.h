@@ -67,7 +67,6 @@ typedef unsigned char       BYTE;
 #define TRICEP 1
 extern float GGAIN; //default is (0.9/1000) //0.4/2000 is safe
 extern float TBIAS;
-
 //work in progress
 void configParser(FILE *);
 void testParser(FILE *);
