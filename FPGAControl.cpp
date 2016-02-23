@@ -16,10 +16,10 @@ int muscleIndex = 0;
 
 FPGAControl::FPGAControl(int param, motorControl *param2)
 {
-    pcsa[0] = 1.77;
-    pcsa[1] = 0.56;
-    theta[0] = 7 * 3.1416 / 180;
-    theta[1] = 6 * 3.1416 / 180;
+    pcsa[0] = 0.56;
+    pcsa[1] = 1.77;
+    theta[0] = 6 * 3.1416 / 180;
+    theta[1] = 7 * 3.1416 / 180;
     updateGammaFlag = '0';
     updateParametersFlag = '0';
     //SomeFpga    *spindleFPGA;

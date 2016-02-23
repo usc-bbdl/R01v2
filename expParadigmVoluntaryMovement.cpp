@@ -53,14 +53,14 @@ int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGACont
             tricepFPGA->updateGammaFlag = '1';
             Sleep(500);
 
-            realTimeController->resetMuscleLength = TRUE;
+            //realTimeController->resetMuscleLength = TRUE;
             realTimeController->newTrial = 1;
             Sleep(500);       
             updateIT = 0;
         }//end update if block
 
         printf("\n\nVOluntary Movement Options\n");
-        printf("\t[0] Exit Manual Paradigm\n"); 
+        printf("\t[0] Exit Voluntary Movement Paradigm\n"); 
         printf("\t[1] Change Muscle 1 Parameters\n");
         printf("\t[2] Change Muscle 2 Parameters\n");
         printf("\t[3] Change Voluntary Drive\n");
