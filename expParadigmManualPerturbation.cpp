@@ -18,7 +18,7 @@ int expParadigmManualPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACon
     bicepFPGA->spindleIIOffset = 50;
     bicepFPGA->spindleIaSynapseGain = 60;
     bicepFPGA->spindleIISynapseGain = 60;
-    bicepFPGA->forceLengthCurve = 1;
+    bicepFPGA->forceLengthCurve = 1; //default 1
     bicepFPGA->updateParametersFlag = '1';
     Sleep(500);
 
@@ -30,7 +30,7 @@ int expParadigmManualPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACon
     tricepFPGA->spindleIIOffset = 50;
     tricepFPGA->spindleIaSynapseGain = 60;
     tricepFPGA->spindleIISynapseGain = 60;
-    tricepFPGA->forceLengthCurve = 1;
+    tricepFPGA->forceLengthCurve = 1; //default 1
     tricepFPGA->updateParametersFlag = '1';
     Sleep(500);
 
