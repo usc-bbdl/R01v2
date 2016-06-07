@@ -34,12 +34,13 @@
     <ClCompile Include="expParadigmManualPerturbation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="experimentUserInterface.cpp">
-      <Filter>Head Files</Filter>
-    </ClCompile>
     <ClCompile Include="expParadigmVoluntaryMovement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

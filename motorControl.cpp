@@ -89,8 +89,8 @@ motorControl::motorControl(double offset1, double offset2)
 
     
     DAQmxErrChk (DAQmxCreateTask("",&motorTaskHandle));
-    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao8","motor1",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao9","motor2",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao9","motor1",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao11","motor2",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao31","speaker",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCfgSampClkTiming(motorTaskHandle,"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
     
@@ -125,7 +125,7 @@ motorControl::~motorControl()
 
 int motorControl::motorEnable()
 {
-    uInt32      dataEnable=0x0000000f;
+    uInt32      dataEnable=0x00000001;
     char        errBuff[2048]={'\0'};
     int32       error=0;
     float64 zeroVoltages[3]={0.0,0.0,0.0},zeroVoltage={0.0};
@@ -281,12 +281,12 @@ void motorControl::controlLoop(void)
         }
         muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]);
         //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*24.7178;
-        muscleLength[0] = 0.95 + (-muscleLength[0] + 0.0059)*40;
-        //muscleLength[0] = encoderBias[0] + muscleLength[0] *encoderGain[0];
+        //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*40;
+        muscleLength[0] = encoderBias[0] + muscleLength[0] *encoderGain[0];
         muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]);
-        muscleLength[1] = 1 + (-muscleLength[1] - 0.0058)*30 + 0.5;
+        //muscleLength[1] = 1 + (muscleLength[1] - 0.0058)*30 + 0.5;
         //muscleLength[1] = 0.95 + (muscleLength[1] - 0.0058)*24.4399;
-        //muscleLength[1] = encoderBias[1] + muscleLength[1] *encoderGain[1];
+        muscleLength[1] = encoderBias[1] + muscleLength[1] *encoderGain[1];
         muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
         muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
 
