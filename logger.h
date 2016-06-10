@@ -15,7 +15,9 @@ private:
     FLOAT,
     DOUBLE
   } TYPE;
-  typedef class {
+
+  //REDO THIS LIST TO USE LISTMAN.H
+  typedef struct listElement{
     void *data;
     listElement *prev, *next;
   } listElement;
