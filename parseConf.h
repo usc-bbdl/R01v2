@@ -6,14 +6,17 @@
 #include <windows.h>
 #include <iostream>
 #include <utilities.h>
+#include <file.h>
+#include "listman.h"
 
-typedef class {
+typedef struct {
   float initpos, finalpos, jtvel;
   float jt1Ang, jt1MLn, jt2Ang, jt2MLn, Fbias, Fgain;
-  int nChannels;
+  int nChannels, trajbuffer;
+  char tstfile[100], traject[100], logfile[100];
 }exptParameters;
 
-typedef class {
+typedef struct {
   float LDcellgain, PIDgain, shaftdia;
   float gd, gs, alpha;
   float MNIaGain, MNIaOfst, MNIIGain, MNIIOfst, MNthresh, MNpkfire, MNmnfire;
@@ -23,12 +26,18 @@ typedef class {
 class parseConf {
 private:
   char confLocation[100];
+  exptParameters exptParams;
+  channelParameters *channelParams;
 
 public:
-  parseConf(char *, chnl);
+  parseConf(char *configLocation);
   ~parseConf();
-  int readConf();
-  int readTest();
+  int numChannels();
+  channelParameters* readParameters(long int channelNumber);
+  int parseText(char *);
+  int getConf();
+  int getTest();
+  int getTrajectories();
 };
 
 #endif

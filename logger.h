@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <iostream>
 #include <utilities.h>
+#include "listman.h"
 
 class logger {
 private:
@@ -16,13 +17,15 @@ private:
     DOUBLE
   } TYPE;
 
-  //REDO THIS LIST TO USE LISTMAN.H
-  typedef struct listElement{
-    void *data;
-    listElement *prev, *next;
-  } listElement;
-  int dataCount; //number of data points to log
-  listElement *listHead;
+  // //REDO THIS LIST TO USE LISTMAN.H
+  // typedef struct listElement{
+  //   void *data;
+  //   listElement *prev, *next;
+  // } listElement;
+  // int dataCount; //number of data points to log
+  // listElement *listHead;
+
+
 
 public:
   logger(); //initialize looger's basic variables, pointers to NULL
