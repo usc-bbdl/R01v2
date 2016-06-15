@@ -11,13 +11,13 @@
 class expParadigmServoPerturbation
 {
     servoControl *servo;
-    float32 gammaDyn1[100],gammaSta1[100],gammaDyn2[100],gammaSta2[100],cortexDrive1[100],cortexDrive2[100];
-    int rep[100];
+    float32 gammaDyn1[1000],gammaSta1[1000],gammaDyn2[1000],gammaSta2[1000],cortexDrive1[1000],cortexDrive2[1000];
+    int rep[1000];
     int numTrials;
-    int trialLength[100];
-    int initPos[100];
-    int finalPos[100];
-    int rampVelocity[100];
+    int trialLength[1000];
+    int initPos[1000];
+    int finalPos[1000];
+    int rampVelocity[1000];
     dataLogger log;
 public:
     int currentTrialNum,  currentRepNum;

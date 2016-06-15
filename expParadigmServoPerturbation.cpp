@@ -5,7 +5,7 @@ expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double
 {
     servo = param;
     int gD1 = 0, gS1 = 0, gD2 = 0, gS2 = 0;
-    int cortex1 = 0, cortex2 =0;
+    int cortex1 = 0, cortex2 =0, inPos = 0, finPos = 0,rampVel = 0, trialLen = 0, r = 0;
     currentTrialNum = 0;
     currentRepNum = 0;
     log.loadCellOffset1 = offset1;
@@ -18,15 +18,20 @@ expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double
         printf("Could not open data file");
     }
     fscanf(configFile,"%s\n",&header);
-    fscanf(configFile,"%d,%d\n",&numTrials);
+    fscanf(configFile,"%d\n",&numTrials);
     for(int i = 0; i < numTrials; i++){
-        fscanf(configFile,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", &gD1, &gS1, &gD2, &gS2,&cortex1,&cortex2, &initPos[i], &finalPos[i], &rampVelocity[i],&trialLength[i], &rep[i]);
+        fscanf(configFile,"%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", &gD1, &gS1, &gD2, &gS2, &cortex1, &cortex2, &inPos, &finPos, &rampVel, &trialLen, &r);
         gammaDyn1[i] = gD1;
         gammaSta1[i] = gS1;
         gammaDyn2[i] = gD2;
         gammaSta2[i] = gS2;
         cortexDrive1[i] = cortex1;
         cortexDrive2[i] = cortex2;
+        initPos[i] = inPos;
+        finalPos[i] = finPos;
+        rampVelocity[i] = rampVel;
+        trialLength[i] = trialLen;
+        rep[i] = r;
     }
     fclose(configFile);
 }

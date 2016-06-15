@@ -43,8 +43,12 @@ int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeCont
   servo->goDefault();
   gain[0] = 1/(muscleLengthBeforePert[0] - muscleLengthAfterPert[0]);
   gain[1] = 1/(muscleLengthAfterPert[1] - muscleLengthBeforePert[1]);
+  printf("Muscle Length Before Pert: %f\n",muscleLengthBeforePert[1]);
+  printf("Muscle Length After Pert: %f\n",muscleLengthAfterPert[1]);
+  printf("Gain is: %f\n",gain[1]);
   bias[0] = 0.6 - (gain[0] * muscleLengthAfterPert[0]);
-  bias[1] = 1.6 - (gain[1] * muscleLengthAfterPert[1]);
+  bias[1] = 0.6 - (gain[1] * muscleLengthBeforePert[1]);
+  printf("Bias is: %f\n",bias[1]);
   realTimeController->encoderBias[0] = bias[0];
   realTimeController->encoderBias[1] = bias[1];
   realTimeController->encoderGain[0] = gain[0];
