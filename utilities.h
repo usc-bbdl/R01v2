@@ -5,6 +5,9 @@
 #include <NIDAQmx.h>
 #include <stdio.h>
 
+#define TRUE  1
+#define FALSE 0
+
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
 const int controlFreq = 1000;
@@ -72,4 +75,3 @@ void configParser(FILE *);
 void testParser(FILE *);
 
 #endif
-
