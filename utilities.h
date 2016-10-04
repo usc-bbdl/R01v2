@@ -43,7 +43,7 @@ const uInt32     MESSAGE_TERMINATE = 0x00000007;
 #define     STATE_RUN_PARADIGM_VOLUNTARY_MOVEMENT 7
 #define     STATE_SHUTTING_DOWN 8
 
-extern bool dataAcquisitionFlag[12];
+extern int dataAcquisitionFlag[12];
 const int   NUM_NEURON = 128;
 const int   SAMPLING_RATE = 1024;
 const int   DATA_EVT_LCEVEL = 9;
