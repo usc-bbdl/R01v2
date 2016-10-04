@@ -54,7 +54,7 @@ int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGACont
             Sleep(500);
 
             //realTimeController->resetMuscleLength = TRUE;
-            realTimeController->newTrial = 1;
+            realTimeController->trialTrigger = 1;
             Sleep(500);       
             updateIT = 0;
         }//end update if block
