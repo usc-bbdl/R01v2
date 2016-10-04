@@ -4,25 +4,28 @@
 #include <windows.h>
 #include <iostream>
 #include <utilities.h>
-//#include <UdpClient.h>
 #include <ctime>
 #include <dataLogger.h>
-
+#include "FPGAControl.h"
+#include <servoControl.h>
 class expParadigm
 {
-    double gammaDyn[100];
-    double gammaSta[100];
+    servoControl servo;
+    float32 gammaDyn1[100],gammaSta1[100],gammaDyn2[100],gammaSta2[100],cortexDrive1[100],cortexDrive2[100];
     int rep[100];
     int numTrials;
     int trialLength[100];
-    //UdpClient client;
+    int initPos[100];
+    int finalPos[100];
+    int rampVelocity[100];
     dataLogger log;
 public:
+    int currentTrialNum,  currentRepNum;
     expParadigm(double,double);
     ~expParadigm(void);
-    int startParadigm();
+    int startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController);    
     bool isRunning();
-    int currentTrialNum,  currentRepNum;
-    
 };
 #endif
+
+

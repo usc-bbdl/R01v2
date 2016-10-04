@@ -1,18 +1,24 @@
-// experimentUserInterface.cpp : Defines the entry point for the console application.
 //
-
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
 #include <conio.h>
 #include <utilities.h>
-
+#include <okFrontPanelDLL.h>
+#include <servoControl.h>
 int main()
 {
-    printf("Press Spc to move forward\n\n");
-    printf("Press Esc to terminate\n");
-    printf("Initialization; Next stage is Motors Winding up\n");
-    int gExperimentState = MOTOR_STATE_INIT;
+    printf("Press 'Spc' to move forward\n\n");
+    printf("Press 'Esc' to terminate\n");
+    printf("\nInitialization; Next stage is Motors Winding up\n");
+    char dll_date[32], dll_time[32];
+    printf("\n---- Opal Kelly ---- FrontPanel 3.0 ----\n");
+    if (FALSE == okFrontPanelDLL_LoadLib(NULL)) {
+        printf("FrontPanel DLL could not be loaded.\n");
+    }
+    okFrontPanelDLL_GetVersion(dll_date, dll_time);
+    printf("FrontPanel DLL loaded.  Built: %s  %s\n", dll_date, dll_time);
+    int gExperimentState = STATE_INIT;
     bool stayInTheLoop = TRUE;
     while(stayInTheLoop)
     {
@@ -23,7 +29,7 @@ int main()
             {
                 case 27:        // Terminate Anytime when Escape Is Pressed...
                     stayInTheLoop = FALSE;
-                    gExperimentState = MOTOR_STATE_RUN_PARADIGM;
+                    gExperimentState = STATE_SHUTTING_DOWN;
                     proceedState(&gExperimentState);
                     break;
                 case ' ':       // Move forward in the state machine
@@ -34,4 +40,3 @@ int main()
     }
    return 0;
 }
-
