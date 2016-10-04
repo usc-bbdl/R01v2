@@ -286,10 +286,11 @@ int FPGAControl::writeCortexCommand()
     cortexFPGA->WriteFpgaCortexDrive(bitValCortexDrive, DATA_EVT_CORTEX_MIXED_INPUT);
     return 0;
 }
-
+//be,bf
 int FPGAControl::readMuscleFPGAForce()
 {
-    muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
+    //muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
+    muscleFPGA->ReadFpgaPipes(0x32, "float32", &muscleForceFPGA);
     //muscleForceFPGA = 0;
     float tCtrl = ((muscleForceFPGA) * GGAIN);
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
