@@ -46,8 +46,8 @@ public:
     int motorDisable();
     int motorControllerStart();
     int motorControllerEnd();
-    int gammaDynamic1, gammaStatic1,gammaDynamic2, gammaStatic2,trialTrigger;
-    double cortexDrive[2], angle, velocity;
+    int gammaDynamic1, gammaStatic1,gammaDynamic2, gammaStatic2,newTrial;
+    double cortexDrive[2];
 };
 
 #endif

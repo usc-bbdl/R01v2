@@ -12,9 +12,7 @@ motorControl::motorControl(double offset1, double offset2)
     cortexVoluntaryFreq = 0.25;
     char        errBuff[2048]={'\0'};
     int32       error=0;
-    angle = 0;
-    velocity = 0;
-    trialTrigger = 0;
+    newTrial = 0;
     gammaStatic1 = 0;
     gammaDynamic1 = 0;
     gammaStatic2 = 0;
@@ -261,8 +259,6 @@ void motorControl::controlLoop(void)
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
     float64 goffsetLoadCell[2]={0};
-    int expProtocol = 0;
-    int expProtocoAdvance = 0;
     while(live)
     {
         WaitForSingleObject(hIOMutex, INFINITE);
@@ -325,7 +321,7 @@ void motorControl::controlLoop(void)
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock, muscleLength[0], muscleLength[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
-        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f",tock,expProtocol,muscleLength[0], muscleLength[1], loadCellData[0],loadCellData[1]);
+        sprintf(dataSample,"%.3f,%.6f,%.6f,%.6f,%.6f",tock,muscleLength[0], muscleLength[1], loadCellData[0],loadCellData[1]);
         if (dataAcquisitionFlag[0]){
             sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorRef[1]);
             strcat (dataSample, dataTemp);
@@ -376,56 +372,9 @@ void motorControl::controlLoop(void)
         }
         //sprintf(dataTemp,",%d,%d,%d,%d,%.3f,%.3f,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, cortexDrive[0], cortexDrive[1],newTrial);
         sprintf(dataTemp,"\n");
-        if (trialTrigger == 1){
-            expProtocoAdvance = 1;
-            trialTrigger = 0;
-        }
-        if (trialTrigger == 2){
-            expProtocoAdvance = 10;
-            trialTrigger = 0;
-        }
-        expProtocol = 0;
-        switch(expProtocoAdvance){
-            case 1:
-                expProtocol = -1000;
-                expProtocoAdvance = 2;
-                break;
-            case 2:
-                expProtocol = gammaDynamic1;
-                expProtocoAdvance = 3;
-                break;
-            case 3:
-                expProtocol = gammaStatic1;
-                expProtocoAdvance = 4;
-                break;
-            case 4:
-                expProtocol =  cortexDrive[0];
-                expProtocoAdvance = 5;
-                break;
-            case 5:
-                expProtocol = gammaDynamic2;
-                expProtocoAdvance = 6;
-                break;
-            case 6:
-                expProtocol = gammaStatic2;
-                expProtocoAdvance = 7;
-                break;
-            case 7:
-                expProtocol =  cortexDrive[1];
-                expProtocoAdvance = 8;
-                break;
-            case 8: 
-                expProtocol = angle;
-                expProtocoAdvance = 9;
-                break;
-            case 9:
-                expProtocol = velocity;
-                expProtocoAdvance = 0;
-                break;
-            case 10:
-                expProtocol = -1;
-                expProtocoAdvance = 0;
-                break;
+        if (newTrial == 1)
+        {
+            newTrial = 0;
         }
         strcat (dataSample, dataTemp);
         fprintf(dataFile,dataSample);

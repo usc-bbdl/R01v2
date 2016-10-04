@@ -1,5 +1,5 @@
 GammDynamic1,GammaStatic1,GammDynamic2,GammaStatic2,CortexDrive1,CortexDrive2,initPos,finalPos,velocity,trialLength,reps
-4
+2
 40,120,40,120,0,0,-78,-72,10,3,2
 40,120,40,120,0,0,-28,-22,10,3,2
 40,120,40,120,0,0,22,28,10,3,2
