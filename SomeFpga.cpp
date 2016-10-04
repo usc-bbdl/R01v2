@@ -56,6 +56,7 @@ int SomeFpga::ReadFpga(BYTE getAddr, char *type, int *outVal)
         int32 outValHi = xem -> GetWireOutValue(getAddr + 0x01) & 0xffff;
         int32 outValInt = ((outValHi << 16) + outValLo) & 0xFFFFFFFF;
         *outVal = (int) outValInt;
+
             //memcpy(outVal, &outValInt, sizeof(*outVal));
         //outVal = ConvertType(outVal, 'I', 'f')
         //#print outVal
@@ -70,6 +71,33 @@ int SomeFpga::ReadFpga(BYTE getAddr, char *type, int *outVal)
 }
 
 
+int SomeFpga::ReadFpga(BYTE getAddr, char *type, uInt32 *outVal)
+{
+    xem -> UpdateWireOuts();
+    // Read 18-bit integer from FPGA
+    if (0 == strcmp(type, "int32"))
+    {
+        int32 outValLo = xem -> GetWireOutValue(getAddr) & 0xffff;
+        int32 outValHi = xem -> GetWireOutValue(getAddr + 0x01) & 0xffff;
+        int32 outValInt = ((outValHi << 16) + outValLo) & 0xFFFFFFFF;
+        *outVal = (unsigned int) outValInt;
+        unsigned int f = static_cast<unsigned int>(outValInt);
+
+            //memcpy(outVal, &outValInt, sizeof(*outVal));
+        //outVal = ConvertType(outVal, 'I', 'f')
+        //#print outVal
+    }
+    // Read 32-bit signed integer from FPGA
+    else if (0 == strcmp(type, "float32"))
+    {
+
+    }
+
+    return 0;
+}
+
+
+
 int SomeFpga::SendPara(int bitVal, int trigEvent)
 {
     int bitValLo = bitVal & 0xffff;
@@ -80,8 +108,6 @@ int SomeFpga::SendPara(int bitVal, int trigEvent)
     this->xem->ActivateTriggerIn(0x50, trigEvent)  ;
     return 0;
 }
-
-
 
 
 
@@ -155,3 +181,30 @@ int SomeFpga::WriteFpgaLceVel(int32 bitValLce, int32 bitValVel, int32 bitValM1Vo
     return 0;
 }
 
+
+
+
+int SomeFpga::WriteFpgaCortexDrive(int32 bitValDrive, int32 trigEvent)
+{
+    //bitVal = 0;
+    int32 bitValLo = bitValDrive & 0xffff;
+    int32 bitValHi = (bitValDrive >> 16) & 0xffff;
+
+    
+    //Send muscle lce to fpga
+    if (okCFrontPanel::NoError != this->xem->SetWireInValue(0x01, bitValLo, 0xffff)) {
+		printf("SetWireInLo failed.\n");
+		//delete xem;
+		return -1;
+	}
+    if (okCFrontPanel::NoError != this->xem -> SetWireInValue(0x02, bitValHi, 0xffff)) {
+		printf("SetWireInHi failed.\n");
+		//delete xem;
+		return -1;
+	}
+
+    this->xem -> UpdateWireIns();
+    this->xem -> ActivateTriggerIn(0x50, trigEvent);
+    
+    return 0;
+}

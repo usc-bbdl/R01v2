@@ -7,19 +7,10 @@
     <ClCompile Include="dataOneSample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="experimentUserInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="motorControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="expParadigm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="analogClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FPGAControl.cpp">
@@ -29,6 +20,28 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FPGATest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="servoControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="expParadigmServoPerturbation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="expParadigmMuscleLengthCalibration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="expParadigmManualPerturbation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="expParadigmVoluntaryMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="experimentUserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -45,13 +58,7 @@
     <ClInclude Include="motorControl.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="expParadigm.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
     <ClInclude Include="NIDAQmx.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="analogClient.h">
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="okFrontPanelDLL.h">
@@ -61,6 +68,21 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="SomeFpga.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="servoControl.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="expParadigmServoPerturbation.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="expParadigmManualPerturbation.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="expParadigmMuscleLengthCalibration.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="expParadigmVoluntaryMovement.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

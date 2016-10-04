@@ -1,0 +1,4 @@
+PCSA Flexor,PCSA Extensor,Pennation Angle Flexor, Pennation Angle Extensor
+177, 56, 7, 6
+Angle 1, Angle 2, L1 Flexor, L1 Extensor, L2 Flexor, L2 Extensor
+80, -10, 0.6, 1.4, 1.4, 0.6

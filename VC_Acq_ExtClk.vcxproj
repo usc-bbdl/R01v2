@@ -19,26 +19,33 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="analogClient.cpp" />
     <ClCompile Include="dataLogger.cpp" />
     <ClCompile Include="dataOneSample.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
-    <ClCompile Include="expParadigm.cpp" />
+    <ClCompile Include="expParadigmManualPerturbation.cpp" />
+    <ClCompile Include="expParadigmMuscleLengthCalibration.cpp" />
+    <ClCompile Include="expParadigmServoPerturbation.cpp" />
+    <ClCompile Include="expParadigmVoluntaryMovement.cpp" />
     <ClCompile Include="FPGAControl.cpp" />
     <ClCompile Include="FPGATest.cpp" />
+    <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="motorControl.cpp" />
+    <ClCompile Include="servoControl.cpp" />
     <ClCompile Include="SomeFpga.cpp" />
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="analogClient.h" />
     <ClInclude Include="dataLogger.h" />
     <ClInclude Include="dataOneSample.h" />
-    <ClInclude Include="expParadigm.h" />
+    <ClInclude Include="expParadigmManualPerturbation.h" />
+    <ClInclude Include="expParadigmMuscleLengthCalibration.h" />
+    <ClInclude Include="expParadigmServoPerturbation.h" />
+    <ClInclude Include="expParadigmVoluntaryMovement.h" />
     <ClInclude Include="FPGAControl.h" />
     <ClInclude Include="motorControl.h" />
     <ClInclude Include="NIDAQmx.h" />
     <ClInclude Include="okFrontPanelDLL.h" />
+    <ClInclude Include="servoControl.h" />
     <ClInclude Include="SomeFpga.h" />
     <ClInclude Include="utilities.h" />
   </ItemGroup>
