@@ -51,8 +51,21 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     bicepFPGA->forceLengthCurve = 1;
     bicepFPGA->updateParametersFlag = '1';
     Sleep(500);*/
+    
+    
+    //bicepFPGA->spindleIaOffset = 250;
+    //bicepFPGA->spindleIIOffset = 50;
+    bicepFPGA->spindleIaGain = 100;
+    bicepFPGA->spindleIaSynapseGain = 10;
+    bicepFPGA->forceLengthCurve = 0;
+    bicepFPGA->updateParametersFlag = '1';
+    Sleep(500);
 
-
+    //tricepFPGA->spindleIaOffset = 250;
+    //tricepFPGA->spindleIIOffset = 50;
+    //tricepFPGA->spindleIaGain = 1000;
+    //tricepFPGA->updateParametersFlag = '1';
+    //Sleep(500);
 
     /*tricepFPGA->spindleIaGain = 1.2;
     tricepFPGA->spindleIIGain = 2;
@@ -92,6 +105,8 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         Sleep(500);
 
         bicepFPGA->gammaDynamic = gammaDyn1[i];
+        printf("Hey  hey just updated gamma dynamic of muscle 1:%d\n\n\n",gammaDyn1[i]);
+
         bicepFPGA->gammaStatic = gammaSta1[i];
         bicepFPGA->updateGammaFlag = '1';
         Sleep(500);
