@@ -101,20 +101,25 @@ int SomeFpga::ReadFpga(BYTE getAddr, char *type, uInt32 *outVal)
 
 int SomeFpga::ReadFpgaPipes(BYTE getAddr, char *type, float *outVal)
 {
-    xem -> UpdateWireOuts();
+    //xem -> UpdateWireOuts();
     // Read 18-bit integer from FPGA
-    if (0 == strcmp(type, "int32"))
+    /*if (0 == strcmp(type, "int32"))
     {
        
     }
     // Read 32-bit signed integer from FPGA
     else if (0 == strcmp(type, "float32"))
-    {
-        int outValLo = xem -> GetWireOutValue(getAddr) & 0xffff;
-        int outValHi = xem -> GetWireOutValue(getAddr + 0x01) & 0xffff;
+    {*/
+    long returnPipe = 0;
+        printf("\n\n%ld\n\n",returnPipe);
+        //returnPipe = xem -> ReadFromBlockPipeOut(getAddr,4,4,(unsigned char *)outVal);
+        printf("\n\n%ld\n\n",returnPipe);
+        /*
+        int outValHi = xem -> ReadFromBlockPipeOut(getAddr + 0x01) & 0xffff;
         int outValInt = ((outValHi << 16) + outValLo) & 0xFFFFFFFF;
         ReInterpret(outValInt, outVal);
-    }
+        */
+    //}
 
     return 0;
 }

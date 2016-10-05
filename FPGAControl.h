@@ -48,7 +48,7 @@ public:
     float32 gammaDynamic, gammaStatic;
     float32 spindleIaGain, spindleIIGain, spindleIaOffset, spindleIIOffset, spindleIaSynapseGain, spindleIISynapseGain;
     void * threadRoutine(void *);
-    float muscleLength, muscleVel , muscleForce, muscleForceFPGA , muscleEMG, spindleII , spindleIa ;
+    float muscleLength, muscleVel , muscleForce, muscleForceFPGA, muscleForceFPGA_Pipe, muscleForcePipe , muscleEMG, spindleII , spindleIa ;
     int muscleSpikeCount, raster_MN_1,raster_MN_2,raster_MN_3,raster_MN_4,raster_MN_5,raster_MN_6;
     int32 cortexDrive, forceLengthCurve;
     float cortexDriveMixed;

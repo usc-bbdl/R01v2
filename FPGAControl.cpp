@@ -111,11 +111,13 @@ int FPGAControl::update() { //This is the function called in the thread
         updateSpindleParameters();
         updateParametersFlag = '0';
     }
-    writeSpindleLengthVel();
-    writeMuscleFPGALengthVel();
+    //writeSpindleLengthVel();
+    //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
         pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
+        //pMotorControl->motorRefPipe[muscleIndex] = ((float64)muscleForcePipe);
+        
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
@@ -290,11 +292,15 @@ int FPGAControl::writeCortexCommand()
 int FPGAControl::readMuscleFPGAForce()
 {
     //muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
-    muscleFPGA->ReadFpgaPipes(0x32, "float32", &muscleForceFPGA);
+    muscleFPGA->ReadFpgaPipes(0xBE, "float32", &muscleForceFPGA_Pipe);
     //muscleForceFPGA = 0;
-    float tCtrl = ((muscleForceFPGA) * GGAIN);
-    muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
-    muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
+    //float tCtrl = ((muscleForceFPGA) * GGAIN);
+    //muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
+    //muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
+
+    float tCtrl = ((muscleForceFPGA_Pipe) * GGAIN);
+    muscleForcePipe = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
+    muscleForcePipe = muscleForcePipe;//*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
     return 0;
 }
 
