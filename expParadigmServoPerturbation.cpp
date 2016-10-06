@@ -55,11 +55,11 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     
     //bicepFPGA->spindleIaOffset = 250;
     //bicepFPGA->spindleIIOffset = 50;
-    bicepFPGA->spindleIaGain = 100;
-    bicepFPGA->spindleIaSynapseGain = 10;
-    bicepFPGA->forceLengthCurve = 0;
-    bicepFPGA->updateParametersFlag = '1';
-    Sleep(500);
+    //bicepFPGA->spindleIaGain = 100;
+    //bicepFPGA->spindleIaSynapseGain = 10;
+    //bicepFPGA->forceLengthCurve = 1;
+    //bicepFPGA->updateParametersFlag = '1';
+    //Sleep(500);
 
     //tricepFPGA->spindleIaOffset = 250;
     //tricepFPGA->spindleIIOffset = 50;
@@ -127,7 +127,9 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         servo->goDefault();
         Sleep(500);
         realTimeController->resetMuscleLength = TRUE;
-        realTimeController->newTrial = 1;
+        realTimeController->trialTrigger = 1;
+        realTimeController->angle = (initPos[i] + finalPos[i]) /2;
+        realTimeController->velocity = rampVelocity[i];
         Sleep(500);
         currentTrialNum = i;
         for (int j = 0; j<rep[i] && stayInTheLoop == TRUE; j++){
@@ -152,6 +154,7 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             );
             log.fileName = fileName;
             log.trialLength = trialLength[i];
+            realTimeController->trialTrigger = 2;
             servo->setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
             servo->rampHold();
             // Terminate Anytime when Escape Is Pressed...
