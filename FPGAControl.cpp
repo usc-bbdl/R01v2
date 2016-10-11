@@ -112,7 +112,7 @@ int FPGAControl::update() { //This is the function called in the thread
         updateParametersFlag = '0';
     }
     writeSpindleLengthVel();
-    writeMuscleFPGALengthVel();
+    //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
         pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
