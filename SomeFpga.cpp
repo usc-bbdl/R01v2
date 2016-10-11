@@ -111,9 +111,9 @@ int SomeFpga::ReadFpgaPipes(BYTE getAddr, char *type, float *outVal)
     else if (0 == strcmp(type, "float32"))
     {*/
     long returnPipe = 0;
-        printf("\n\n%ld\n\n",returnPipe);
-        //returnPipe = xem -> ReadFromBlockPipeOut(getAddr,4,4,(unsigned char *)outVal);
-        printf("\n\n%ld\n\n",returnPipe);
+        //printf("\n\n%ld\n\n",returnPipe);
+        returnPipe = xem -> ReadFromBlockPipeOut(getAddr,4,4,(unsigned char *)outVal);
+        //printf("\n\n%ld\n\n",returnPipe);
         /*
         int outValHi = xem -> ReadFromBlockPipeOut(getAddr + 0x01) & 0xffff;
         int outValInt = ((outValHi << 16) + outValLo) & 0xFFFFFFFF;
