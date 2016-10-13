@@ -177,7 +177,7 @@ int FPGAControl::update() { //This is the function called in the thread
         //printf("Tricep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
         break;
     }
-    Sleep(5);
+    //Sleep(5);
     return 0;
 }
 

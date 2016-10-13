@@ -301,8 +301,13 @@ void motorControl::controlLoop(void)
         
         loadCellData[0] = (loadCellData[0] * loadCellScale1) - loadCellOffset1;
         loadCellData[1] = (loadCellData[1] * loadCellScale2) - loadCellOffset2;
+        //errorForce[0] = motorRef[0] - loadCellData[0];
+        //errorForce[1] = motorRef[1] - loadCellData[1];
+
+
         errorForce[0] = motorRef[0] - loadCellData[0];
         errorForce[1] = motorRef[1] - loadCellData[1];
+
         integral[0] = integral[0] + errorForce[0] * (tock - tick);
         integral[1] = integral[1] + errorForce[1] * (tock - tick);
         motorCommand[0] = integral[0] * I;
