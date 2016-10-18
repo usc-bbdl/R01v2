@@ -384,6 +384,10 @@ void motorControl::controlLoop(void)
             expProtocoAdvance = 10;
             trialTrigger = 0;
         }
+        if (trialTrigger == 3){
+            expProtocoAdvance = 11;
+            trialTrigger = 0;
+        }
         expProtocol = 0;
         switch(expProtocoAdvance){
             case 1:
@@ -424,6 +428,10 @@ void motorControl::controlLoop(void)
                 break;
             case 10:
                 expProtocol = -1;
+                expProtocoAdvance = 0;
+                break;
+            case 11:
+                expProtocol = -2;
                 expProtocoAdvance = 0;
                 break;
         }

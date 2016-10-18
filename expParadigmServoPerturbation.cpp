@@ -154,9 +154,20 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             );
             log.fileName = fileName;
             log.trialLength = trialLength[i];
-            realTimeController->trialTrigger = 2;
+            realTimeController->trialTrigger = 2;//prints -1
             servo->setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
-            servo->rampHold();
+            //servo->rampHold();
+
+            servo->setVelocity(rampVelocity[i]);
+            servo->setPosition(initPos[i]);
+            //servo->waitMoving();
+            Sleep(holdPeriod);
+
+            realTimeController->trialTrigger = 3;//prints -2
+            servo->setPosition(finalPos[i]);
+            //servo->waitMoving();
+            Sleep(holdPeriod);    
+
             // Terminate Anytime when Escape Is Pressed...
             if (kbhit()!=0){
                 key = getch();
