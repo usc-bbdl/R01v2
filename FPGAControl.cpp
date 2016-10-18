@@ -300,7 +300,7 @@ int FPGAControl::readMuscleFPGAForce()
 
     float tCtrl = ((muscleForceFPGA_Pipe) * GGAIN);
     muscleForcePipe = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
-    muscleForcePipe = muscleForcePipe;//*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
+    muscleForcePipe = muscleForcePipe*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
     return 0;
 }
 

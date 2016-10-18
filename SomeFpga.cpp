@@ -112,7 +112,7 @@ int SomeFpga::ReadFpgaPipes(BYTE getAddr, char *type, float *outVal)
     {*/
     long returnPipe = 0;
         //printf("\n\n%ld\n\n",returnPipe);
-        returnPipe = xem -> ReadFromBlockPipeOut(getAddr,4,4,(unsigned char *)outVal);
+        returnPipe = xem -> ReadFromBlockPipeOut(getAddr,2,4,(unsigned char *)outVal);
         //printf("\n\n%ld\n\n",returnPipe);
         /*
         int outValHi = xem -> ReadFromBlockPipeOut(getAddr + 0x01) & 0xffff;
