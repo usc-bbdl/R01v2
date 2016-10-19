@@ -102,35 +102,36 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         printf("This trial has %d repetitions\t\n\n",rep[i]);
         //printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
 
-        Sleep(500);
+        Sleep(100);
 
         bicepFPGA->gammaDynamic = gammaDyn1[i];
-        printf("Hey  hey just updated gamma dynamic of muscle 1:%d\n\n\n",gammaDyn1[i]);
+        //printf("Hey  hey just updated gamma dynamic of muscle 1:%d\n\n\n",gammaDyn1[i]);
 
         bicepFPGA->gammaStatic = gammaSta1[i];
         bicepFPGA->updateGammaFlag = '1';
         Sleep(500);
 
-        bicepFPGA->cortexDrive = cortexDrive1[i];
-        bicepFPGA->updateCortexFlag = '1';
-        Sleep(500);
+        //bicepFPGA->cortexDrive = cortexDrive1[i];
+        //bicepFPGA->updateCortexFlag = '1';
+        //Sleep(500);
 
         tricepFPGA->gammaDynamic = gammaDyn2[i];
         tricepFPGA->gammaStatic = gammaSta2[i];
         tricepFPGA->updateGammaFlag = '1';
         Sleep(500);
 
-        tricepFPGA->cortexDrive = cortexDrive2[i];
-        tricepFPGA->updateCortexFlag = '1';
-        Sleep(500);
+        //tricepFPGA->cortexDrive = cortexDrive2[i];
+        //tricepFPGA->updateCortexFlag = '1';
+        //Sleep(500);
 
         servo->goDefault();
-        Sleep(500);
+        servo->waitMoving();
+        Sleep(100);
         realTimeController->resetMuscleLength = TRUE;
         realTimeController->trialTrigger = 1;
         realTimeController->angle = (initPos[i] + finalPos[i]) /2;
         realTimeController->velocity = rampVelocity[i];
-        Sleep(500);
+        Sleep(100);
         currentTrialNum = i;
         for (int j = 0; j<rep[i] && stayInTheLoop == TRUE; j++){
             holdPeriod = (trialLength[i]*1000)/2;
@@ -160,12 +161,12 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
 
             servo->setVelocity(rampVelocity[i]);
             servo->setPosition(initPos[i]);
-            //servo->waitMoving();
+            servo->waitMoving();
             Sleep(holdPeriod);
 
             realTimeController->trialTrigger = 3;//prints -2
             servo->setPosition(finalPos[i]);
-            //servo->waitMoving();
+            servo->waitMoving();
             Sleep(holdPeriod);    
 
             // Terminate Anytime when Escape Is Pressed...
