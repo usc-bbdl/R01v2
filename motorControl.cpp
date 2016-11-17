@@ -131,6 +131,12 @@ motorControl::~motorControl()
     live = FALSE;
 }
 
+/*
+ *  Enables the motor : set to 1 using the variable dataEnable
+ *  	has two task handles :
+ *		motorEnableHandle : does a digitalU32 write for a digital output channel 
+ *		motorTaskHandle : does a AnalogF64 write for a analog output channel
+ */
 int motorControl::motorEnable()
 {
     uInt32      dataEnable=0x00000001;
@@ -159,6 +165,10 @@ Error:
     return 0;
 }
 
+/* 
+ * Orthogonal to motorEnable() : set to 0 using dataDisable variable.
+ * 
+ */
 int motorControl::motorDisable()
 {
 	int32       error=0;
@@ -478,6 +488,13 @@ Error:
 	}
 }
 
+/*
+ * Starts the Closed-loop control by invoking motorControlLooop().
+	set the variables to 1 : live, isControlling.
+	Create the mutex handle.
+	Start the thread.
+ * Pre-requisites : Motor should be enabled and in wind up state.
+ */
 int motorControl::motorControllerStart()
 {
     if ((isEnable) && (isWindUp))
@@ -494,6 +511,10 @@ int motorControl::motorControllerStart()
     }
     return 0;
 }
+
+/*
+ * Stops and clears the tasks of motor, loadcell and encoder.
+ */
 int motorControl::motorControllerEnd()
 {
     live = FALSE;
