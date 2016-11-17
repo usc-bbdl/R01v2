@@ -223,6 +223,22 @@ void motorControl::motorControlLoop(void* a)
 	((motorControl*)a)->controlLoop();
 }
 
+/*
+ * Does all the logging part into a file created with year-month-day-hour-min-sec format
+ *
+ * General Algo:
+        1) creates a file "C:\\data\\realTimeData_year_month_day_hour_min_sec.txt",
+        2) Changes the state of following tasks from commited to running
+            loadCelltaskHandle, motorTaskHandle, encodertaskHandle[0], encodertaskHandle[1]
+        3) Then till the session is alive it keeps on logging the data for every 10 sec in follwing way:
+            3.1) Read the loadCelltaskHandle.
+            3.2) Write the motorTaskHandle
+            3.3) Read the encodertaskHandle[0]
+            3.4) Read the encodertaskHandle[1]
+            3.5) Update the muscleLength, muscleVel, loadCellData, motorCommand.
+            3.6) Log the data into file.
+ */
+
 void motorControl::controlLoop(void)
 {
     int32       error=0;
