@@ -3,6 +3,39 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
+
+
+/**
+ *  Constructor: motorControl(double offset1, double offset2) sets loadCellOffset1 and 
+ *  loadCellOffset2 using passed in arguments.
+ *  
+ *  Initialize variables:
+ *      - Initializes most variables to 0. 
+ *      - Reset booleans isXXXX to FALSE.
+ *      - Set boolean resetMuscleLength to TRUE;
+ *
+ *  Header setup:
+ *      - Checks for dataAcquisitionFlags to concatenate property configuration into header as appropriate.
+ *      - Concatenate flag values to the end of custom "header" in the form of %d,%d,%d,%d
+ *  
+ *  Algorithm:
+ *  1. initialize variables
+ *  2. header setup
+ *  3. creates the following NI-DAQmx tasks
+ *      - loadCelltaskHandle
+ *      - motorTaskHandle
+ *      - motorEnableHandle
+ *      - encodertaskHandle[0],[1]
+ *   
+ *
+ *
+ *  Variables:
+ *  TaskHandle loadCelltaskHandle - The task to which to add the channels that this function creates. (TaskHandle in general)
+ *
+ *  API References:
+ *  DAQmxCreateAOVoltageChan: Creates channel(s) to generate voltage and adds the channel(s) to the task you specify with taskHandle.
+ *  http://zone.ni.com/reference/en-XX/help/370471AE-01/daqmxcfunc/daqmxcreateaovoltagechan/
+ */
 motorControl::motorControl(double offset1, double offset2)
 {
     encoderBias[0] = encoderBias[1] = 0;
@@ -123,6 +156,13 @@ Error:
         printf("Motor, load cell or encoder initialization error\n");
 	}
 }
+
+/**
+ *  Destructor: calls DAQmxClearTask on motorEnableHandle, motorTaskHandle, loadCelltaskHandle 
+ *  to destroy tasks created using DAQmxCreateTask() in construcotr.
+ *
+ *  Note: encodertaskHandle[0],[1] not freed? Maybe deallocated somewhere else?
+ */
 motorControl::~motorControl()
 {
     DAQmxClearTask(motorEnableHandle);
@@ -202,6 +242,15 @@ Error:
     }
 	return 0;
 }
+
+/** 
+ *  motorWindup(): Windup motors after they are enabled.
+ *  
+ *  If isEnable == TRUE, start task motoTaskHandle;
+ *  Write analog initialization command signal (64 bit), then sleep for half a millisecond
+ *  and then set isWindUp = TRUE, stop task motorTaskHandle
+ *
+ */
 int motorControl::motorWindUp()
 {
     char        errBuff[2048]={'\0'};
