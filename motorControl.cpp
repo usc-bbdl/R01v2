@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
+
+
 motorControl::motorControl(double offset1, double offset2)
 {
     encoderBias[0] = encoderBias[1] = 0;
@@ -518,4 +520,35 @@ double TimeData::getCurrentTime(void)
     actualTime = (double)(currentTick.QuadPart - initialTick.QuadPart);
     actualTime /= (double)frequency.QuadPart;
     return actualTime;
+}
+
+void motorControl::dummy()
+{
+    bool32 isLate = {0};
+    char        errBuff[2048]={'\0'};
+    int32       error=0;
+
+    while(1)
+            {
+            
+                DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate);
+        DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,2,NULL,NULL));
+
+        DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderData1,1,NULL,0));
+        DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderData2,1,NULL,0));
+
+
+        printf("F1: %+6.2f; F2: %+6.2f;L1: %+6.2f; L2: %+6.2f;, Dyn: %d, Sta: %d, \r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1]);
+
+            }
+
+     Error:
+	if( DAQmxFailed(error) ) {
+		DAQmxGetExtendedErrorInfo(errBuff,2048);
+		DAQmxClearTask(motorTaskHandle);
+		DAQmxClearTask(loadCelltaskHandle);
+		DAQmxClearTask(motorEnableHandle);
+		printf("DAQmx Error: %s\n",errBuff);
+        printf("Motor, load cell or encoder initialization error\n");
+	}
 }

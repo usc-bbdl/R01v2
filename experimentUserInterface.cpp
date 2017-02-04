@@ -1,3 +1,4 @@
+// experimentUserInterface.cpp : Defines the entry point for the console application.
 //
 #include <stdio.h>
 #include <windows.h>
@@ -6,6 +7,7 @@
 #include <utilities.h>
 #include <okFrontPanelDLL.h>
 #include <servoControl.h>
+/*
 int main()
 {
     printf("Press 'Spc' to move forward\n\n");
@@ -40,3 +42,4 @@ int main()
     }
    return 0;
 }
+*/

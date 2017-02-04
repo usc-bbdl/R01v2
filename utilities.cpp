@@ -7,7 +7,7 @@
 #include <expParadigmServoPerturbation.h>
 #include <expParadigmManualPerturbation.h>
 #include <expParadigmVoluntaryMovement.h>
-#include <FPGAControl.h>
+//#include <FPGAControl.h>
 
 //float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
 float GGAIN = 0.000016923;//0.005; //default is (0.9/1000) //0.4/2000 is safe

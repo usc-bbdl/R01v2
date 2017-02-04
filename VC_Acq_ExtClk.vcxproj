@@ -29,6 +29,7 @@
     <ClCompile Include="FPGAControl.cpp" />
     <ClCompile Include="FPGATest.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="motorControl.cpp" />
     <ClCompile Include="okFrontPanelDLL.cpp" />
     <ClCompile Include="servoControl.cpp" />
