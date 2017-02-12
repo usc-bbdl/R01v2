@@ -6,9 +6,11 @@
 
 motorControl::motorControl(double offset1, double offset2)
 {
+
+    //initialize the data
     mData=new motorData(offset1,offset2);
 
-    //initialize stuff
+    //initialize the error buffer and motorcontrol flags
     char        errBuff[2048]={'\0'};
     int32       error=0;
     live = FALSE;
@@ -300,7 +302,6 @@ void motorControl::controlLoop(void)
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,mData->encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,mData->encoderData2,1,NULL,0));
 
-
         if (dataAcquisitionFlag[1]){
             EMG = mData->muscleEMG[0];
             if (EMG > 6)
@@ -311,7 +312,6 @@ void motorControl::controlLoop(void)
         else{
             EMG = 0;
         }
-
 
         //start PID
         tock = timeData.getCurrentTime();
@@ -481,6 +481,8 @@ void motorControl::controlLoop(void)
 
         //add 1 line(datasample) to the file
         fprintf(dataFile,dataSample);
+
+
         tick = timeData.getCurrentTime();
 
     }
@@ -544,21 +546,17 @@ void motorControl::dummy()
     char        errBuff[2048]={'\0'};
     int32       error=0;
 
-    while(1)
-            {
-            
-                DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate);
+    while(1){
+        DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate);
         DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,mData->loadCellData,2,NULL,NULL));
 
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,mData->encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,mData->encoderData2,1,NULL,0));
 
-
         printf("F1: %+6.2f; F2: %+6.2f;L1: %+6.2f; L2: %+6.2f;, Dyn: %d, Sta: %d, \r",mData->loadCellData[0],mData->loadCellData[1],mData->muscleLength[0],mData->muscleLength[1]);
+    }
 
-            }
-
-     Error:
+    Error:
 	if( DAQmxFailed(error) ) {
 		DAQmxGetExtendedErrorInfo(errBuff,2048);
 		DAQmxClearTask(motorTaskHandle);
@@ -567,4 +565,5 @@ void motorControl::dummy()
 		printf("DAQmx Error: %s\n",errBuff);
         printf("Motor, load cell or encoder initialization error\n");
 	}
+
 }

@@ -57,6 +57,12 @@
     <ClCompile Include="motorData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="listman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utilities.h">
@@ -99,6 +105,12 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="motorData.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="listman.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

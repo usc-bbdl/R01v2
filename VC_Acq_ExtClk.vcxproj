@@ -29,6 +29,8 @@
     <ClCompile Include="FPGAControl.cpp" />
     <ClCompile Include="FPGATest.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="listman.cpp" />
+    <ClCompile Include="logger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="motorControl.cpp" />
     <ClCompile Include="motorData.cpp" />
@@ -45,6 +47,8 @@
     <ClInclude Include="expParadigmServoPerturbation.h" />
     <ClInclude Include="expParadigmVoluntaryMovement.h" />
     <ClInclude Include="FPGAControl.h" />
+    <ClInclude Include="listman.h" />
+    <ClInclude Include="logger.h" />
     <ClInclude Include="motorControl.h" />
     <ClInclude Include="motorData.h" />
     <ClInclude Include="NIDAQmx.h" />

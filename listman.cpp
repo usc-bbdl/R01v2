@@ -42,7 +42,7 @@ int listman::insertBefore(listElement *position, void *datapoint) {
 
   if(numElements == 0) {
     anchor.prev = anchor.next = newElem;
-    newElem.prev = newElem.next = &anchor;
+    newElem->prev = newElem->next = &anchor;
   }
   else {
     newElem->prev = position->prev;
@@ -61,7 +61,7 @@ int listman::insertAfter(listElement *position, void *datapoint) {
 
   if(numElements == 0) {
     anchor.prev = anchor.next = newElem;
-    newElem.prev = newElem.next = &anchor;
+    newElem->prev = newElem->next = &anchor;
   }
   else {
     newElem->next = position->next;
@@ -83,7 +83,7 @@ int listman::prepend(void *datapoint) {
 }
 
 void listman::unlink(listElement *delElem) {
-  if(!isEmpty) {
+  if(!isEmpty()) {
     (delElem->prev)->next = delElem->next;
     (delElem->next)->prev = delElem->prev;
     numElements--;
@@ -94,7 +94,7 @@ void listman::unlink(listElement *delElem) {
 
 void listman::unlinkAll() {
     listElement *delElem;
-    while (!isEmpty) {
+    while (!isEmpty()) {
       unlink(first());
     }
 }

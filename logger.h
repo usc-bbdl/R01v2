@@ -9,15 +9,16 @@
 #include <iostream>
 #include <utilities.h>
 #include "listman.h"
+#include "motorData.h"
 
 class logger {
 private:
-  enum {
+  enum TYPE {
     CHAR,
     INT,
     FLOAT,
     DOUBLE
-  } TYPE;
+  } ;
 
   // //REDO THIS LIST TO USE LISTMAN.H
   // typedef struct listElement{
@@ -27,9 +28,26 @@ private:
   // int dataCount; //number of data points to log
   // listElement *listHead;
 
+  motorData* mData;
+
+  FILE *dataFile;
+
+  char header[200];
+
 public:
-  logger(); //initialize looger's basic variables, pointers to NULL
+  logger(motorData* Data); //initialize looger's basic variables, pointers to NULL
+
+  //todo
+  //delete same content in motorcontrol
+
   ~logger(); //destroy all dynamic variables here
+
+  //write 1 line of data to the file
+  //create a thread for this
+  void logOneLine(double tick,double tock,int expProtocol);
+  //todo 
+  //replace file writing in controlloop with a thread of this
+
   int addElement(void *, TYPE, char *); //add variable pointed to by parameter to list
   int removeElement(listElement *);
   int getList(); //get list of variables to read from config file
