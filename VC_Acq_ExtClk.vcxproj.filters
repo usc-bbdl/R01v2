@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="dataLogger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dataOneSample.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,11 +49,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="DAQ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="motorData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dataLogger.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
     <ClInclude Include="utilities.h">
       <Filter>Head Files</Filter>
     </ClInclude>
@@ -91,6 +93,12 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="expParadigmVoluntaryMovement.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DAQ.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="motorData.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

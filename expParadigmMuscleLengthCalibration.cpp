@@ -2,7 +2,7 @@
 #include "motorControl.h"
 #include <servoControl.h>
 #include <utilities.h>
-#include <NIDAQmx.h>
+//#include <NIDAQmx.h>
 float ggain,tbias;
 expParadigmMuscleLengthCalibration::expParadigmMuscleLengthCalibration(servoControl *param)
 {

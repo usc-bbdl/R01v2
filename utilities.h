@@ -2,13 +2,14 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 #include <math.h>
-#include <NIDAQmx.h>
+//#include <NIDAQmx.h>
 #include <stdio.h>
+#include "DAQ.h"
 
 #define TRUE  1
 #define FALSE 0
 
-#define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) {}//goto Error; else
+//#define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
 const int controlFreq = 1000;
 const double PI = 3.14159265358979323846;

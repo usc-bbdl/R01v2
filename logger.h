@@ -1,3 +1,5 @@
+
+#pragma once
 #ifndef LOGGER_H
 #define LOGGER_H
 
@@ -25,14 +27,12 @@ private:
   // int dataCount; //number of data points to log
   // listElement *listHead;
 
-
-
 public:
   logger(); //initialize looger's basic variables, pointers to NULL
   ~logger(); //destroy all dynamic variables here
   int addElement(void *, TYPE, char *); //add variable pointed to by parameter to list
   int removeElement(listElement *);
   int getList(); //get list of variables to read from config file
-}
+};
 
 #endif

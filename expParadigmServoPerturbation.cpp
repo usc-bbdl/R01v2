@@ -8,8 +8,8 @@ expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double
     int cortex1 = 0, cortex2 =0, inPos = 0, finPos = 0,rampVel = 0, trialLen = 0, r = 0;
     currentTrialNum = 0;
     currentRepNum = 0;
-    log.loadCellOffset1 = offset1;
-    log.loadCellOffset2 = offset2;
+    //log.loadCellOffset1 = offset1;
+    //log.loadCellOffset2 = offset2;
     char *configFileName = "spindleTest.txt";
     FILE *configFile;
     char *header[200];
@@ -153,8 +153,8 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             gammaSta1[i],
             j+1
             );
-            log.fileName = fileName;
-            log.trialLength = trialLength[i];
+            //log.fileName = fileName;
+            //log.trialLength = trialLength[i];
             realTimeController->trialTrigger = 2;//prints -1
             servo->setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
             //servo->rampHold();

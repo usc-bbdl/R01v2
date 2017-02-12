@@ -30,6 +30,8 @@
 
     bool32 isLate = {0};
     */
+
+/*
 int main()
 {
     printf("Press 'Spc' to move forward\n\n");
@@ -63,6 +65,7 @@ int main()
             
 
     /*
+    //originally commented
     printf("\n---- Opal Kelly ---- FrontPanel 3.0 ----\n");
     if (FALSE == okFrontPanelDLL_LoadLib(NULL)) {
         printf("FrontPanel DLL could not be loaded.\n");
@@ -93,6 +96,6 @@ int main()
     }
 
     */
-   return 0;
-}
+   //return 0;
+//}
 

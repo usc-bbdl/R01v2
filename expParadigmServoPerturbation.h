@@ -5,7 +5,7 @@
 #include <iostream>
 #include <utilities.h>
 #include <ctime>
-#include <dataLogger.h>
+//#include <dataLogger.h>
 #include "FPGAControl.h"
 #include <servoControl.h>
 class expParadigmServoPerturbation
@@ -18,7 +18,7 @@ class expParadigmServoPerturbation
     int initPos[1000];
     int finalPos[1000];
     int rampVelocity[1000];
-    dataLogger log;
+    //dataLogger log;
 public:
     int currentTrialNum,  currentRepNum;
     expParadigmServoPerturbation(double,double,servoControl *);
