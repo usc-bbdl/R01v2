@@ -15,7 +15,7 @@ SomeFpga::SomeFpga(int NUM_NEURON = 128, int SAMPLING_RATE = 1024, std::string s
     //std::cout<<std::endl<<"Error Code"<<(this->xem->OpenBySerial(serX));
     this->xem->OpenBySerial(serX);
     assert(this->xem->IsOpen());
-//this->xem->LoadDefaultPLLConfiguration();
+    //this->xem->LoadDefaultPLLConfiguration();
 
 }
 

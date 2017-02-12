@@ -23,9 +23,6 @@ motorData::motorData(double offset1, double offset2)
     spindleII[0] = 0;
     spindleIa[1] = 0;
     spindleII[1] = 0;
-    isEnable = false;
-    isWindUp = false;
-    isControlling = false;
     loadCellOffset1 = offset1;
     loadCellOffset2 = offset2;
     loadCellData[0] = 0;

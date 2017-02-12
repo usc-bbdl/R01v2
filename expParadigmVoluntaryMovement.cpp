@@ -7,8 +7,8 @@
 expParadigmVoluntaryMovement::expParadigmVoluntaryMovement(motorControl *mtr)
 {
     vfTemp = false;
-    cortexAmp  = &(mtr->cortexVoluntaryAmp);
-    cortexFreq = &(mtr->cortexVoluntaryFreq);
+    cortexAmp  = &(mtr->mData->cortexVoluntaryAmp);
+    cortexFreq = &(mtr->mData->cortexVoluntaryFreq);
 }
 int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController)
 {
@@ -54,7 +54,7 @@ int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGACont
             Sleep(500);
 
             //realTimeController->resetMuscleLength = TRUE;
-            realTimeController->trialTrigger = 1;
+            realTimeController->mData->trialTrigger = 1;
             Sleep(500);       
             updateIT = 0;
         }//end update if block

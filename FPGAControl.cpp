@@ -97,8 +97,8 @@ FPGAControl::~FPGAControl() {
 
 int FPGAControl::update() { //This is the function called in the thread
     
-    muscleLength = (float)pMotorControl->muscleLength[muscleIndex];
-    muscleVel = (float)pMotorControl->muscleVel[muscleIndex];
+    muscleLength = (float)pMotorControl->mData->muscleLength[muscleIndex];
+    muscleVel = (float)pMotorControl->mData->muscleVel[muscleIndex];
     if (updateGammaFlag == '1') {
         updateGamma();
         updateGammaFlag = '0';
@@ -115,50 +115,50 @@ int FPGAControl::update() { //This is the function called in the thread
     //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
-        pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
+        pMotorControl->mData->motorRef[muscleIndex] = ((float64)muscleForce);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
-        pMotorControl->muscleEMG[muscleIndex] = muscleEMG;
+        pMotorControl->mData->muscleEMG[muscleIndex] = muscleEMG;
     }
     if (dataAcquisitionFlag[2]){
         readSpindleIaFPGA();
-        pMotorControl->spindleIa[muscleIndex] = spindleIa;
+        pMotorControl->mData->spindleIa[muscleIndex] = spindleIa;
     }
     if (dataAcquisitionFlag[3]){
         readSpindleIIFPGA();
-        pMotorControl->spindleII[muscleIndex] = spindleII;
+        pMotorControl->mData->spindleII[muscleIndex] = spindleII;
     }
     if (dataAcquisitionFlag[4]){
         readMuscleFPGASpikeCount();
-        pMotorControl->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
+        pMotorControl->mData->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
     }
     if (dataAcquisitionFlag[5]){
         readMuscleFPGARaster_MN_1();
-        pMotorControl->raster_MN_1[muscleIndex] = raster_MN_1;
+        pMotorControl->mData->raster_MN_1[muscleIndex] = raster_MN_1;
     }
     if (dataAcquisitionFlag[6]){
         readMuscleFPGARaster_MN_2();
-        pMotorControl->raster_MN_2[muscleIndex] = raster_MN_2;
+        pMotorControl->mData->raster_MN_2[muscleIndex] = raster_MN_2;
     }
     if (dataAcquisitionFlag[7]){
         readMuscleFPGARaster_MN_3();
-        pMotorControl->raster_MN_3[muscleIndex] = raster_MN_3;
+        pMotorControl->mData->raster_MN_3[muscleIndex] = raster_MN_3;
     }
     if (dataAcquisitionFlag[8]){
         readMuscleFPGARaster_MN_4();
-        pMotorControl->raster_MN_4[muscleIndex] = raster_MN_4;
+        pMotorControl->mData->raster_MN_4[muscleIndex] = raster_MN_4;
     }
     if (dataAcquisitionFlag[9]){
         readMuscleFPGARaster_MN_5();
-        pMotorControl->raster_MN_5[muscleIndex] = raster_MN_5;
+        pMotorControl->mData->raster_MN_5[muscleIndex] = raster_MN_5;
     }
     if (dataAcquisitionFlag[10]){
         readMuscleFPGARaster_MN_6();
-        pMotorControl->raster_MN_6[muscleIndex] = raster_MN_6;
+        pMotorControl->mData->raster_MN_6[muscleIndex] = raster_MN_6;
     }
     if (dataAcquisitionFlag[11]){
-        cortexDrive = (int32)pMotorControl->cortexDrive[muscleIndex];
+        cortexDrive = (int32)pMotorControl->mData->cortexDrive[muscleIndex];
         //writeCortexCommand();
         updateCortexDrive();
         if (muscleIndex==0)
@@ -212,7 +212,7 @@ int FPGAControl::updateCortexDrive()
     ReInterpret((int32)(cortexDrive), &bitValCortexDrive);
     cortexFPGA->SendPara(bitValCortexDrive, DATA_EVT_CORTEX_DRIVE);
     //Sleep(100);
-    pMotorControl->cortexDrive[muscleIndex] = (int)(cortexDrive);
+    pMotorControl->mData->cortexDrive[muscleIndex] = (int)(cortexDrive);
     return 0;
 }
 
@@ -227,13 +227,13 @@ int FPGAControl::updateGamma() {
     Sleep(100);
     if (muscleIndex == 0)
     {
-        pMotorControl->gammaStatic1 = (int)(gammaStatic);
-        pMotorControl->gammaDynamic1 = (int)(gammaDynamic);
+        pMotorControl->mData->gammaStatic1 = (int)(gammaStatic);
+        pMotorControl->mData->gammaDynamic1 = (int)(gammaDynamic);
     }
     if (muscleIndex == 1)
     {
-        pMotorControl->gammaStatic2 = (int)(gammaStatic);
-        pMotorControl->gammaDynamic2 = (int)(gammaDynamic);
+        pMotorControl->mData->gammaStatic2 = (int)(gammaStatic);
+        pMotorControl->mData->gammaDynamic2 = (int)(gammaDynamic);
     }
     return 0;
 }
