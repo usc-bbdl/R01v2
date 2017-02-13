@@ -11,6 +11,16 @@
 #include "listman.h"
 #include "motorData.h"
 
+//class timeNprotocol{
+    /*
+public:
+    double tick;
+    double tock;
+    int expProtocol;
+    logger* myLogger;
+    void nonsense();
+};*/
+
 class logger {
 private:
   enum TYPE {
@@ -34,23 +44,31 @@ private:
 
   char header[200];
 
+  double tick;
+  double tock;
+  int expProtocol;
 public:
   logger(motorData* Data); //initialize looger's basic variables, pointers to NULL
-
   //todo
   //delete same content in motorcontrol
 
   ~logger(); //destroy all dynamic variables here
 
+  void update(double tick, double tock, int expProtocol);
+
   //write 1 line of data to the file
   //create a thread for this
-  void logOneLine(double tick,double tock,int expProtocol);
+  void logOneLine();
   //todo 
   //replace file writing in controlloop with a thread of this
 
   int addElement(void *, TYPE, char *); //add variable pointed to by parameter to list
   int removeElement(listElement *);
   int getList(); //get list of variables to read from config file
+
+  void startthread(void * parameters);
+  static void writethread(void * parameters);
+
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include <process.h>
 #include <ctime>
 #include "motorData.h"
+#include "logger.h"
 
 class TimeData
 {
@@ -36,8 +37,8 @@ class motorControl
     void controlLoop(void);
     static void motorControlLoop(void*);
 public:
-    motorData *mData;
-
+    motorData* mData;
+    logger* mLogger;
 
     motorControl(double,double);
     ~motorControl(void);

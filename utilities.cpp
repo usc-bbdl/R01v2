@@ -59,9 +59,16 @@ int proceedState(int *state)
         printf("\t[4] Voluntary Movement\n\n User Input:");
         do{
             scanf("%d", &menu);
-            if (!((menu <= 4) || (menu >= 0)))
+            //printf("catch something\n");
+
+            if (!((menu <= 4) || (menu >= 0))){
                 printf("Wrong input! try Again.\n");
+            }else{
+                //printf("right input! try Again.\n");
+            }
+
         }while (!((menu <= 4) || (menu >= 0)));
+
         switch(menu)
         {
         case 1:

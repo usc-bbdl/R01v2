@@ -4,10 +4,12 @@
 #include <math.h>
 #include <algorithm>
 
+//#include <process.h>
+
 motorControl::motorControl(double offset1, double offset2)
 {
 
-    //initialize the data
+    //initialize the data class(all constants relavent in the experiment)
     mData=new motorData(offset1,offset2);
 
     //initialize the error buffer and motorcontrol flags
@@ -18,6 +20,9 @@ motorControl::motorControl(double offset1, double offset2)
     isWindUp = false;
     isControlling = false;
    
+    //initilize a logger(write data to file every clock)
+    mLogger=new logger(mData);
+
     //construct data file header
     strcpy(header,"Time, Exp Prot, Len1, Len2, ForcMeas1, ForcMeas2,");
     if (dataAcquisitionFlag[0]){
@@ -357,6 +362,20 @@ void motorControl::controlLoop(void)
         //comand line print
         printf("F1: %+6.2f; F2: %+6.2f;L1: %+6.2f; L2: %+6.2f;, Dyn: %d, Sta: %d, \r",mData->loadCellData[0],mData->loadCellData[1],mData->muscleLength[0],mData->muscleLength[1],mData->gammaDynamic1, mData->gammaStatic1);
         ReleaseMutex( hIOMutex);
+
+
+/*
+HANDLE WINAPI CreateThread(
+__in_opt LPSECURITY_ATTRIBUTES lpThreadAttributes,
+__in SIZE_T dwStackSize,
+__in LPTHREAD_START_ROUTINE lpStartAddress, 
+__in_opt LPVOID lpParameter, 
+__in DWORD dwCreationFlags,
+__out_opt LPDWORD lpThreadId 
+); 
+*/
+        mLogger->update(tick,tock,expProtocol);
+        mLogger->startthread(mLogger);
 
         //output to data file
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
