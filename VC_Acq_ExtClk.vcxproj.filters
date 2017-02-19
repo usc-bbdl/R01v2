@@ -50,9 +50,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="experimentUserInterface.cpp" />
-    <ClCompile Include="DAQ.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="motorData.cpp">
       <Filter>Source Files</Filter>
@@ -61,6 +58,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="DAQ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,9 +102,6 @@
     <ClInclude Include="expParadigmVoluntaryMovement.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="DAQ.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
     <ClInclude Include="motorData.h">
       <Filter>Head Files</Filter>
     </ClInclude>
@@ -111,6 +109,9 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="listman.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DAQ.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

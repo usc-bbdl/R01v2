@@ -15,7 +15,7 @@ public:
     int gammaDynamic1, gammaStatic1,gammaDynamic2, gammaStatic2,trialTrigger;
     double cortexDrive[2], angle, velocity;
     /* end of private list */
-
+    int handleName;
     motorData(double offset1, double offset2);
     ~motorData(void);
 };

@@ -3,7 +3,7 @@
 
 motorData::motorData(double offset1, double offset2)
 {
-
+    handleName =0;
     //initialize stuff
     encoderBias[0] = encoderBias[1] = 0;
     encoderGain[0] = encoderGain[1] = 0;

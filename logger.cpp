@@ -165,13 +165,6 @@ void logger::writethread(void * a){
     ((logger *)a) -> logOneLine(); 
 }
 
-/*
-void motorControl::motorControlLoop(void* a)
-{
-	((motorControl*)a)->controlLoop();
-}
-*/
-
 void logger::update(double tick, double tock, int expProtocol){
     this->tick=tick;
     this->tock=tock;
