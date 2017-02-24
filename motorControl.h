@@ -32,7 +32,7 @@ class motorControl
     bool live;
     float64 encoderData1[1],encoderData2[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
     char header[200];
-public:
+public:    
     bool resetMuscleLength;
     float64 loadCellData[2],motorRef[2],muscleLength[2],muscleVel[2];
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
@@ -48,7 +48,11 @@ public:
     int motorControllerEnd();
     int gammaDynamic1, gammaStatic1,gammaDynamic2, gammaStatic2,trialTrigger;
     double cortexDrive[2], angle, velocity;
+    bool newPdgm_Flag;
+    double newPdgm_ref[2];
+
+    double getTime();
+    void dummy();
 };
 
 #endif
-
