@@ -306,6 +306,7 @@ Error:
 	}
 }
 
+//Update the muscleLength, muscleVel, loadCellData, motorCommand.
 double motorControl::PID(double motorcommand,int channelnum){
     
     double errorForce=0;
