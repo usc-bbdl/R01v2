@@ -88,6 +88,7 @@ class Task
     string slot;
     int type;
     int slotNo;
+    int encNo;
     double* data;
     DAQ *daqObj;
     char* temp;
@@ -96,9 +97,9 @@ public:
     
     //void foo(DAQ* daqObj);
     Task();
-    Task(void*&,string,string,int);
+    Task(void*&, string, string, int);
     //Task(TaskHandle,string,string,int);
-    void assignTask(void*&,string,string,int);
+    void assignTask(void*&,string,string,int,int enc=0);
     void createTask(void*&,string);
     void createChan();
     char* assignSlot(int);
@@ -129,15 +130,15 @@ public:
     //void bar(Task& taskObj);
     DAQ(void);
     ~DAQ(void);
-    void createHandle(void*&,string);
+    void createHandle(void*&, string);
     void createChan(Task&);
-    void createClk(Task&,int);
+    void createClk(Task&, int);
     void startHandle(void*&);
     void readDAQ(Task&);
-    void writeDAQ(void*&,double*);
-    void writeDAQ(void*&,uInt32*);
+    void writeDAQ(void*&, double*);
+    void writeDAQ(void*&, uInt32*);
     void stopHandle(void*&);
     void clearHandle(void*&);
-    void errorCheck(int,TaskHandle&);
+    void errorCheck(int, TaskHandle&);
 };
 #endif

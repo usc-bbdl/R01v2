@@ -11,8 +11,6 @@
 
 //#define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
-
-
 const int controlFreq = 1000;
 const double PI = 3.14159265358979323846;
 const double shaftRadius = 0.003;// motor shaft radius in cm

@@ -7,6 +7,8 @@
 logger::logger(motorData* Data){
     mData=Data;
 
+    char header[200];
+
     //construct data file header
     strcpy(header,"Time, Exp Prot, Len1, Len2, ForcMeas1, ForcMeas2,");
     if (dataAcquisitionFlag[0]){
@@ -44,7 +46,7 @@ logger::logger(motorData* Data){
     }
 
     //second line of data file
-    char dataTemp[100]="";
+    char dataTemp[100]="";//additional data add to datasample or header
     strcat(header,"\n");
     sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[0],dataAcquisitionFlag[1],dataAcquisitionFlag[2],dataAcquisitionFlag[3]);
     strcat(header,dataTemp);
@@ -58,10 +60,9 @@ logger::logger(motorData* Data){
     tm* timePtr = localtime(&t);
     char fileName[200];
     char dataSample[600]="";//1 line of data
-    //char dataTemp[100]="";//additional data add to datasample
     sprintf_s(
             fileName,
-            "C:\\data_logger_function_test\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",
+            "C:\\data\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",
             timePtr->tm_year+1900, 
             timePtr->tm_mon+1, 
             timePtr->tm_mday, 
@@ -80,12 +81,12 @@ logger::logger(motorData* Data){
 
 }
 
+logger::~logger(){
+    fclose(dataFile);
+}
+
 //the print one line thread
 void logger::logOneLine(){
-    //timeNprotocol *args = (timeNprotocol*) parameters;
-    //double tick=args->tick;
-    //double tock=args->tock;
-    //int expProtocol=args->expProtocol;
 
     char dataSample[600]="";//1 line of data
     char dataTemp[100]="";//additional data add to datasample
@@ -96,7 +97,7 @@ void logger::logOneLine(){
     //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock, muscleLength[0], muscleLength[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
     
     //construct 1 line of data(datasample)
-    sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f",tock,expProtocol,mData->muscleLength[0], mData->muscleLength[1], mData->loadCellData[0],mData->loadCellData[1]);
+    sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f",mData->tock,mData->expProtocol,mData->muscleLength[0], mData->muscleLength[1], mData->loadCellData[0],mData->loadCellData[1]);
     //add additional data to the line
     if (dataAcquisitionFlag[0]){
         sprintf(dataTemp,",%.6f,%.6f",mData->motorRef[0],mData->motorRef[1]);
@@ -143,8 +144,8 @@ void logger::logOneLine(){
         strcat (dataSample, dataTemp);
     }
     if (dataAcquisitionFlag[11]){
-        mData->cortexDrive[0] = max((mData->cortexVoluntaryAmp -0) * sin (2 * 3.1416 * mData->cortexVoluntaryFreq * tick), 0);
-        mData->cortexDrive[1] = max((mData->cortexVoluntaryAmp -0) * sin (2 * 3.1416 * mData->cortexVoluntaryFreq * tick + 3.1416), 0);
+        mData->cortexDrive[0] = max((mData->cortexVoluntaryAmp -0) * sin (2 * 3.1416 * mData->cortexVoluntaryFreq * mData->tick), 0);
+        mData->cortexDrive[1] = max((mData->cortexVoluntaryAmp -0) * sin (2 * 3.1416 * mData->cortexVoluntaryFreq * mData->tick + 3.1416), 0);
     }
     //sprintf(dataTemp,",%d,%d,%d,%d,%.3f,%.3f,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, cortexDrive[0], cortexDrive[1],newTrial);
     sprintf(dataTemp,"\n");
@@ -164,21 +165,3 @@ void logger::startthread(void * parameters){
 void logger::writethread(void * a){
     ((logger *)a) -> logOneLine(); 
 }
-
-void logger::update(double tick, double tock, int expProtocol){
-    this->tick=tick;
-    this->tock=tock;
-    this->expProtocol=expProtocol;
-}
-
-/*
-
-        timeNprotocol *parameters;
-        parameters = (timeNprotocol *)malloc(sizeof(timeNprotocol));
-        parameters->tick=tick;
-        parameters->tock=tock;
-        parameters->expProtocol=expProtocol;
-
-        //_beginthreadx(0,0,&logger::logOneLine,parameters,0,0);
-
-        */

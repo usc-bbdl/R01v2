@@ -5,7 +5,7 @@ const char* loadCell_list[7] =
 {
     "ai8",
     "ai9",
-    "",
+    "ai9",
     "",
     "",
     "",
@@ -17,7 +17,7 @@ const char* motorCmd_list[7] =
     "ao9",
     "ao11",
     "ao31",
-    "",
+    "ao11",
     "",
     "",
     ""
@@ -25,8 +25,8 @@ const char* motorCmd_list[7] =
 
 uInt32 motorEnb_list[7] = 
 {
-    0x00000001,
-    0x00000001, //default should be 0x02
+    0xff,
+    0xff, //default should be 0x02
     0x00000100,
     0x00001000,
     0x00010000,
@@ -36,9 +36,9 @@ uInt32 motorEnb_list[7] =
 
 const char* motorEnc_list[7] = 
 {
-    "ctr3",
     "ctr7",
-    "",
+    "ctr3",
+    "ctr3",
     "",
     "",
     "",
@@ -132,6 +132,7 @@ Task::~Task(void)
     slot = "";
     type = -1;
     slotNo=0;
+    encNo=0;
     data = NULL;
     temp = NULL;
     delete daqObj;
@@ -148,7 +149,7 @@ Task::Task(void* &taskArg,string handleNameArg, string slotArg, int typeArg)
     temp = new char[20];
 }
 
-void Task::assignTask(void* &taskArg,string handleNameArg, string slotArg, int typeArg)
+void Task::assignTask(void* &taskArg,string handleNameArg, string slotArg, int typeArg,int enc)
 {
     handleName = handleNameArg;
     
@@ -159,8 +160,19 @@ void Task::assignTask(void* &taskArg,string handleNameArg, string slotArg, int t
 
     //std::cout<<"\nIn task.assignTask() "<<assignSlot(slotNo)<<" SlotNo:"<<slotNo<<std::endl;
     //strcpy((char*) slot,assignSlot(slotNo));
+    if(typeArg == Enc) slotNo = enc; //to assign slotNo without a global variable
     slot = assignSlot(slotNo);
+    if(typeArg == Enc) std::cout<<"\nEnc slot: "<<slot<<"\n\n";
     createChan();
+}
+
+void Task::createTask(void* &taskArg,string handleNameArg)
+{    
+    if(task==NULL || type==Enc)
+    {
+        daqObj->createHandle(taskArg,handleNameArg);
+        //slotNo++;
+    }
 }
 
 char* Task::assignSlot(int n)
@@ -186,6 +198,7 @@ char* Task::assignSlot(int n)
         //char* temp = new char[20];
         strcpy(temp,Enc_slot);
         strcat(temp,muscles.get_motorEnc(n));
+        //std::cout<<"\nAssigning Enc for slot: "<<temp<<std::endl;
         return temp;
     }
     if(type == Enb)
@@ -197,14 +210,7 @@ char* Task::assignSlot(int n)
     //return "empty";
 }
 
-void Task::createTask(void* &taskArg,string handleNameArg)
-{    
-    if(task==NULL || type==Enc)
-    {
-        daqObj->createHandle(taskArg,handleNameArg);
-        //slotNo++;
-    }
-}
+
 
 void Task::createChan()
 {
@@ -228,7 +234,7 @@ double* Task::daqTask(void)
     if(type==Lc)
         data = new double[slotNo];
     if(type==Enc && data==NULL)
-        data = new double[1];
+        data = new double[2];
     //data = 0;
 
     if(type!=Lc && type!=Enc)
@@ -321,7 +327,6 @@ void DAQ::createChan(Task &taskObj)
         errorCheck(DAQmxCreateAOVoltageChan(taskObj.getHandle(),taskObj.getSlot(),taskObj.getName(),motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL),task);
     if(taskObj.getType() == Enb)
             errorCheck(DAQmxCreateDOChan(taskObj.getHandle(),taskObj.getSlot(),taskObj.getName(),DAQmx_Val_ChanForAllLines),task);
-    
         //if(!taskObj.getHandle())
     if(taskObj.getType() == Enc)
         errorCheck(DAQmxCreateCIAngEncoderChan(taskObj.getHandle(),taskObj.getSlot(),taskObj.getName(),DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""),task);
@@ -345,8 +350,10 @@ void DAQ::createClk(Task &taskObj,int samples=1)
         errorCheck(DAQmxCfgSampClkTiming(taskObj.getHandle(),"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,samples),task);
     if(taskObj.getType() == Enb)
     ;
+    
+    //DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[0],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
     if(taskObj.getType() == Enc)
-        errorCheck(DAQmxCfgSampClkTiming(taskObj.getHandle(),SampleClk,controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,samples),task);
+        errorCheck(DAQmxCfgSampClkTiming(taskObj.getHandle(),SampleClk,controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1),task);
 }
 
 void DAQ::startHandle(void* &taskArg)

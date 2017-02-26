@@ -36,6 +36,21 @@ motorData::motorData(double offset1, double offset2)
     muscleLengthPreviousTick[1] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
+
+    motorCommand[0]=0;
+    motorCommand[1]=0;
+    motorCommand[2]=0;
+    //errorForce[0]=0;
+    //errorForce[1]=0;
+    //integral[0]=0;
+    //integral[1]=0;
+    //EMG=0.0;
+
+    tick=0.0;
+    tock=0.0;
+
+    expProtocol=0;
+    expProtocolAdvance=0;
 }
 
 

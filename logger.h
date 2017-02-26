@@ -39,22 +39,14 @@ private:
   // listElement *listHead;
 
   motorData* mData;
-
   FILE *dataFile;
 
-  char header[200];
-
-  double tick;
-  double tock;
-  int expProtocol;
 public:
   logger(motorData* Data); //initialize looger's basic variables, pointers to NULL
   //todo
   //delete same content in motorcontrol
 
   ~logger(); //destroy all dynamic variables here
-
-  void update(double tick, double tock, int expProtocol);
 
   //write 1 line of data to the file
   //create a thread for this
