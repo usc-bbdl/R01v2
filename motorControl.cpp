@@ -194,8 +194,12 @@ void motorControl::controlLoop(void)
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,mData->encoderData2,1,NULL,0));
 
         mData->tock = timeData.getCurrentTime();
-        mData->motorCommand[0]=PID(mData->motorCommand[0]);
-        mData->motorCommand[1]=PID(mData->motorCommand[1]);
+        mData->motorCommand[0]=PID(mData->motorCommand[0],0);
+        mData->motorCommand[1]=PID(mData->motorCommand[1],1);
+        if (mData->resetMuscleLength)
+        {
+            mData->resetMuscleLength = FALSE;
+        }
 
         double EMG=0;
         if (dataAcquisitionFlag[1]){
@@ -304,48 +308,39 @@ Error:
 
 double motorControl::PID(double motorcommand,int channelnum){
     
-    double errorForce[2]={0,0};
-    double integral[2]={0,0};
+    double errorForce=0;
+    double integral=0;
 
         //start PID
         if (mData->resetMuscleLength)
         {
-            mData->muscleLengthOffset[0] = 2 * PI * shaftRadius * mData->encoderData1[0] / 365;
-            mData->muscleLengthOffset[1] = 2 * PI * shaftRadius * mData->encoderData2[0] / 365;
-            mData->resetMuscleLength = FALSE;
+            mData->muscleLengthOffset[channelnum] = 2 * PI * shaftRadius * mData->encoderData1[channelnum] / 365;
         }
-        mData->muscleLength[0] = ((2 * PI * shaftRadius * mData->encoderData1[0] / 365) - mData->muscleLengthOffset[0]);
+
+        mData->muscleLength[channelnum] = ((2 * PI * shaftRadius * mData->encoderData1[channelnum] / 365) - mData->muscleLengthOffset[channelnum]);
         //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*24.7178;
         //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*40;
-        mData->muscleLength[0] = mData->encoderBias[0] + mData->muscleLength[0] *mData->encoderGain[0];
-        mData->muscleLength[1] = ((2 * PI * shaftRadius * mData->encoderData2[0] / 365) - mData->muscleLengthOffset[1]);
-        //muscleLength[1] = 1 + (muscleLength[1] - 0.0058)*30 + 0.5;
-        //muscleLength[1] = 0.95 + (muscleLength[1] - 0.0058)*24.4399;
-        mData->muscleLength[1] = mData->encoderBias[1] + mData->muscleLength[1] *mData->encoderGain[1];
-        mData->muscleVel[0] = (mData->muscleLength[0] -  mData->muscleLengthPreviousTick[0]) / (mData->tock - mData->tick);
-        mData->muscleVel[1] = (mData->muscleLength[1] -  mData->muscleLengthPreviousTick[1]) / (mData->tock - mData->tick);
+        mData->muscleLength[channelnum] = mData->encoderBias[0] + mData->muscleLength[channelnum] *mData->encoderGain[channelnum];
 
-        mData->muscleLengthPreviousTick[0] = mData->muscleLength[0];
-        mData->muscleLengthPreviousTick[1] = mData->muscleLength[1];
+        mData->muscleVel[channelnum] = (mData->muscleLength[channelnum] -  mData->muscleLengthPreviousTick[channelnum]) / (mData->tock - mData->tick);
+
+        mData->muscleLengthPreviousTick[channelnum] = mData->muscleLength[channelnum];
+
+        mData->loadCellData[channelnum] = (mData->loadCellData[channelnum] * loadCellScale[channelnum]) - mData->loadCellOffset[channelnum];
         
-        mData->loadCellData[0] = (mData->loadCellData[0] * loadCellScale1) - mData->loadCellOffset1;
-        mData->loadCellData[1] = (mData->loadCellData[1] * loadCellScale2) - mData->loadCellOffset2;
-        errorForce[0] = mData->motorRef[0] - mData->loadCellData[0];
-        errorForce[1] = mData->motorRef[1] - mData->loadCellData[1];
-        integral[0] = integral[0] + errorForce[0] * (mData->tock - mData->tick);
-        integral[1] = integral[1] + errorForce[1] * (mData->tock - mData->tick);
-        mData->motorCommand[0] = integral[0] * mData->I;
-        mData->motorCommand[1] = integral[1] * mData->I;
+        errorForce = mData->motorRef[channelnum] - mData->loadCellData[channelnum];
         
-        if (mData->motorCommand[0] > motorMaxVoltage)
-            mData->motorCommand[0] = motorMaxVoltage;
-        if (mData->motorCommand[0] < motorMinVoltage)
-            mData->motorCommand[0] = motorMinVoltage;
-        if (mData->motorCommand[1] > motorMaxVoltage)
-            mData->motorCommand[1] = motorMaxVoltage;
-        if (mData->motorCommand[1] < motorMinVoltage)
-            mData->motorCommand[1] = motorMinVoltage;
+        integral = integral + errorForce * (mData->tock - mData->tick);
+        
+        motorcommand = integral * mData->I;
+        
+        if (motorcommand > motorMaxVoltage)
+            motorcommand = motorMaxVoltage;
+        if (motorcommand < motorMinVoltage)
+            motorcommand = motorMinVoltage;
         //end of PID
+
+        return motorcommand;
 
 }
 

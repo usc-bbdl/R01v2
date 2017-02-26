@@ -23,8 +23,8 @@ dataOneSample::dataOneSample()
     //DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,2,NULL,NULL));
     loadCellData = loadCell->daqTask();
     //std::cout<<"\nFinished Read";    
-    loadCell1 = loadCellData[0] * loadCellScale1;
-    loadCell2 = loadCellData[1] * loadCellScale2;
+    loadCell1 = loadCellData[0] * loadCellScale[0];
+    loadCell2 = loadCellData[1] * loadCellScale[1];
     loadCell->stopTask();
     loadCell->deleteTask();
 

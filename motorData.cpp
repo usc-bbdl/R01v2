@@ -23,8 +23,8 @@ motorData::motorData(double offset1, double offset2)
     spindleII[0] = 0;
     spindleIa[1] = 0;
     spindleII[1] = 0;
-    loadCellOffset1 = offset1;
-    loadCellOffset2 = offset2;
+    loadCellOffset[0] = offset1;
+    loadCellOffset[1] = offset2;
     loadCellData[0] = 0;
     loadCellData[1] = 0;
     motorRef[0] = 4;
