@@ -2,7 +2,7 @@
 #define MOTORCONTROL_H
 
 //#include <NIDAQmx.h>
-#include <utilities.h>
+#include "utilities.h"
 #include <iostream>
 #include <windows.h>
 #include <process.h>

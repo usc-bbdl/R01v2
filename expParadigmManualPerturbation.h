@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
-#include <utilities.h>
+#include "utilities.h"
 #include <ctime>
 #include "FPGAControl.h"
 class expParadigmManualPerturbation

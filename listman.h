@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <utilities.h>
+#include "utilities.h"
 
 typedef struct listElement {
   struct listElement *prev;

@@ -1,9 +1,8 @@
 #include "motorControl.h"
-#include <utilities.h>
+#include "utilities.h"
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
-
 
 //#include <process.h>
 
@@ -190,8 +189,11 @@ void motorControl::controlLoop(void)
         //write to motor(motorcommand is modified in PID in each loop)
         DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,mData->motorCommand,NULL,NULL));
         //read from encoder(2 taskhandles for 2 clocks)
-        DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,mData->encoderData1,1,NULL,0));
-        DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,mData->encoderData2,1,NULL,0));
+        float64 encoderDataTempArray[1];
+        DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderDataTempArray,1,NULL,0));
+        mData->encoderData[0]=encoderDataTempArray[0];
+        DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderDataTempArray,1,NULL,0));
+        mData->encoderData[1]=encoderDataTempArray[0];
 
         mData->tock = timeData.getCurrentTime();
         mData->motorCommand[0]=PID(mData->motorCommand[0],0);
@@ -315,10 +317,10 @@ double motorControl::PID(double motorcommand,int channelnum){
         //start PID
         if (mData->resetMuscleLength)
         {
-            mData->muscleLengthOffset[channelnum] = 2 * PI * shaftRadius * mData->encoderData1[channelnum] / 365;
+            mData->muscleLengthOffset[channelnum] = 2 * PI * shaftRadius * mData->encoderData[channelnum] / 365;
         }
 
-        mData->muscleLength[channelnum] = ((2 * PI * shaftRadius * mData->encoderData1[channelnum] / 365) - mData->muscleLengthOffset[channelnum]);
+        mData->muscleLength[channelnum] = ((2 * PI * shaftRadius * mData->encoderData[channelnum] / 365) - mData->muscleLengthOffset[channelnum]);
         //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*24.7178;
         //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*40;
         mData->muscleLength[channelnum] = mData->encoderBias[0] + mData->muscleLength[channelnum] *mData->encoderGain[channelnum];

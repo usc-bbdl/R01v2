@@ -3,11 +3,11 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <NIDAQmx.h>
+#include "NIDAQmx.h"
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
-#include <utilities.h>
+#include "utilities.h"
 #include "listman.h"
 #include "motorData.h"
 

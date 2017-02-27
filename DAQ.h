@@ -2,12 +2,12 @@
 #ifndef DAQ_H
 #define DAQ_H
 
-#include <NIDAQmx.h>
+#include "NIDAQmx.h"
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
 #include <string.h>
-#include <utilities.h>
+#include "utilities.h"
 
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 

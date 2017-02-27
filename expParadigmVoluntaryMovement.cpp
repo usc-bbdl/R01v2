@@ -2,7 +2,7 @@
 #include "FPGAControl.h"
 #include <conio.h>
 #include <stdio.h>
-#include <utilities.h>
+#include "utilities.h"
 
 expParadigmVoluntaryMovement::expParadigmVoluntaryMovement(motorControl *mtr)
 {

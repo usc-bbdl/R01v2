@@ -1,12 +1,12 @@
-#include <utilities.h>
+#include "utilities.h"
 #include <stdio.h>
 #include <conio.h>
-#include <dataOneSample.h>
-#include <motorControl.h>
-#include <expParadigmMuscleLengthCalibration.h>
-#include <expParadigmServoPerturbation.h>
-#include <expParadigmManualPerturbation.h>
-#include <expParadigmVoluntaryMovement.h>
+#include "dataOneSample.h"
+#include "motorControl.h"
+#include "expParadigmMuscleLengthCalibration.h"
+#include "expParadigmServoPerturbation.h"
+#include "expParadigmManualPerturbation.h"
+#include "expParadigmVoluntaryMovement.h"
 //#include <FPGAControl.h>
 
 //float GGAIN = 0.0125; //default is (0.9/1000) //0.4/2000 is safe
@@ -52,7 +52,7 @@ int proceedState(int *state)
         //Connect the Neural FPGA and DAQ, Start controlling muscle force
         motors.motorControllerStart();
         Sleep(1000);
-        motors.resetMuscleLength = TRUE;
+        motors.mData->resetMuscleLength = TRUE;
         printf("Closed-Loop ; Next stage is Experiment Paradigm\n");
         *state = STATE_CLOSED_LOOP;
         break;

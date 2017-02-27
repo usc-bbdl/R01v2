@@ -2,8 +2,8 @@
 #include <windows.h>
 #include <iostream>
 #include <conio.h>
-#include <utilities.h>
-#include <okFrontPanelDLL.h>
+#include "utilities.h"
+#include "okFrontPanelDLL.h"
 #include <string.h>
 #include <assert.h>
 
@@ -18,9 +18,9 @@
 #include <windows.h>
 #include <functional>
 #include <vector>
-#include	"NIDAQmx.h"
+#include "NIDAQmx.h"
 #include "okFrontPanelDLL.h"
-#include <SomeFpga.h>
+#include "SomeFpga.h"
 
 bool    gAlterDamping = false;
 

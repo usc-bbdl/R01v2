@@ -4,17 +4,17 @@
 #include <windows.h>
 #include <iostream>
 #include <conio.h>
-#include <utilities.h>
+#include "utilities.h"
 
-#include <dataOneSample.h>
-#include <motorControl.h>
-#include <expParadigmMuscleLengthCalibration.h>
+#include "dataOneSample.h"
+#include "motorControl.h"
+#include "expParadigmMuscleLengthCalibration.h"
 
 #include "motorControl.h"
 #include <math.h>
 #include <algorithm>
 
-#include <NIDAQmx.h>
+#include "NIDAQmx.h"
 
 //#include <okFrontPanelDLL.h>
 //#include <servoControl.h>

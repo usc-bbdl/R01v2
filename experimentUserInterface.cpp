@@ -4,9 +4,9 @@
 #include <windows.h>
 #include <iostream>
 #include <conio.h>
-#include <utilities.h>
-#include <okFrontPanelDLL.h>
-#include <servoControl.h>
+#include "utilities.h"
+#include "okFrontPanelDLL.h"
+#include "servoControl.h"
 
 int main()
 {

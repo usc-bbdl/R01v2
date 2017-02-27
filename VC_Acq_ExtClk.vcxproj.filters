@@ -64,6 +64,7 @@
     <ClCompile Include="DAQ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utilities.h">

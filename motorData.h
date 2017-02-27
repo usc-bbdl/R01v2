@@ -6,7 +6,8 @@ class motorData
 public:
     /* these were private before */
     double loadCellOffset[2],I;
-    double encoderData1[1],encoderData2[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
+    double encoderData[2];
+    double muscleLengthPreviousTick[2], muscleLengthOffset[2];
     bool resetMuscleLength;
     double loadCellData[2],motorRef[2],muscleLength[2],muscleVel[2];
     double cortexVoluntaryAmp, cortexVoluntaryFreq;

@@ -29,8 +29,8 @@ motorData::motorData(double offset1, double offset2)
     loadCellData[1] = 0;
     motorRef[0] = 4;
     motorRef[1] = 4;
-    encoderData1[0] = 0;
-    encoderData2[0] = 0;
+    encoderData[0] = 0;
+    encoderData[1] = 0;
     resetMuscleLength = true;
     muscleLengthPreviousTick[0] = 1;
     muscleLengthPreviousTick[1] = 1;

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <iostream>
-#include <utilities.h>
+#include "utilities.h"
 
 class dataOneSample
 {

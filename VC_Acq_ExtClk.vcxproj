@@ -188,7 +188,7 @@
     <Link>
       <AdditionalDependencies>odbc32.lib;odbccp32.lib;nidaqmx.lib;pthreadVC2.lib;pthreadVSE2.lib;okFrontPanelDLL.lib;pthreadVCE2.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;C:\T5_BbdlSanger\UPC_R01_grant\source\glut\glut32.lib;C:\SDK\pthreads\lib\x86\pthreadVC2.lib;C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc\NIDAQmx.lib;C:\SDK\AntTweakBar\lib\AntTweakBar.lib;C:\Program Files\Intel\Composer XE 2011 SP1\ipp\lib\ia32\ipps.lib;C:\Program Files\Lua\5.1\lib\lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\Users\PXI_BBDL\Documents\GitHub\R01v2\externalLibraries;$(ProgramFiles)\National Instruments\Shared\ExternalCompilerSupport\C\lib32\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\PXI_BBDL\Documents\GitHub\MakeT5GreatAgain\externalLibraries;$(ProgramFiles)\National Instruments\Shared\ExternalCompilerSupport\C\lib32\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
