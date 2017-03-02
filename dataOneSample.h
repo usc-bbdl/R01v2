@@ -12,6 +12,6 @@ class dataOneSample
 public:
     dataOneSample();
     ~dataOneSample(void);
-    double loadCell1, loadCell2;
+    double loadCell1, loadCell2, loadCell3;
 };
 #endif

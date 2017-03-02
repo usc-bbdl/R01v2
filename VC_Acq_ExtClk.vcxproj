@@ -22,6 +22,7 @@
     <ClCompile Include="dataLogger.cpp" />
     <ClCompile Include="dataOneSample.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="expParadigmCDMRPimplant.cpp" />
     <ClCompile Include="expParadigmManualPerturbation.cpp" />
     <ClCompile Include="expParadigmMuscleLengthCalibration.cpp" />
     <ClCompile Include="expParadigmServoPerturbation.cpp" />
@@ -38,6 +39,7 @@
   <ItemGroup>
     <ClInclude Include="dataLogger.h" />
     <ClInclude Include="dataOneSample.h" />
+    <ClInclude Include="expParadigmCDMRPimplant.h" />
     <ClInclude Include="expParadigmManualPerturbation.h" />
     <ClInclude Include="expParadigmMuscleLengthCalibration.h" />
     <ClInclude Include="expParadigmServoPerturbation.h" />

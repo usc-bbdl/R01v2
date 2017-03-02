@@ -115,11 +115,11 @@ int FPGAControl::update() { //This is the function called in the thread
     //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
-        pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
+        //pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
-        pMotorControl->muscleEMG[muscleIndex] = muscleEMG;
+        //pMotorControl->muscleEMG[muscleIndex] = muscleEMG;
     }
     if (dataAcquisitionFlag[2]){
         readSpindleIaFPGA();

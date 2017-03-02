@@ -4,6 +4,7 @@
 #include <math.h>
 #include <NIDAQmx.h>
 #include <stdio.h>
+//#include "DAQ.h"
 
 #define TRUE  1
 #define FALSE 0
@@ -15,13 +16,14 @@ const double PI = 3.14159265358979323846;
 const double shaftRadius = 0.003;// motor shaft radius in cm
 const double loadCellScale1 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
 const double loadCellScale2 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
+const double loadCellScale3 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
 const int sampleFreq = 50000;
-const int motorMinVoltage = -7;
-const int motorMaxVoltage = 7;
+const double motorMinVoltage = -7;
+const double motorMaxVoltage = 7;
 const int messageMinVoltage = 0;
 const double messageMaxVoltage = 0.03;
-const int loadCellMinVoltage = -10;
-const int loadCellMaxVoltage = +10;
+const double loadCellMinVoltage = -10;
+const double loadCellMaxVoltage = +10;
 const int encoderPulsesPerRev = 500;
 
 /*
@@ -42,6 +44,7 @@ const uInt32     MESSAGE_TERMINATE = 0x00000007;
 #define     STATE_RUN_PARADIGM_MANUAL_PERTURBATION 6
 #define     STATE_RUN_PARADIGM_VOLUNTARY_MOVEMENT 7
 #define     STATE_SHUTTING_DOWN 8
+#define     STATE_RUN_PARADIGM_CDMRP_IMPLANT 9
 
 extern int dataAcquisitionFlag[12];
 const int   NUM_NEURON = 128;
