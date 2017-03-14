@@ -16,6 +16,7 @@ class SomeFpga
     	fpgaIO myFPGA;
     	int muscleType, fpgaType;
         char serX[50];
+        BYTE forceAdressWire, forceAdressPipe;
 };
 
 #endif
