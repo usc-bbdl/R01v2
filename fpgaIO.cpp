@@ -4,7 +4,7 @@
 #include <stdint.h>
 //#include <string.h>
 //#include "./include/utilities.h"
-#include "fpgaIO.hpp"
+#include "fpgaIO.h"
 #ifdef _WIN64
         #include "../lib/FrontPanel/latest/nt64/okFrontPanelDLL.h"
 #elif __linux__

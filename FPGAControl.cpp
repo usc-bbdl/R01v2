@@ -95,10 +95,10 @@ void FPGAControl::controlLoop(void){
 }
 FPGAControl::~FPGAControl() {
     //delete all dynamic memory here
-    /*
     delete this->spindleFPGA;
     delete this->muscleFPGA;
-    */
+    delete this->cortexFPGA;
+    
 }
 
 int FPGAControl::update() { //This is the function called in the thread
