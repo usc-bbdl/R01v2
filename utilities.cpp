@@ -23,12 +23,12 @@ int proceedState(int *state)
     //static servoControl servo;
     static dataOneSample loadCellOffsets;
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,loadCellOffsets.loadCell3);
-    //static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);
-    //static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&servo);
+    static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);
+    static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&servo);
     static expParadigmManualPerturbation paradigmManualPerturbation;
     static expParadigmVoluntaryMovement paradigmVoluntaryMovement(&motors);
-    //static FPGAControl bicepFPGA(BICEP,&motors);
-    //static FPGAControl tricepFPGA(TRICEP,&motors);
+    static FPGAControl bicepFPGA(BICEP,&motors);
+    static FPGAControl tricepFPGA(TRICEP,&motors);
     static expParadigmCDMRPimplant paradigmCDMRPimplant;
 
     switch(*state)
@@ -103,7 +103,7 @@ int proceedState(int *state)
 //        paradigm.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         break;
     case STATE_PARADIGM_LENGTH_CALIBRATION:
-        //retVal = paradigmMuscleLengthCalibration.startParadigm(&motors);
+        retVal = paradigmMuscleLengthCalibration.startParadigm(&motors);
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;
             else {
@@ -112,7 +112,7 @@ int proceedState(int *state)
             }
         break;
     case STATE_RUN_PARADIGM_SERVO_PERTURBATION:
-        //retVal = paradigmServoPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
+        retVal = paradigmServoPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;
             else {
@@ -121,7 +121,7 @@ int proceedState(int *state)
             }
         break;
     case STATE_RUN_PARADIGM_MANUAL_PERTURBATION:
-        //retVal = paradigmManualPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
+        retVal = paradigmManualPerturbation.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;
             else {
@@ -140,7 +140,7 @@ int proceedState(int *state)
             }
         break;
     case STATE_RUN_PARADIGM_VOLUNTARY_MOVEMENT:
-        //retVal = paradigmVoluntaryMovement.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
+        retVal = paradigmVoluntaryMovement.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;
             else {
