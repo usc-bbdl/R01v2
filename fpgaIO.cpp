@@ -578,7 +578,7 @@ int fpgaIO::readData(int *epAddr, int length, uint32_t *outVal) {
 		return -15;
 	}
 	int i;
-	/*
+	
 	int retVal;
 	if((retVal = errHandler(dev.UpdateWireOuts())) == 0) {
 		for(i = 0; i < length; i++) {
@@ -587,11 +587,12 @@ int fpgaIO::readData(int *epAddr, int length, uint32_t *outVal) {
 		return 0;
 	}
 	return retVal;
-	*/
+	/*
 	for(i = 0; i < length; i++) {
 		outVal[i] = bitFormat(dev.GetWireOutValue(epAddr[i]));
 	}
 	return 0;
+	*/	
 }
 
 int fpgaIO::writeData(int *epAddr, int length, uint32_t *inVal, uint32_t *mask) {
@@ -605,8 +606,8 @@ int fpgaIO::writeData(int *epAddr, int length, uint32_t *inVal, uint32_t *mask) 
 			return retVal;
 		}
 	}
-	//return  errHandler(dev.UpdateWireIns());
-	return 0;
+	return  errHandler(dev.UpdateWireIns());
+	//return 0;
 }
 
 	//trigger based I/O
@@ -617,7 +618,6 @@ int fpgaIO::getTrigger(int *epAddr, int length, bool *outVal, uint32_t *mask) {
 		return -15;
 	}
 	int i;
-	/*
 	int retVal;
 	if( (retVal = errHandler(dev.UpdateTriggerOuts())) == 0) {
 		for(i = 0; i < length; i++) {
@@ -626,11 +626,12 @@ int fpgaIO::getTrigger(int *epAddr, int length, bool *outVal, uint32_t *mask) {
 		return 0;
 	}
 	return retVal;
-	*/
-	for(i = 0; i < length; i++) {
+	
+/*	for(i = 0; i < length; i++) {
 		outVal[i] = dev.IsTriggered(epAddr[i], bitFormat(mask[i]));
 	}
 	return 0;
+*/	
 }
 
 int fpgaIO::setTrigger(int epAddr, uint32_t bitVal) {

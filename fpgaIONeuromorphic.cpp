@@ -19,10 +19,10 @@ fpgaIONeuromorphic::fpgaIONeuromorphic(int fpgaType, int muscleType){
 	else if ((fpgaType == CORTEX_FPGA) && (muscleType == TRICEP))
 		myFPGA = fpgaIO(cortexTriFPGASerialNum,cortexTriFPGABitFile);
 }
-fpgaIONeuromorphic::readForceStream(*float muscleForceFpgaPipe){
+fpgaIONeuromorphic::readForceStream(float * muscleForceFpgaPipe){
 
 }
-fpgaIONeuromorphic::readForceWire(*float muscleForceFpgaWire){
+fpgaIONeuromorphic::readForceWire(float * muscleForceFpgaWire){
 	
 }
 
