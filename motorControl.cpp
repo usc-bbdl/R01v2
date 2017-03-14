@@ -45,6 +45,9 @@ motorControl::motorControl(double offset1, double offset2, double offset3)
     motorRef[0] = 2;
     motorRef[1] = 2;
     motorRef[2] = 2;
+    motorRefPipe[0] = 2;
+    motorRefPipe[1] = 2;
+    motorRefPipe[2] = 2;
     encoderData1[0] = 0;
     encoderData2[0] = 0;
     resetMuscleLength = TRUE;
@@ -363,7 +366,8 @@ void motorControl::controlLoop(void)
         if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
         //printf("F1: %+6.2f; F2: %+6.2f;L1: %+6.2f; L2: %+6.2f;, Dyn: %d, Sta: %d, \r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1],gammaDynamic1, gammaStatic1);
-        printf("LC1: %+4.2f; LC2: %+4.2f; LC31: %+4.2f; MR1: %+4.2f; MR2: %+4.2f, MR3: %+4.2f, \r",loadCellData[0],loadCellData[1],loadCellData[2],motorRef[0], motorRef[1], motorRef[2]);
+        //printf("LC1: %+4.2f; LC2: %+4.2f; LC31: %+4.2f; MR1: %+4.2f; MR2: %+4.2f, MR3: %+4.2f, \r",loadCellData[0],loadCellData[1],loadCellData[2],motorRef[0], motorRef[1], motorRef[2]);
+        printf("LC1: %+4.2f; MR1: %+4.2f; MR1Pip: %+4.2f; MR2: %+4.2f ; MR2Pip: %+4.2f \r",loadCellData[0],motorRef[0], motorRefPipe[0], motorRef[1],motorRefPipe[1]);
         //printf("F1: %+6.2f; F2: %+6.2f;MtrCmd1: %010d, MtrCmd2: %010d\r",loadCellData[0],loadCellData[1], motorCommand[0], motorCommand[1]);
         //printf("Mtr1: %020d, Mtr2: %020d\r\r",motorCommand[0], motorCommand[1]);
         ReleaseMutex( hIOMutex);
@@ -372,7 +376,7 @@ void motorControl::controlLoop(void)
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock, muscleLength[0], muscleLength[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
         sprintf(dataSample,"%.3f,%.1f,%d,%.6f,%.6f,%.6f,%.6f,%.6f",tock,loadCellData[3],expProtocol,muscleLength[0], muscleLength[1], loadCellData[0],loadCellData[1],loadCellData[2]);
         if (dataAcquisitionFlag[0]){
-            sprintf(dataTemp,",%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",motorRef[0],motorRef[1],motorRef[2],motorCommand[0],motorCommand[1],motorCommand[2]);
+            sprintf(dataTemp,",%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",motorRef[0],motorRef[1],motorRef[2],motorRefPipe[0],motorRefPipe[1],motorCommand[0],motorCommand[1],motorCommand[2]);
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[1]){
