@@ -41,20 +41,20 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
     pMotorControl = param2;
     switch (param) {
     case 0:
-        //spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "113700021E");
+        spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "113700021E");
         //muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000542");
-        //cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000547");
-        spindleFPGA = new fpgaIONeuromorphic(SPINDLE_FPGA, BICEP);
+        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000547");
+        //spindleFPGA = new fpgaIONeuromorphic(SPINDLE_FPGA, BICEP);
         muscleFPGA  = new fpgaIONeuromorphic(MOTOR_FPGA, BICEP);
-        cortexFPGA  = new fpgaIONeuromorphic(CORTEX_FPGA, BICEP);
+        //cortexFPGA  = new fpgaIONeuromorphic(CORTEX_FPGA, BICEP);
         break;
     case 1:
-        //spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "11160001CG");
+        spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "11160001CG");
         //muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "1137000222");
-        //cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "000000054B");
-        spindleFPGA = new fpgaIONeuromorphic(SPINDLE_FPGA, TRICEP);
+        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "000000054B");
+        //spindleFPGA = new fpgaIONeuromorphic(SPINDLE_FPGA, TRICEP);
         muscleFPGA  = new fpgaIONeuromorphic(MOTOR_FPGA, TRICEP);
-        cortexFPGA  = new fpgaIONeuromorphic(CORTEX_FPGA, TRICEP);
+        //cortexFPGA  = new fpgaIONeuromorphic(CORTEX_FPGA, TRICEP);
         break;
     default:
         std::cout<<"\nFATAL: Logical error in FPGAControl Params\n";
@@ -121,7 +121,8 @@ int FPGAControl::update() { //This is the function called in the thread
     //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
-        //pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
+        pMotorControl->motorRef[muscleIndex] = ((float64)muscleForce);
+        pMotorControl->motorRefPipe[muscleIndex] = ((float64)muscleForcePipe);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
@@ -294,7 +295,7 @@ int FPGAControl::writeCortexCommand()
     return 0;
 }
 
-int FPGAControl::readMuscleFPGAForce()
+/**int FPGAControl::readMuscleFPGAForce()
 {
     muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
     //muscleForceFPGA = 0;
@@ -302,7 +303,23 @@ int FPGAControl::readMuscleFPGAForce()
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
     muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
     return 0;
+}**/
+
+
+int FPGAControl::readMuscleFPGAForce()
+{
+    muscleFPGA->readStream(&muscleForceFpgaPipe);
+    float tCtrl = ((muscleForceFpgaPipe) * GGAIN);
+    muscleForcePipe = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
+    muscleForcePipe = muscleForcePipe*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
+
+    muscleFPGA->readWire(&muscleForceFPGA);
+    float tCtrl = ((muscleForceFPGA) * GGAIN);
+    muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
+    muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
+    return 0;
 }
+
 
 int FPGAControl::readMuscleFPGASpikeCount()
 {
