@@ -13,6 +13,8 @@ class SomeFpga
         int readForceStream(float *);
         int readForceWire(float *);
     private:
+    	fpgaIO myFPGA;
+    	int muscleType, fpgaType;
         char serX[50];
 };
 

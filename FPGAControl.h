@@ -39,7 +39,8 @@ class FPGAControl {
     int readMuscleFPGARaster_MN_6(void);
     int updateCortexDrive(void);
 public:
-    SomeFpga *muscleFPGA, *spindleFPGA, *cortexFPGA;
+    SomeFpga  *spindleFPGA, *cortexFPGA;
+    fpgaIONeuromorphic *muscleFPGA;
     char updateGammaFlag,updateCortexFlag,updateParametersFlag;
     FPGAControl(int, motorControl *);
     ~FPGAControl();
