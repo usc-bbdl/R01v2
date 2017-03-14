@@ -273,7 +273,7 @@ int FPGAControl::updateSpindleParameters() {
     return 0;
 }
 
-
+/**
 int FPGAControl::writeMuscleFPGALengthVel()
 {
     float gMusDamp;
@@ -286,7 +286,7 @@ int FPGAControl::writeMuscleFPGALengthVel()
     ReInterpret((float32)(muscleLength), &bitValLce);
     muscleFPGA->WriteFpgaLceVel(bitValLce, bitValVel, bitM1VoluntaryBic, bitM1DystoniaBic, DATA_EVT_LCEVEL);
     return 0;
-}
+}**/
 int FPGAControl::writeCortexCommand()
 {
     int32 bitValCortexDrive;
@@ -308,19 +308,19 @@ int FPGAControl::writeCortexCommand()
 
 int FPGAControl::readMuscleFPGAForce()
 {
-    muscleFPGA->readStream(&muscleForceFpgaPipe);
+    muscleFPGA->readForceStream(&muscleForceFpgaPipe);
     float tCtrl = ((muscleForceFpgaPipe) * GGAIN);
     muscleForcePipe = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
     muscleForcePipe = muscleForcePipe*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
 
-    muscleFPGA->readWire(&muscleForceFPGA);
+    muscleFPGA->readForceWire(&muscleForceFPGA);
     float tCtrl = ((muscleForceFPGA) * GGAIN);
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
     muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
     return 0;
 }
 
-
+/**
 int FPGAControl::readMuscleFPGASpikeCount()
 {
     int spikeCount;
@@ -365,7 +365,7 @@ int FPGAControl::readEMG()
     muscleFPGA->ReadFpga(0x20, "float32", &muscleEMG);
     return 0;
 }
-
+**/
 
 int FPGAControl::initializeParameters()
 {
