@@ -44,17 +44,17 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
         //spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "113700021E");
         //muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000542");
         //cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000547");
-        spindleFPGA = new fpgaIO(spindleBicFPGASerialNum, spindleBicFPGABitFile, confType);
-        muscleFPGA  = new fpgaIO(motorBicFPGASerialNum, muscleBicFPGABitFile, confType);
-        cortexFPGA  = new fpgaIO(cortexBicFPGASerialNum, cortexBicFPGABitFile, confType);
+        spindleFPGA = new fpgaIONeuromorphic(SPINDLE_FPGA, BICEP);
+        muscleFPGA  = new fpgaIONeuromorphic(MOTOR_FPGA, BICEP);
+        cortexFPGA  = new fpgaIONeuromorphic(CORTEX_FPGA, BICEP);
         break;
     case 1:
         //spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "11160001CG");
         //muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "1137000222");
         //cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "000000054B");
-        spindleFPGA = new fpgaIO(spindleTriFPGASerialNum, spindleTriFPGABitFile, confType);
-        muscleFPGA  = new fpgaIO(motorTriFPGASerialNum, muscleTriFPGABitFile, confType);
-        cortexFPGA  = new fpgaIO(cortexTriFPGASerialNum, cortexTriFPGABitFile, confType);
+        spindleFPGA = new fpgaIONeuromorphic(SPINDLE_FPGA, TRICEP);
+        muscleFPGA  = new fpgaIONeuromorphic(MOTOR_FPGA, TRICEP);
+        cortexFPGA  = new fpgaIONeuromorphic(CORTEX_FPGA, TRICEP);
         break;
     default:
         std::cout<<"\nFATAL: Logical error in FPGAControl Params\n";
@@ -196,6 +196,7 @@ int FPGAControl::writeSpindleLengthVel()
 {
     int32 bitValLce;
     ReInterpret((float32)(muscleLength), &bitValLce);
+    this->spindleFPGA->SendPara(bitValLce, DATA_EVT_LCEVEL);
     this->spindleFPGA->SendPara(bitValLce, DATA_EVT_LCEVEL);
     return 0;
 }

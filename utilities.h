@@ -63,6 +63,10 @@ const int   DATA_EVT_CORTEX_DRIVE = 8;
 const int   DATA_EVT_CORTEX_MIXED_INPUT = 9;
 const int   DATA_EVT_S_WEIGHT = 6;
 
+const int   SPINDLE_FPGA = 0;
+const int   MOTOR_FPGA = 1;
+const int   CORTEX_FPGA = 2;
+
 int proceedState(int *);
 int ReInterpret(float32, int32 *);
 int ReInterpret(int32, int32 *);
