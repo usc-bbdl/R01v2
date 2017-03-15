@@ -308,12 +308,14 @@ int FPGAControl::writeCortexCommand()
 
 int FPGAControl::readMuscleFPGAForce()
 {
-    muscleFPGA->readForceStream(&muscleForceFpgaPipe);
+    muscleFPGA->readMuscleSignals();
+    muscleForceFpgaPipe = muscleFPGA->muscleForcePipe;
     float tCtrl = ((muscleForceFpgaPipe) * GGAIN);
     muscleForcePipe = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
     muscleForcePipe = muscleForcePipe*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
 
-    muscleFPGA->readForceWire(&muscleForceFPGA);
+    muscleFPGA->readForceWire();
+    muscleForceFpgaPipe = muscleFPGA->muscleForceWire;
     float tCtrl = ((muscleForceFPGA) * GGAIN);
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
     muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
