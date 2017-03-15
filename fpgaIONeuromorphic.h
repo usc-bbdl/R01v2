@@ -11,12 +11,13 @@ class SomeFpga
         fpgaIONeuromorphic(int , int);
         ~fpgaIONeuromorphic();
         int readForceStream(float *);
+        int readForceBlock(float *);
         int readForceWire(float *);
     private:
     	fpgaIO myFPGA;
     	int muscleType, fpgaType;
         char serX[50];
-        BYTE forceAdressWire, forceAdressPipe;
+        int forceAdressWire, forceAdressPipe;
 };
 
 #endif

@@ -7,6 +7,7 @@ fpgaIONeuromorphic::fpgaIONeuromorphic(int fpgaType, int muscleType){
 	this->muscleType = muscleType;
 	this->forceAdressWire = 0x0032;
 	this->forceAdressPipe = 0x0080;
+	this->forceAdressBlock = 0x00BF;
 	if ((fpgaType == SPINDLE_FPGA) && (muscleType == BICEP))
 		myFPGA = fpgaIO(spindleBicFPGASerialNum,spindleBicFPGABitFile);
 	fpgaIO::fpgaIO(std::string serialNum, std::string bitfile, /*uint16_t designHASH,*/ unsigned int confType) {
@@ -22,6 +23,10 @@ fpgaIONeuromorphic::fpgaIONeuromorphic(int fpgaType, int muscleType){
 		myFPGA = fpgaIO(cortexTriFPGASerialNum,cortexTriFPGABitFile);
 }
 int fpgaIONeuromorphic::readForceStream(float * muscleForceFpgaPipe){
+	int blockSize = 2;
+	long length = 16; //128 bits is 16 bytes
+	unsigned char blockData[128];
+	readBlock(forceAdressBlock, blockSize, length, unsigned char *blockData);
 
 }
 int fpgaIONeuromorphic::readForceWire(float * muscleForceFpgaWire){
