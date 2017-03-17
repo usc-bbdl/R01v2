@@ -24,18 +24,18 @@ class motorControl
 {
     uInt32      dataEnable;
     TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
-    TaskHandle  encodertaskHandle[2];
+    TaskHandle  encodertaskHandle[3];
     double loadCellOffset1, loadCellOffset2, loadCellOffset3,I;
     TimeData timeData;
     static void motorControlLoop(void*);
     void controlLoop(void);
     HANDLE hIOMutex;
     bool live;
-    float64 encoderData1[1],encoderData2[1],encoderData3[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
+    float64 encoderData1[1],encoderData2[1],encoderData3[1],muscleLengthPreviousTick[2], muscleLengthOffset[3];
     char header[200];
 public:    
     bool resetMuscleLength;
-    float64 loadCellData[4],motorRef[3],muscleLength[2],muscleVel[2];
+    float64 loadCellData[4],motorRef[3],muscleLength[3],muscleVel[2];
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
     unsigned int muscleSpikeCount[2],raster_MN_1[2],raster_MN_2[2],raster_MN_3[2],raster_MN_4[2],raster_MN_5[2],raster_MN_6[2];
     float muscleEMG[2],spindleIa[2], spindleII[2],encoderBias[3],encoderGain[3];

@@ -76,21 +76,4 @@ extern float TBIAS;
 //work in progress
 void configParser(FILE *);
 void testParser(FILE *);
-
-const string spindleBicFPGASerialNum = "113700021E";
-const string motorBicFPGASerialNum = "0000000542";
-const string cortexBicFPGASerialNum = "0000000547";
-const string spindleTriFPGASerialNum = "11160001CG";
-const string motorTriFPGASerialNum = "1137000222";
-const string cortexTriFPGASerialNum = "000000054B";
-
-
-const string spindleBicFPGABitFile= "spindle.v";
-const string motorBicFPGABitFile = "muscle.v";
-const string cortexBicFPGABitFile = "cortex.v";
-const string spindleTriFPGABitFile = "spindle.v";
-const string motorTriFPGABitFile = "muscle.v";
-const string cortexTriFPGABitFile = "cortex.v";
-
-
 #endif

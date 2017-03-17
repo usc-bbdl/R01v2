@@ -130,7 +130,7 @@ int proceedState(int *state)
             }
         break;
     case STATE_RUN_PARADIGM_CDMRP_IMPLANT:
-        paradigmCDMRPimplant.readData();
+        //paradigmCDMRPimplant.readData();
         retVal = paradigmCDMRPimplant.startParadigm(&motors);
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;

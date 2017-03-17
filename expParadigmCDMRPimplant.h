@@ -8,10 +8,10 @@
 
 class expParadigmCDMRPimplant
 {
-    int rep[30];
+    int rep[100];
     int numTrials;
-    double amp[30];
-    double freq[30];
+    double amp[100];
+    double freq[100];
 public:
     expParadigmCDMRPimplant(void);
     void readData(void);

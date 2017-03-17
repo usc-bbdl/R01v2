@@ -7,6 +7,7 @@ const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(void)
 {
     numTrials = 0;
+    readData();
 }
 
 
@@ -16,7 +17,7 @@ expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
 
 void expParadigmCDMRPimplant::readData()
 {
-    numTrials = Trials;    
+    //numTrials = Trials;    
     //C:\Users\PXI_BBDL\Documents\GitHub\R01v2
     char *configFileName = "CDMRPtest.txt";
     FILE *configFile;
@@ -28,24 +29,24 @@ void expParadigmCDMRPimplant::readData()
     fscanf(configFile,"%s\n",&header);
     std::cout<<"\n\n NumTrials:"<<header<<"\n\n";
     fscanf(configFile,"%d\n",&numTrials);
-    numTrials = 32;
+    //numTrials = 32;
     std::cout<<"\n\n NumTrials:"<<numTrials<<"\n\n";
     double tempA=0, tempF=0;
     int tempR=0;
 
-    for(int i = 0; i < Trials; i++){
+    for(int i = 0; i < numTrials; i++){
         fscanf(configFile,"%lf,%lf,%d\n", &tempA, &tempF, &tempR);
         amp[i] = tempA;
         freq[i] = tempF;
         rep[i] = tempR;
-        printf("\n%lf,%lf,%d\n", tempA, tempF, tempR);
+        //printf("\n%lf,%lf,%d\n", tempA, tempF, tempR);
     }
     fclose(configFile);
 }
 
 int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
 {
-    numTrials = Trials;
+    //numTrials = Trials;
         //________________________________________________________________
     motorObj->newPdgm_Flag = true;
 
@@ -58,7 +59,7 @@ int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
     printf("\n\CDMRP implant Perturbation Options\n");
         printf("\t[0] Exit CDMRP implant Perturbation\n"); 
 
-        printf("This CDMRP experiment has %d trials\n",Trials);
+        printf("This CDMRP experiment has %d trials\n",numTrials);
         /*
         do{
         do{
@@ -76,10 +77,10 @@ int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
     */
         //motorObj->newPdgm_ref[0] = numTrials;
         //        motorObj->newPdgm_ref[1] = numTrials;
-        int forceOffset = 2;\
+        int forceOffset = 2;
         double sinVal = 0;
         double c = 6;
-        for(int i=0; i<Trials && stayInTheLoop; i++)
+        for(int i=0; i<numTrials && stayInTheLoop; i++)
         {
             
             printf("This trial has %d repetitions\t\n\n",rep[i]);
@@ -88,7 +89,7 @@ int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
             
             for(int j=0; j<rep[i] && stayInTheLoop; j++)
             {
-                printf("Starting trial#  %d and repetition #%d\n\n",i+1,j+1);
+                printf("Starting trial#  %d and repetition #%d. AMP = %lf, FRQ = %lf\n\n",i+1,j+1, A, f);
                 double tick = motorObj->getTime();
                 double tock;
                 double period = 1/f;
@@ -111,7 +112,7 @@ int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
                 if(sinVal < 0) 
                 {
                     f1=forceOffset;
-                    f0 = 0.5*((0-sinVal) + forceOffset);
+                    f0 = (0.5*(0-sinVal)) + forceOffset;
                 }
                 //f0 extensor
                 //f1 flexor
