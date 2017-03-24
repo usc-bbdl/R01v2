@@ -8,8 +8,11 @@ motorControl::motorControl(double offset1, double offset2)
     int musc[] = {1,3};
     //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
+
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
-    muscleObj->initMuscles();
+
+    //muscleObj->
+
     loadCellData = new double[No_of_musc];
     motorRef = new double[No_of_musc];
     muscleLength = new double[No_of_musc];
