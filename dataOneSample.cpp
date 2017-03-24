@@ -1,6 +1,6 @@
 #include "dataOneSample.h"
 #include "DAQ.h"
-
+#include <conio.h>
 
 dataOneSample::dataOneSample()
 {
@@ -11,33 +11,62 @@ dataOneSample::dataOneSample()
     
     TaskHandle loadCellHandle;
     Task *loadCell = new Task();
-    //std::cout<<"\nloadCell1";
-    loadCell->assignTask(loadCellHandle,"loadCell1","PXI1Slot5/ai8",Lc);
-    //std::cout<<"\nloadCell2";
-    loadCell->assignTask(loadCellHandle,"loadCell2","PXI1Slot5/ai2",Lc);
-    //std::cout<<"\nFinished Assign";
+    loadCell->assignTask(loadCellHandle,"loadCell1",1,Lc);
+    loadCell->assignTask(loadCellHandle,"loadCell2",3,Lc);
     loadCell->initTask(2);
-    //std::cout<<"\nFinished Init";
     loadCell->startTask();
-    //std::cout<<"\nFinished Start";
-    //DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,2,NULL,NULL));
     loadCellData = loadCell->daqTask();
-    //std::cout<<"\nFinished Read";    
     loadCell1 = loadCellData[0] * loadCellScale[0];
     loadCell2 = loadCellData[1] * loadCellScale[1];
     loadCell->stopTask();
     loadCell->deleteTask();
+    //////////////////////////////////////////
+    Muscles *muscleObj;
+    int musc[] = {1,3};
+    std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
+    muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
+    muscleObj->initMuscles();
+    muscleObj->startMuscles();
+    double *demoData1, *demoData2, *demoData3;
+    demoData1 = new double[2];
+    demoData1[0] = 0.5; demoData1[1] = 0.5;
 
+    muscleObj->MuscleEnb(1);
     
+    int count=0;
+    while(!kbhit())
+    {    
+    demoData2 = muscleObj->MuscleLc();
+    muscleObj->MuscleCmd(demoData1);
+
+    demoData3 = muscleObj->MuscleEnc();
+    //std::cout<<"Muscle Data: "<< count++ <<"LC1: " <<demoData2[0]<< " LC2:" << demoData2[1]<<" Enc1:"<< demoData3[0]<<" Enc2:" << demoData3[1]<<"\r";
+    printf("Muscle Data: %d LC1: %+6.2f; LC2: %+6.2f; Enc1: %+6.2f; Enc2: %+6.2f \r\r",count++,demoData2[0],demoData2[1],demoData3[0],demoData3[1]);
+
+    }
+    demoData1[0] = 0.0; demoData1[1] = 0.0;
+    muscleObj->MuscleCmd(demoData1);
+    muscleObj->MuscleEnb(0);
+
+    muscleObj->stopMuscles();
+    muscleObj->deleteMuscles();
+
+}
+
+dataOneSample::~dataOneSample()
+{
+}
+
+/*
     TaskHandle demoHandle, demoHandle_[2];
     double* demoData, *demoData_;
     Task *demoTask, *demoTask_[2];
 
     //LC read sample test
     {
-    demoTask = new Task();
-    demoTask->assignTask(demoHandle,"demoLoadCell1","",Lc);
-    demoTask->assignTask(demoHandle,"demoLoadCell2","",Lc);
+    demoTask = new Task();//
+    demoTask->assignTask(demoHandle,"demoLoadCell1",1,Lc);//
+    demoTask->assignTask(demoHandle,"demoLoadCell2",3,Lc);//
     demoTask->initTask();
     demoTask->startTask();
     demoData = demoTask->daqTask();
@@ -48,12 +77,12 @@ dataOneSample::dataOneSample()
 
     //Enc read sample task
     {
-    demoTask_[0] = new Task();
+    demoTask_[0] = new Task();//
     //demoTask_[1] = new Task();
-    demoTask_[0]->assignTask(demoHandle_[0],"demoEnc1","",Enc,0);
+    demoTask_[0]->assignTask(demoHandle_[0],"demoEnc1",1,Enc);//
     //demoTask_[1]->assignTask(demoHandle_[1],"demoEnc2","",Enc,1);
     std::cout<<"\nAssigned Enc tasks\n\n";
-    demoTask_[0]->initTask();
+    demoTask_[0]->initTask();//
     //demoTask_[1]->initTask();
     std::cout<<"\nInit Enc tasks\n\n";
     demoTask_[0]->startTask();
@@ -84,9 +113,9 @@ dataOneSample::dataOneSample()
     {
     EnbTask = new Task();
     CmdTask = new Task();
-    EnbTask->assignTask(EnbHandle,"Enb1","",Enb);//
-    CmdTask->assignTask(CmdHandle,"Cmd1","",Cmd);//
-    CmdTask->assignTask(CmdHandle,"Cmd2","",Cmd);//
+    EnbTask->assignTask(EnbHandle,"Enb1",1,Enb);//
+    CmdTask->assignTask(CmdHandle,"Cmd1",1,Cmd);//
+    CmdTask->assignTask(CmdHandle,"Cmd2",3,Cmd);//
     EnbTask->initTask();//
     CmdTask->initTask();//
     EnbTask->startTask();//
@@ -100,7 +129,7 @@ dataOneSample::dataOneSample()
     std::cout<<"\nStarting motor rot";
     EnbTask->daqTask(EnbData);//
     CmdTask->daqTask(CmdData);//
-    Sleep(2000);
+    Sleep(3000);
     EnbData[0] = 0x00;
     CmdData[0]  = 0.0; CmdData[1]  = 0.0;
     std::cout<<"\nStopping motor rot";
@@ -117,132 +146,4 @@ dataOneSample::dataOneSample()
     }
     //DAQmxStopTask(loadCellHandle);
 	//DAQmxClearTask(loadCellHandle);
-
-Error:
-	if( DAQmxFailed(error) ) {
-		DAQmxGetExtendedErrorInfo(errBuff,2048);
-		/*********************************************/
-		// DAQmx Stop Code
-		/*********************************************/
-		printf("DAQmx Error: %s\n",errBuff);
-	}
-    if (loadCellHandle)
-    {
-        DAQmxStopTask(loadCellHandle);
-		DAQmxClearTask(loadCellHandle);
-        loadCellHandle = 0;
-    }
-    /*
-    char        errBuff[2048]={'\0'};
-    int32       error=0;
-    double loadCellData[2]= {0.0,0.0}, loadCellData1[2]= {0.0,0.0}, loadCellData2[2]= {0.0,0.0};
-    TaskHandle loadCellHandle, encoderHandle[2], loadCellHandle1, loadCellHandle2;
-    bool32 isLate = {0};
-    std::cout<<"\nVar dec";
-    DAQmxErrChk (DAQmxCreateTask("Task Handle 1",&loadCellHandle1));
-    std::cout<<"\nHandle1 create task";
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle1,"PXI1Slot5/ai8","loadCell1",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));
-    std::cout<<"\nHandle1 create chan";
-    //DAQmx_SwitchChan_AnlgBusSharingEnable
-    //DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle,"PXI1Slot5/ai9","loadCell2",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));
-    //DAQmxErrChk (DAQmxCfgSampClkTiming(loadCellHandle,"",500000.0,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,2));
-    DAQmxErrChk (DAQmxCfgSampClkTiming(loadCellHandle1,"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,NULL));
-    std::cout<<"\nHandle1 cfg clk";
-    DAQmxErrChk (DAQmxSetRealTimeConvLateErrorsToWarnings(loadCellHandle1,1));
-    std::cout<<"\nHandle1 set error";
-
-    DAQmxErrChk (DAQmxCreateTask("Task Handle 1",&loadCellHandle2));
-    std::cout<<"\nHandle2 create task";
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle2,"PXI1Slot5/ai9","loadCell2",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));
-    std::cout<<"\nHandle2 create chan";
-    DAQmxErrChk (DAQmxCfgSampClkTiming(loadCellHandle2,"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,NULL));
-    std::cout<<"\nHandle2 cfg clk";
-
-    Sleep(500);
-
-    DAQmxErrChk (DAQmxStartTask(loadCellHandle1));
-    std::cout<<"\nHandle1 start task";
-    DAQmxErrChk (DAQmxStartTask(loadCellHandle2));
-    std::cout<<"\nHandle2 start task";
-
-    Sleep(500);
-
-    DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCellHandle1,10, &isLate));
-    std::cout<<"\nHandle1 waiting for clk";
-
-    DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle1,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData1,1,NULL,NULL));
-    std::cout<<"\nHandle1 read data";
-    loadCell1 = loadCellData1[0] * loadCellScale1;
-    DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle2,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData2,1,NULL,NULL));
-    loadCell2 = loadCellData2[0] * loadCellScale2;
-    std::cout<<"\nHandle2 read data";
-
-    DAQmxStopTask(loadCellHandle1);
-    DAQmxClearTask(loadCellHandle1);
-    std::cout<<"\nHandle1 stop";
-    DAQmxStopTask(loadCellHandle2);
-    DAQmxClearTask(loadCellHandle2);    
-    std::cout<<"\nHandle2 stop";
-Error:
-	if( DAQmxFailed(error) ) {
-		DAQmxGetExtendedErrorInfo(errBuff,2048);
-        //
-		printf("DAQmx Error: %s\n",errBuff);
-	}
-    if (loadCellHandle1 || loadCellHandle2)
-    {
-        DAQmxStopTask(loadCellHandle1);
-        DAQmxClearTask(loadCellHandle1);
-        std::cout<<"\nHandle1 stop";
-        DAQmxStopTask(loadCellHandle2);
-        DAQmxClearTask(loadCellHandle2);    
-        std::cout<<"\nHandle2 stop";
-        loadCellHandle1 = 0;
-        loadCellHandle2 = 0;
-    }
     */
-    //---------------------------------------------
-    /*
-    double loadCellData[2]= {0.0,0.0};
-    double loadCell[1] = {0.0};
-    TaskHandle loadCellHandle1,loadCellHandle2, encoderHandle[2];
-
-    DAQmxErrChk (DAQmxCreateTask("",&loadCellHandle1));
-    DAQmxErrChk (DAQmxCreateTask("",&loadCellHandle2));
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle1,"PXI1Slot5/ai8","loadCell1",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle2,"PXI1Slot5/ai9","loadCell2",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCfgSampClkTiming(loadCellHandle1,"",500000.0,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,1));
-    DAQmxErrChk (DAQmxCfgSampClkTiming(loadCellHandle2,"",500000.0,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,1));
-
-    DAQmxErrChk (DAQmxStartTask(loadCellHandle1));
-    DAQmxErrChk (DAQmxStartTask(loadCellHandle2));
-    DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle1,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCell,1,NULL,NULL));
-    loadCellData[0]= loadCell[0];
-    DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle2,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCell,1,NULL,NULL));
-    loadCellData[1]= loadCell[0];
-    loadCell1 = loadCellData[0] * loadCellScale1;
-    loadCell2 = loadCellData[1] * loadCellScale2;
-
-Error:
-	if( DAQmxFailed(error) ) {
-		DAQmxGetExtendedErrorInfo(errBuff,2048);
-		printf("DAQmx Error: %s\n",errBuff);
-	}
-    if (loadCellHandle1)
-    {
-        DAQmxStopTask(loadCellHandle1);
-		DAQmxClearTask(loadCellHandle1);
-        loadCellHandle1 = 0;
-    }
-    if (loadCellHandle2)
-    {
-        DAQmxStopTask(loadCellHandle2);
-		DAQmxClearTask(loadCellHandle2);
-        loadCellHandle2 = 0;
-    }
-    */
-}
-
-dataOneSample::~dataOneSample()
-{
-}
