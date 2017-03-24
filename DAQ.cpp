@@ -3,32 +3,32 @@
 
 const char* loadCell_list[7] = 
 {
-    "",
+    "ai0",
     "ai8",
-    "",
+    "ai1",
     "ai9",
-    "",
-    "",
-    ""
+    "ai2",
+    "ai10",
+    "ai11"
 };
 
 const char* motorCmd_list[7] = 
 {
-    "",
+    "ao8",
     "ao9",
-    "",
+    "ao10",
     "ao11",
-    "",
-    "",
-    ""
+    "ao12",
+    "ao13",
+    "ao14"
 };
 
 uInt32 motorEnb_list[7] = 
 {
     0x00000001,
-    0xff, //default should be 0x02
+    0x00000010, //default should be 0x02
     0x00000100,
-    0xff, //default should be 0x04
+    0x00001000, //default should be 0x04
     0x00010000,
     0x00100000,
     0x01000000
@@ -36,13 +36,13 @@ uInt32 motorEnb_list[7] =
 
 const char* motorEnc_list[7] = 
 {
-    "",
-    "ctr7",
-    "",
+    "ctr0",
+    "ctr1",
+    "ctr2",
     "ctr3",
-    "",
-    "",
-    "",
+    "ctr4",
+    "ctr5",
+    "ctr6",
 };
 
 muscleAddress muscles;

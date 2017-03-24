@@ -231,8 +231,8 @@ void motorControl::controlLoop(void)
         muscleLengthPreviousTick[0] = muscleLength[0];
         muscleLengthPreviousTick[1] = muscleLength[1];
         
-        loadCellData[0] = (loadCellData[0] * loadCellScale1) - loadCellOffset1;
-        loadCellData[1] = (loadCellData[1] * loadCellScale2) - loadCellOffset2;
+        loadCellData[0] = (loadCellData[0] * loadCellScale[0]) - loadCellOffset1;
+        loadCellData[1] = (loadCellData[1] * loadCellScale[1]) - loadCellOffset2;
         errorForce[0] = motorRef[0] - loadCellData[0];
         errorForce[1] = motorRef[1] - loadCellData[1];
         if(newPdgm_Flag)
