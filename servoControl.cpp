@@ -27,9 +27,14 @@ servoControl::servoControl(int ID) {
 
     //set servo ID and check if servo is alive
     //dxl_set_txpacket_id(servoID);
+    defaultPosition = -40;
+    setLimit(-90,90);
+    limitLowAngle;
+    limitHighAngle;
     servoPing();
     //commCheck();
     setCompliance(1);
+    defaultPositionFlag = FALSE;
     goDefault();
 }
 
@@ -133,11 +138,25 @@ void servoControl::formatCMD(int position, int velocity) {  //function is a work
 
 //public declarations
 int servoControl::setPosition(int position) {
+    int limitLow = 0, limitHigh = 0;
+    if (defaultPositionFlag)
+    {
+        limitLow = limitLowAngle;
+        limitHigh = limitHighAngle;
+        defaultPositionFlag = FALSE;
+    }
+    else
+    {
+        limitLow = limitLowAngle + defaultPosition;
+        limitHigh = limitHighAngle + defaultPosition;
+        position = position + defaultPosition;
+    }
+        
     int checkVal = 3443, bitPosition = 0;
     float temp;
     waitMoving();
-    if (position < -150 || position > 150) {
-        printf("Invalid Position %d. Value of Position must be between [-150, 150] degrees\n",position);
+    if (position < limitLow || position > limitHigh) {
+        printf("Invalid Position %d. Value of Position must be between [%d, %d] degrees\n",position, limitLowAngle, limitHighAngle);
         return 0;
     }
     else {
@@ -158,7 +177,11 @@ int servoControl::setPosition(int position) {
     }
     return 1;
 }
-
+void servoControl::setLimit(int lowLimit,int highLimit) 
+{
+    limitLowAngle = lowLimit;
+    limitHighAngle = highLimit;
+}
 int servoControl::setVelocity(int velocity) {
     int checkVal = 3443, bitVelocity = 0;
     float temp;
@@ -309,13 +332,14 @@ void servoControl::waitMoving(int overRide) { //change overRide value in the hea
 
 //suraj - revisit
 void servoControl::goDefault() {
+    defaultPositionFlag =  TRUE;
     waitMoving();
     //printf("goDefault: setting velocity\n");
     setVelocity(RESET_VELOCITY);
     Sleep(CONTROL_PERIOD);
     //printf("goDefault: setting position\n");
     //setPosition(defPos);
-    setPosition(0);
+    setPosition(defaultPosition);
     //printf("goDefault: Motor in Default position\n");
 }
 
