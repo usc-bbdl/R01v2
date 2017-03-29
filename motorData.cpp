@@ -5,6 +5,36 @@ motorData::motorData(double offset1, double offset2)
 {
     handleName =0;
     //initialize stuff
+    // moving muscle declaration from motorControl constructor to here
+    int musc[] = {1,3};
+    //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
+    No_of_musc = (sizeof(musc))/(sizeof(*musc));
+    loadCellData = new double[No_of_musc];
+    motorRef = new double[No_of_musc];
+    muscleLength = new double[No_of_musc];
+    muscleVel = new double[No_of_musc];
+    muscleLengthOffset = new double[No_of_musc];
+    encoderData = new double[No_of_musc];
+    muscleLengthPreviousTick = new double[No_of_musc];
+    encoderBias = new double[No_of_musc];
+    muscleEMG = new double[No_of_musc];
+    spindleIa  = new double[No_of_musc];
+    spindleII = new double[No_of_musc];
+    encoderBias = new double[No_of_musc];
+    encoderGain = new double[No_of_musc];
+    cortexDrive = new double[No_of_musc];
+
+    initVariables(offset1, offset2);
+
+}
+
+
+motorData::~motorData(void)
+{
+}
+
+void motorData::initVariables(double offset1, double offset2) {
+    
     encoderBias[0] = encoderBias[1] = 0;
     encoderGain[0] = encoderGain[1] = 0;
     I = 4;
@@ -51,9 +81,4 @@ motorData::motorData(double offset1, double offset2)
 
     expProtocol=0;
     expProtocolAdvance=0;
-}
-
-
-motorData::~motorData(void)
-{
 }
