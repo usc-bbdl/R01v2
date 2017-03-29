@@ -3,46 +3,46 @@
 
 const char* loadCell_list[7] = 
 {
-    "",
+    "ai0",
     "ai8",
-    "",
+    "ai1",
     "ai9",
-    "",
-    "",
-    ""
+    "ai2",
+    "ai10",
+    "ai11"
 };
 
 const char* motorCmd_list[7] = 
 {
-    "",
+    "ao8",
     "ao9",
-    "",
+    "ao10",
     "ao11",
-    "",
-    "",
-    ""
+    "ao12",
+    "ao13",
+    "ao14"
 };
 
 uInt32 motorEnb_list[7] = 
 {
-    0x00000001,
-    0xff, //default should be 0x02
-    0x00000100,
-    0xff, //default should be 0x04
-    0x00010000,
-    0x00100000,
-    0x01000000
+    0x01,
+    0x02, //default should be 0x02
+    0x04,
+    0x08, //default should be 0x04
+    0x10,
+    0x20,
+    0x40
 };
 
 const char* motorEnc_list[7] = 
 {
-    "",
-    "ctr7",
-    "",
+    "ctr0",
+    "ctr1",
+    "ctr2",
     "ctr3",
-    "",
-    "",
-    "",
+    "ctr4",
+    "ctr5",
+    "ctr6",
 };
 
 muscleAddress muscles;
@@ -95,7 +95,8 @@ Muscles::Muscles(int* musc,int M)
 {
     No_of_musc = M;
     for(int i =0 ;i<MAX_MUS; i++) activeMuscles[i] = -1;
-    EnbData = 0x00000000;
+    EnbData = new uInt32[1];
+    EnbData[0] = 0x00000000;
     LcTask = new Task();
     CmdTask = new Task();
     EnbTask = new Task();
@@ -130,16 +131,18 @@ Muscles::Muscles(int* musc,int M)
             //std::cout<<"\n"<<temp<<"~~~\n";
             EncTask[musc[i]]->assignTask(EncHandle[musc[i]],temp,musc[i],Enc);//
 
-            EnbData = EnbData | motorEnb_list[musc[i]];
+            EnbData[0] = EnbData[0] | motorEnb_list[musc[i]];
            
-            
+            std::cout<<"Enb: Muscle loop"<<EnbData[0]<<"\n\n";
         }
-
+    std::cout<<"Enb: Muscle init"<<EnbData[0]<<"\n\n";
     strcpy(temp,"Enb");
     sprintf(temp, "%s%d",temp,(int) (sizeof(musc)/sizeof(*musc)));
     
     //std::cout<<"\n"<<temp<<"~~~\n";
     EnbTask->assignTask(EnbHandle,temp,0,Enb);
+
+    initMuscles();
 }
 
 void Muscles::initMuscles()
@@ -223,18 +226,25 @@ void Muscles::MuscleEnb(int b)
 {
     uInt32* temp = new uInt32;
     //temp[0] = 0x00;
-    if(!b)
+    if(b==0)
     {
         temp[0] = 0x00;
         EnbTask->daqTask(temp);
     }
-    else if(b)
+    else if(b == 1)
     {
-        temp[0] = EnbData;
+        temp[0] = EnbData[0];
+        std::cout<<"Enb: MuscleEnb"<<EnbData[0]<<"\n\n";
         EnbTask->daqTask(temp);
     }
 
 }
+void Muscles::MuscleEnb_(uInt32* dataArg)
+{
+    std::cout<<"Enb: MuscleEnb"<<dataArg[0]<<"\n\n";
+    EnbTask->daqTask(dataArg);
+}
+
 
 //------------------------------------------------
 //------------------------------------------------
@@ -413,7 +423,9 @@ void Task::daqTask(double* dataArg)
 {daqObj->writeDAQ(task,dataArg);
 }
 void Task::daqTask(uInt32* dataArg)
-{daqObj->writeDAQ(task,dataArg);
+{
+    std::cout<<"Enb task: "<<dataArg[0]<<"\n\n";
+    daqObj->writeDAQ(task,dataArg);
 }
 
 /*
@@ -539,6 +551,7 @@ void DAQ::writeDAQ(void* &taskArg, double *dataArg)
 
 void DAQ::writeDAQ(void* &taskArg, uInt32 *dataArg)
 {
+    std::cout<<"Enb daq: "<<dataArg[0]<<"\n\n";
     errorCheck(DAQmxWriteDigitalU32(taskArg,1,1,10.0,DAQmx_Val_GroupByChannel,dataArg,NULL,NULL),taskArg);
 }
 

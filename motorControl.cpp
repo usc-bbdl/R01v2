@@ -8,8 +8,11 @@ motorControl::motorControl(double offset1, double offset2)
     int musc[] = {1,3};
     //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
+
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
-    muscleObj->initMuscles();
+
+    //muscleObj->
+
     loadCellData = new double[No_of_musc];
     motorRef = new double[No_of_musc];
     muscleLength = new double[No_of_musc];
@@ -231,8 +234,8 @@ void motorControl::controlLoop(void)
         muscleLengthPreviousTick[0] = muscleLength[0];
         muscleLengthPreviousTick[1] = muscleLength[1];
         
-        loadCellData[0] = (loadCellData[0] * loadCellScale1) - loadCellOffset1;
-        loadCellData[1] = (loadCellData[1] * loadCellScale2) - loadCellOffset2;
+        loadCellData[0] = (loadCellData[0] * loadCellScale[0]) - loadCellOffset1;
+        loadCellData[1] = (loadCellData[1] * loadCellScale[1]) - loadCellOffset2;
         errorForce[0] = motorRef[0] - loadCellData[0];
         errorForce[1] = motorRef[1] - loadCellData[1];
         if(newPdgm_Flag)

@@ -59,14 +59,16 @@
 
     class servoControl {
         int servoID, CommStatus;
-
+        int defaultPosition;
         void PrintCommStatus(int);
         void PrintErrorCode();
         void formatCMD(int, int); // WARNING: function is a work in progress - do no call.
         int initPos, finalPos, rampVelocity, holdPeriod, servoTorque; //position must be provided in terms of angle
-
+        int limitLowAngle, limitHighAngle;
+        bool defaultPositionFlag;
     public: servoControl(int ID = 1);
             ~servoControl();
+            void setLimit(int lowLimit,int highLimit);
             int setPosition(int);
             int setVelocity(int);            
             int setCompliance(int);//parameter is compliance level - Default = 0, High = 1;

@@ -56,7 +56,7 @@ class Muscles
     int activeMuscles[MAX_MUS];
     int No_of_musc;
     double* LcData, CmdData, EncData;
-    uInt32 EnbData;
+    uInt32* EnbData;
 
 public:
     Muscles();
@@ -69,6 +69,7 @@ public:
     double* MuscleEnc();
     void MuscleCmd(double*);
     void MuscleEnb(int);
+    void MuscleEnb_(uInt32*);
     void stopMuscles();
     void deleteMuscles();
     void zeroMuscles();

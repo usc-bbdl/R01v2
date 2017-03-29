@@ -26,6 +26,11 @@ int proceedState(int *state)
     int retVal = 0;
     int menu = 0;
     static servoControl servo;
+    servo.goDefault();
+    Sleep(1000);
+    servo.setPosition(91);
+    Sleep(1000);
+    servo.goDefault();
     static dataOneSample loadCellOffsets;
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
     static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);

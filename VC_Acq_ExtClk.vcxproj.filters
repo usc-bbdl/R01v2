@@ -65,6 +65,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="experimentUserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utilities.h">
