@@ -31,10 +31,11 @@ class motorControl
     HANDLE hIOMutex;
     bool live;
     float64 encoderData1[1],encoderData2[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
+    float64* windingUpCmnd;
     char header[200];
     int createHeader4DataFile(void);
     int createWindingUpComma(void);
-    float64* windingUpCmnd;
+    bool dataAcquisitionFlag[12];
 public:    
     Muscles *muscleObj;
     int No_of_musc;
@@ -58,7 +59,7 @@ public:
     double cortexDrive[2], angle, velocity;
     bool newPdgm_Flag;
     double newPdgm_ref[2];
-
+    void setDataAcquisitionFlag(bool *);
     double getTime();
     void dummy();
 };

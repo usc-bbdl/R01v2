@@ -63,10 +63,16 @@ motorControl::motorControl(double offset1, double offset2)
     muscleLengthOffset [1] = 0;
     motorControl::createHeader4DataFile();
     createWindingUpCommand();
-    
+    bool daqFlag[12] = {1,0,0,0,0,0,0,0,0,0,0,0};
+    setDataAcquisitionFlag(daqFlag);
 }
 
+void motorControl::setDataAcquisitionFlag(bool flag[])
+{
+    for (int i = 0 ; i< 12; i++)
+        this->dataAcquisitionFlag[i] = flag[i];
 
+}
 motorControl::~motorControl()
 {
     muscleObj->deleteMuscles();
