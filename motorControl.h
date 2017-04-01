@@ -27,7 +27,7 @@ class motorControl
     int expProtocol;
     double loadCellOffset1, loadCellOffset2, I, tick, tock;
     HANDLE hIOMutex;
-    bool live;
+    bool live, expProtocolRunningStateMachine;
     float64 *windingUpCmnd, *muscleLengthPreviousTick, *muscleLengthOffset;
     char header[200],dataSample[600];
     bool dataAcquisitionFlag[12];
@@ -63,7 +63,7 @@ public:
     int motorControllerEnd();
     void setDataAcquisitionFlag(bool *);
     double getTime();
-    void dummy();
+    void newTrial(int);
 };
 
 #endif

@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
+#define NEW_TRIAL 1
+#define NEW_PERTURBATION 2
 motorControl::motorControl(double offset1, double offset2)
 {
     int musc[] = {1,3};//This should be read from configuration file and propagated appropriately to this and other classes
@@ -17,7 +19,6 @@ motorControl::motorControl(double offset1, double offset2)
 motorControl::~motorControl()
 {
     muscleObj->deleteMuscles();
-
     live = FALSE;
 }
 void motorControl::createVariables()
@@ -90,6 +91,7 @@ void initializeVariables()
     isControlling = FALSE;
     live = FALSE;
     resetMuscleLength = TRUE;
+    expProtocolRunningStateMachine = false;
 }
 void motorControl::setDataAcquisitionFlag(bool flag[])
 {
@@ -345,17 +347,23 @@ void motorControl::createDataSampleString()
 }
 void motorControl::setExperimentalProtocol(void)
 {
-    int expProtocoAdvance = 0;
-    if (trialTrigger == 1){
+    if ((trialTrigger != 0) | (expProtocolRunningStateMachine == true))
+        proceedExperimentalProtocol();
+    else
+        expProtocol = 0;
+}
+
+void motorControl::proceedExperimentalProtocol(void)
+{
+    static int expProtocoAdvance = 0;
+    static muscleNumber = 0;
+    if (trialTrigger == NEW_TRIAL){
         expProtocoAdvance = 1;
         trialTrigger = 0;
+        expProtocolRunningStateMachine = true;
     }
-    if (trialTrigger == 2){
-        expProtocoAdvance = 10;
-        trialTrigger = 0;
-    }
-    if (trialTrigger == 3){
-        expProtocoAdvance = 11;
+    if (trialTrigger == NEW_PERTURBATION){
+        expProtocoAdvance = 100;
         trialTrigger = 0;
     }
     expProtocol = 0;
@@ -363,47 +371,70 @@ void motorControl::setExperimentalProtocol(void)
         case 1:
             expProtocol = -1000;
             expProtocoAdvance = 2;
+            expProtocolRunningStateMachine = true;
+            muscleNumber = 0;
             break;
         case 2:
-            expProtocol = gammaDynamic1;
-            expProtocoAdvance = 3;
+            if (muscleNumber<=No_of_musc)
+            {
+                expProtocol = gammaDynamic[muscleNumber];
+                muscleNumber++;
+            }
+            else
+            {
+                expProtocoAdvance = 3;
+                muscleNumber = 0;
+            }
+            expProtocolRunningStateMachine = true;
             break;
         case 3:
+            if (muscleNumber<=No_of_musc)
+            {
+                expProtocol = gammaStatic[muscleNumber];
+                muscleNumber++;
+            }
             expProtocol = gammaStatic1;
             expProtocoAdvance = 4;
+            expProtocolRunningStateMachine = true;
             break;
         case 4:
             expProtocol =  cortexDrive[0];
             expProtocoAdvance = 5;
+            expProtocolRunningStateMachine = true;
             break;
         case 5:
             expProtocol = gammaDynamic2;
             expProtocoAdvance = 6;
+            expProtocolRunningStateMachine = true;
             break;
         case 6:
             expProtocol = gammaStatic2;
             expProtocoAdvance = 7;
+            expProtocolRunningStateMachine = true;
             break;
         case 7:
             expProtocol =  cortexDrive[1];
             expProtocoAdvance = 8;
+            expProtocolRunningStateMachine = true;
             break;
         case 8: 
             expProtocol = angle;
             expProtocoAdvance = 9;
+            expProtocolRunningStateMachine = true;
             break;
         case 9:
             expProtocol = velocity;
+            expProtocolRunningStateMachine = false;
             expProtocoAdvance = 0;
             break;
-        case 10:
+        case 100:
             expProtocol = -1;
             expProtocoAdvance = 0;
+            expProtocolRunningStateMachine = false;
             break;
-        case 11:
-            expProtocol = -2;
-            expProtocoAdvance = 0;
-            break;
+        default:
+            trialTrigger = 0;
+            expProtocoAdvance = 0;    
     }
 }
 int motorControl::motorControllerStart()
@@ -576,4 +607,8 @@ int motorControl::createHeader4DataFile()
     sprintf(dataTemp,"%d,%d,%d,%d\n",dataAcquisitionFlag[8],dataAcquisitionFlag[9],dataAcquisitionFlag[10],dataAcquisitionFlag[11]);
     strcat(header,dataTemp);
     return 0;
+}
+void motorControl::newTrial(int trialTrigger)
+{
+    this->trialTrigger = trialTrigger;
 }
