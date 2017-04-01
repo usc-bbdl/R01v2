@@ -33,6 +33,8 @@ class motorControl
     float64 encoderData1[1],encoderData2[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
     char header[200];
     int createHeader4DataFile(void);
+    int createWindingUpComma(void);
+    float64* windingUpCmnd;
 public:    
     Muscles *muscleObj;
     int No_of_musc;

@@ -61,130 +61,27 @@ motorControl::motorControl(double offset1, double offset2)
     muscleLengthPreviousTick[1] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
-
     motorControl::createHeader4DataFile();
-    char dataTemp[100]="";
-    strcat(header,"\n");
-    sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[0],dataAcquisitionFlag[1],dataAcquisitionFlag[2],dataAcquisitionFlag[3]);
-    strcat(header,dataTemp);
-    sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[4],dataAcquisitionFlag[5],dataAcquisitionFlag[6],dataAcquisitionFlag[7]);
-    strcat(header,dataTemp);
-    sprintf(dataTemp,"%d,%d,%d,%d\n",dataAcquisitionFlag[8],dataAcquisitionFlag[9],dataAcquisitionFlag[10],dataAcquisitionFlag[11]);
-    strcat(header,dataTemp);
+    createWindingUpCommand();
     
 }
 
-int motorControl::createHeader4DataFile()
-{
-    char dataTemp[20];
-    strcpy(header,"Time, Experimental Paradigm,");
-    //Length and force is mandatory
-    for (int i=0; i < No_of_musc;i++)
-    {
-            sprintf(dataTemp,"Muscle Length %d,", i);
-            strcat (header, dataTemp);
-    }
 
-    for (int i=0; i < No_of_musc;i++)
-    {
-            sprintf(dataTemp,"Force Measured %d,", i);
-            strcat (header, dataTemp);
-    }
-    if (dataAcquisitionFlag[0]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Force Reference %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[1]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"EMG %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[2]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Spindle Ia %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[3]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Spindle II %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[4]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"SpikeCount %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[5]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Raster 1-M %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[6]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Raster 2-M %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[7]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Raster 3-M %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[8]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Raster 4-M %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[9]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Raster 5-M %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[10]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Raster 6-M %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    if (dataAcquisitionFlag[11]){
-        for (int i=0; i < No_of_musc;i++)
-        {
-            sprintf(dataTemp,"Real-Time Control Cortex %d,", i);
-            strcat (header, dataTemp);
-        }
-    }
-    sprintf(dataTemp,"\n");
-    strcat (header, dataTemp);
-    return 0;
-}
 motorControl::~motorControl()
 {
     muscleObj->deleteMuscles();
 
     live = FALSE;
 }
-
+int motorControl::createWindingUpCommand()
+{
+    windingUpCmnd = new float64[No_of_musc];
+    for (int i = 0; i < No_of_musc; i ++)
+    {
+        windingUpCmnd[i] = 0.5;
+    }
+    return 0;
+}
 int motorControl::motorEnable()
 {
     muscleObj->startMuscles();
@@ -213,7 +110,6 @@ int motorControl::motorWindUp()
 {
     char        errBuff[2048]={'\0'};
     int32       error=0;
-    float64 windingUpCmnd[3]={0.5,0.5,0};
     if (isEnable){
         muscleObj->startMuscles();
         muscleObj->MuscleCmd(windingUpCmnd);
@@ -512,4 +408,117 @@ double TimeData::getCurrentTime(void)
     actualTime = (double)(currentTick.QuadPart - initialTick.QuadPart);
     actualTime /= (double)frequency.QuadPart;
     return actualTime;
+}
+
+int motorControl::createHeader4DataFile()
+{
+    char dataTemp[20];
+    strcpy(header,"Time, Experimental Paradigm,");
+    //Length and force is mandatory
+    for (int i=0; i < No_of_musc;i++)
+    {
+            sprintf(dataTemp,"Muscle Length %d,", i);
+            strcat (header, dataTemp);
+    }
+
+    for (int i=0; i < No_of_musc;i++)
+    {
+            sprintf(dataTemp,"Force Measured %d,", i);
+            strcat (header, dataTemp);
+    }
+    if (dataAcquisitionFlag[0]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Force Reference %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[1]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"EMG %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[2]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Spindle Ia %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[3]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Spindle II %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[4]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"SpikeCount %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[5]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Raster 1-M %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[6]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Raster 2-M %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[7]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Raster 3-M %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[8]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Raster 4-M %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[9]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Raster 5-M %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[10]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Raster 6-M %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    if (dataAcquisitionFlag[11]){
+        for (int i=0; i < No_of_musc;i++)
+        {
+            sprintf(dataTemp,"Real-Time Control Cortex %d,", i);
+            strcat (header, dataTemp);
+        }
+    }
+    sprintf(dataTemp,"\n");
+    strcat (header, dataTemp);
+    char dataTemp[100]="";
+    strcat(header,"\n");
+    sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[0],dataAcquisitionFlag[1],dataAcquisitionFlag[2],dataAcquisitionFlag[3]);
+    strcat(header,dataTemp);
+    sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[4],dataAcquisitionFlag[5],dataAcquisitionFlag[6],dataAcquisitionFlag[7]);
+    strcat(header,dataTemp);
+    sprintf(dataTemp,"%d,%d,%d,%d\n",dataAcquisitionFlag[8],dataAcquisitionFlag[9],dataAcquisitionFlag[10],dataAcquisitionFlag[11]);
+    strcat(header,dataTemp);
+    return 0;
 }
