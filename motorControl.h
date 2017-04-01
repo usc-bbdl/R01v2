@@ -65,7 +65,7 @@ public:
     double getTime();
     void newTrial(int);
     //Functions to Communicate with real-time controller
-    setEncoderCalibration(double *gain, double *bias);
+    setEncoderCalibration(double *encoderGain, double *encoderBias);
     setMuscleReferenceForce(double *);
     setMuscleReferenceForce(float *);
     setMuscleReferenceForce(float64 *);

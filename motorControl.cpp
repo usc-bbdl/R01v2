@@ -602,112 +602,143 @@ void motorControl::newTrial(int trialTrigger)
 {
     this->trialTrigger = trialTrigger;
 }
-void motorControl::setEncoderCalibration(double *gain, double *bias)
+void motorControl::setEncoderCalibration(double *encoderGain, double *encoderBias)
 {
-
+    for (int i = 0; i<No_of_musc; i++)
+    {
+        this->encoderBias[i] = encoderBias[i];
+        this->encoderGain[i] = encoderGain[i];
+    }
 }
 void motorControl::setMuscleReferenceForce(double *motorRef)
 {
-
+    for (int i = 0; i<No_of_musc; i++)
+        this->motorRef[i] = ((float64) motorRef[i]);
 }
 void motorControl::setMuscleReferenceForce(float *motorRef)
 {
-
+    for (int i = 0; i<No_of_musc; i++)
+        this->motorRef[i] = ((float64) motorRef[i]);
 }
 void motorControl::setMuscleReferenceForce(float64 *motorRef)
 {
-
+    for (int i = 0; i<No_of_musc; i++)
+        this->motorRef[i] = motorRef[i];
 }
-void motorControl::setMuscleEMG(double *motorRef)
+void motorControl::setMuscleEMG(double *muscleEMG)
 {
-
+    for (int i = 0; i<No_of_musc; i++)
+        this->muscleEMG[i] = ((float) muscleEMG[i]);
 }
-void motorControl::setMuscleEMG(float *motorRef)
+void motorControl::setMuscleEMG(float *muscleEMG)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->muscleEMG[i] = muscleEMG[i];
 }
-void motorControl::setMuscleEMG(float64 *motorRef)
+void motorControl::setMuscleEMG(float64 *muscleEMG)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->muscleEMG[i] = ((float) muscleEMG[i]);   
 }
 void motorControl::setSpindleIa(double *spindleIa)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->spindleIa[i] = ((float) spindleIa[i]);
 }
 void motorControl::setSpindleIa(float *spindleIa)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->spindleIa[i] = spindleIa[i];   
 }
 void motorControl::setSpindleIa(float64 *spindleIa)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->spindleIa[i] = ((float) spindleIa[i]);
 }
 
 void motorControl::setSpindleII(double *spindleII)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->spindleII[i] = ((float) spindleII[i]);
 }
 void motorControl::setSpindleII(float *spindleII)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->spindleII[i] = spindleII[i];    
 }
 void motorControl::setSpindleII(float64 *spindleII)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->spindleII[i] = ((float) spindleII[i]);    
 }
 void motorControl::setSpindleGammaDynamic(int *gammaDynamic)
 {
-
+    for (int i = 0; i<No_of_musc; i++)
+        this->gammaDynamic[i] = gammaDynamic[i];
 }
 void motorControl::setSpindleGammaStatic(int *gammaStatic)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->gammaStatic[i] = gammaStatic[i];    
 }
 void motorControl::setRaster1(int *raster_MN_1)
 {
+    for (int i = 0; i<No_of_musc; i++)
+        this->raster_MN_1[i] = raster_MN_1[i];    
+}
+void motorControl::setRaster2(int *raster_MN_2)
+{
+    for (int i = 0; i<No_of_musc; i++)
+        this->raster_MN_2[i] = raster_MN_2[i];
     
 }
-void motorControl::setRaster2(int *raster_MN_1)
+void motorControl::setRaster3(int *raster_MN_3)
 {
+    for (int i = 0; i<No_of_musc; i++)
+        this->raster_MN_3[i] = raster_MN_3[i];
     
 }
-void motorControl::setRaster3(int *raster_MN_1)
+void motorControl::setRaster4(int *raster_MN_4)
 {
+    for (int i = 0; i<No_of_musc; i++)
+        this->raster_MN_4[i] = raster_MN_4[i];
+}
+void motorControl::setRaster5(int *raster_MN_5)
+{
+    for (int i = 0; i<No_of_musc; i++)
+        this->raster_MN_5[i] = raster_MN_5[i];
     
 }
-void motorControl::setRaster4(int *raster_MN_1)
+void motorControl::setRaster6(int *raster_MN_6)
 {
-    
-}
-void motorControl::setRaster5(int *raster_MN_1)
-{
-    
-}
-void motorControl::setRaster6(int *raster_MN_1)
-{
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->raster_MN_6[i] = raster_MN_6[i];
 }
 void motorControl::setMuscleSpikeCount(int *muscleSpikeCount)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        this->muscleSpikeCount[i] = muscleSpikeCount[i];
 }
 void motorControl::setPerturbationAngle(double angle)
 {
-    
+    this->angle = angle;
 }
 void motorControl::setPerturbationVelocity(double velocity)
 {
-    
+    this->velocity = velocity;   
 }
 void motorControl::getLoadCellData(double *loadCellData)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        loadCellData[i] = ((double)this->loadCellData[i]);
 }
 void motorControl::getMuscleLength(double *muscleLength)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        muscleLength[i] = ((double)this->muscleLength[i]);
 }
 void motorControl::getMuscleVelocity(double *muscleVel)
 {
-    
+    for (int i = 0; i<No_of_musc; i++)
+        muscleVel[i] = ((double)this->muscleVel[i]);
 }
