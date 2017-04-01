@@ -5,46 +5,14 @@
 #include <algorithm>
 motorControl::motorControl(double offset1, double offset2)
 {
-    expProtocol = 0;
-    tick = 0;
-    tock = 0;
-    int musc[] = {1,3};
-    //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
+    int musc[] = {1,3};//This should be read from configuration file and propagated appropriately to this and other classes
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
     createVariables();
     initializeVariables();
-    //
-    newPdgm_Flag = false;
-    newPdgm_ref[0]=newPdgm_ref[1]=0;
-    //
-    mData=new motorData(offset1,offset2);
-    encoderBias[0] = encoderBias[1] = 0;
-    encoderGain[0] = encoderGain[1] = 0;
-    I = 4;
-    cortexVoluntaryAmp = 10000;
-    cortexVoluntaryFreq = 0.25;
-    char        errBuff[2048]={'\0'};
-    int32       error=0;
-    angle = 0;
-    velocity = 0;
-    trialTrigger = 0;
-    isEnable = FALSE;
-    isWindUp = FALSE;
-    isControlling = FALSE;
-    live = FALSE;
-    loadCellOffset1 = offset1;
-    loadCellOffset2 = offset2;
-    encoderData1[0] = 0;
-    encoderData2[0] = 0;
-    resetMuscleLength = TRUE;
-    muscleLengthPreviousTick[0] = 1;
-    muscleLengthPreviousTick[1] = 1;
-    muscleLengthOffset [0] = 0;
-    muscleLengthOffset [1] = 0;
-    motorControl::createHeader4DataFile();
+    mData = new motorData(offset1,offset2)
+    createHeader4DataFile();
     createWindingUpCommand();
-    
 }
 motorControl::~motorControl()
 {
@@ -54,7 +22,12 @@ motorControl::~motorControl()
 }
 void motorControl::createVariables()
 {
+    newPdgm_ref = new float64[No_of_musc];
     loadCellData = new double[No_of_musc];
+    muscleLengthPreviousTick = new float64[No_of_musc];
+    muscleLengthOffset = new float64[No_of_musc];
+    encoderBias = new float64[No_of_musc];
+    encoderGain = new float64[No_of_musc];
     motorRef = new double[No_of_musc];
     muscleLength = new double[No_of_musc];
     muscleVel = new double[No_of_musc];
@@ -71,11 +44,16 @@ void motorControl::createVariables()
     raster_MN_4 = new int[No_of_musc];
     raster_MN_5 = new int[No_of_musc];
     raster_MN_6 = new int[No_of_musc];
+
 }
 void initializeVariables()
 {
+    //Muscle specific parameters
     for (int i=0;i<No_of_musc;i++)
     {
+        encoderGain[i] = 0;
+        encoderBias [i] = 0;
+        newPdgm_ref[i] = 0;
         loadCellData[i] = 0;
         motorRef[i] = 0;
         muscleLength[i] = 0;
@@ -93,13 +71,28 @@ void initializeVariables()
         raster_MN_4[i] = 0;
         raster_MN_5[i] = 0;
         raster_MN_6[i] = 0;
+        muscleLengthPreviousTick[i] = 1;
+        muscleLengthOffset [i] = 0;
     }
+    //experimental control parameters
+    newPdgm_Flag = false;
+    expProtocol = tick = tock = 0;
+    I = 4;
+    cortexVoluntaryAmp = 10000;
+    cortexVoluntaryFreq = 0.25;
+    angle = 0;
+    velocity = 0;
+    trialTrigger = 0;
+    isEnable = FALSE;
+    isWindUp = FALSE;
+    isControlling = FALSE;
+    live = FALSE;
+    resetMuscleLength = TRUE;
 }
 void motorControl::setDataAcquisitionFlag(bool flag[])
 {
     for (int i = 0 ; i< 12; i++)
         this->dataAcquisitionFlag[i] = flag[i];
-
 }
 
 int motorControl::createWindingUpCommand()
@@ -127,12 +120,10 @@ int motorControl::motorDisable()
     muscleObj->MuscleEnb(0);
     muscleObj->zeroMuscles();
     muscleObj->stopMuscles();
-
     isControlling = FALSE;
     isWindUp = FALSE;
     live = FALSE;
-    isEnable = FALSE;
-   
+    isEnable = FALSE;  
 	return 0;
 }
 int motorControl::motorWindUp()
@@ -159,7 +150,6 @@ void motorControl::motorControlLoop(void* a)
 
 void motorControl::controlLoop(void)
 {
-    int32       error=0;
     float cotexDrive = 0.0;
     bool keepReading=TRUE;
     bool32 isLate = {0};
@@ -187,13 +177,12 @@ void motorControl::controlLoop(void)
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
     float64 goffsetLoadCell[2]={0};
-    
+    loadCellOffset = muscleObj->MuscleLc();
     
     while(live)
     {
-        WaitForSingleObject(hIOMutex, INFINITE);
-        
-        loadCellData = muscleObj->MuscleLc();// needs a better name LC
+        WaitForSingleObject(hIOMutex, INFINITE);        
+        loadCellData = muscleObj->MuscleLc();// needs a better name than LC
         muscleObj->MuscleCmd(motorCommand);
         double* encData = new double[No_of_musc];
         encData = muscleObj->MuscleEnc();
@@ -210,7 +199,7 @@ void motorControl::controlLoop(void)
             muscleLength[i] = encoderBias[i] + muscleLength[i] * encoderGain[i];
             muscleVel[i] = (muscleLength[i] -  muscleLengthPreviousTick[i]) / (tock - tick);
             muscleLengthPreviousTick[i] = muscleLength[i];
-            loadCellData[i] = (loadCellData[i] * loadCellScale[i]) - loadCellOffset1;
+            loadCellData[i] = (loadCellData[i] * loadCellScale[i]) - loadCellOffset[i];
             errorForce[i] = motorRef[i] - loadCellData[i];
             if(newPdgm_Flag)
                 errorForce[i] = newPdgm_ref[i] - loadCellData[i];
@@ -223,9 +212,9 @@ void motorControl::controlLoop(void)
         }
         
         // print some data to screen
-        printf("LC1: %+6.2f; LC2: %+6.2f; ER1: %+6.2f; ER2: %+6.2f; MC1: %+6.2f, MC2: %+6.2f, \r",loadCellData[0],loadCellData[1],errorForce[0],errorForce[1],motorCommand[0], motorCommand[1]);
-        
+        printf("LC1: %+6.2f; LC2: %+6.2f; ER1: %+6.2f; ER2: %+6.2f; MC1: %+6.2f, MC2: %+6.2f, \r",loadCellData[0],loadCellData[1],errorForce[0],errorForce[1],motorCommand[0], motorCommand[1]);        
         ReleaseMutex( hIOMutex);
+        //Log data to file
         createDataSampleString();
         fprintf(dataFile,dataSample);
         tick = timeData.getCurrentTime();
