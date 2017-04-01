@@ -24,8 +24,6 @@ public:
 
 class motorControl
 {
-    TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
-    TaskHandle  encodertaskHandle[2];
     double loadCellOffset1, loadCellOffset2,I;
     TimeData timeData;
     static void motorControlLoop(void*);
@@ -34,6 +32,7 @@ class motorControl
     bool live;
     float64 encoderData1[1],encoderData2[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
     char header[200];
+    int createHeader4DataFile(void);
 public:    
     Muscles *muscleObj;
     int No_of_musc;
