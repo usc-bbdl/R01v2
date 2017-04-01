@@ -34,7 +34,7 @@ class motorControl
     HANDLE hIOMutex;
     bool live, expProtocolRunningStateMachine;
     char header[200],dataSample[600];
-    bool dataAcquisitionFlag[12];
+    bool dataAcquisitionFlag[12], resetMuscleLength;;
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
     TimeData timeData;
     int trialTrigger, No_of_musc;;
@@ -50,7 +50,6 @@ public:
     Muscles *muscleObj;
     motorData* mData;
     logger* mLogger;
-    bool resetMuscleLength;
     bool newPdgm_Flag;
 
     motorControl(double,double);
@@ -64,6 +63,7 @@ public:
     void setDataAcquisitionFlag(bool *);
     double getTime();
     void newTrial(int);
+    void resetLength();
     //Functions to Communicate with real-time controller
     setEncoderCalibration(double *encoderGain, double *encoderBias);
     setMuscleReferenceForce(double *);
