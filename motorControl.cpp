@@ -602,3 +602,112 @@ void motorControl::newTrial(int trialTrigger)
 {
     this->trialTrigger = trialTrigger;
 }
+void motorControl::setEncoderCalibration(double *gain, double *bias)
+{
+
+}
+void motorControl::setMuscleReferenceForce(double *motorRef)
+{
+
+}
+void motorControl::setMuscleReferenceForce(float *motorRef)
+{
+
+}
+void motorControl::setMuscleReferenceForce(float64 *motorRef)
+{
+
+}
+void motorControl::setMuscleEMG(double *motorRef)
+{
+
+}
+void motorControl::setMuscleEMG(float *motorRef)
+{
+    
+}
+void motorControl::setMuscleEMG(float64 *motorRef)
+{
+    
+}
+void motorControl::setSpindleIa(double *spindleIa)
+{
+    
+}
+void motorControl::setSpindleIa(float *spindleIa)
+{
+    
+}
+void motorControl::setSpindleIa(float64 *spindleIa)
+{
+    
+}
+
+void motorControl::setSpindleII(double *spindleII)
+{
+    
+}
+void motorControl::setSpindleII(float *spindleII)
+{
+    
+}
+void motorControl::setSpindleII(float64 *spindleII)
+{
+    
+}
+void motorControl::setSpindleGammaDynamic(int *gammaDynamic)
+{
+
+}
+void motorControl::setSpindleGammaStatic(int *gammaStatic)
+{
+    
+}
+void motorControl::setRaster1(int *raster_MN_1)
+{
+    
+}
+void motorControl::setRaster2(int *raster_MN_1)
+{
+    
+}
+void motorControl::setRaster3(int *raster_MN_1)
+{
+    
+}
+void motorControl::setRaster4(int *raster_MN_1)
+{
+    
+}
+void motorControl::setRaster5(int *raster_MN_1)
+{
+    
+}
+void motorControl::setRaster6(int *raster_MN_1)
+{
+    
+}
+void motorControl::setMuscleSpikeCount(int *muscleSpikeCount)
+{
+    
+}
+void motorControl::setPerturbationAngle(double angle)
+{
+    
+}
+void motorControl::setPerturbationVelocity(double velocity)
+{
+    
+}
+void motorControl::getLoadCellData(double *loadCellData)
+{
+    
+}
+void motorControl::getMuscleLength(double *muscleLength)
+{
+    
+}
+void motorControl::getMuscleVelocity(double *muscleVel)
+{
+    
+}
