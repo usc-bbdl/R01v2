@@ -14,7 +14,6 @@ motorControl::motorControl(double offset1, double offset2)
     initializeVariables();
     mData = new motorData(offset1,offset2)
     createHeader4DataFile();
-    createWindingUpCommand();
 }
 motorControl::~motorControl()
 {
@@ -132,8 +131,7 @@ int motorControl::motorDisable()
 }
 int motorControl::motorWindUp()
 {
-    char        errBuff[2048]={'\0'};
-    int32       error=0;
+    createWindingUpCommand();
     if (isEnable){
         muscleObj->startMuscles();
         muscleObj->MuscleCmd(windingUpCmnd);
@@ -158,12 +156,11 @@ void motorControl::controlLoop(void)
     bool keepReading=TRUE;
     bool32 isLate = {0};
     float64 motorCommand[No_of_musc]={0.0},errorForce[No_of_musc]= {0.0},integral[No_of_musc]={0.0};
-    char        errBuff[2048]={'\0'};
     FILE *dataFile;
     time_t t = time(NULL);
     tm* timePtr = localtime(&t);
     char fileName[200];
-    char dataTemp[100]="";
+
     sprintf_s(
             fileName,
             "C:\\data\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",
@@ -180,7 +177,6 @@ void motorControl::controlLoop(void)
     muscleObj->startMuscles();
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
-    float64 goffsetLoadCell[2]={0};
     loadCellOffset = muscleObj->MuscleLc();
     
     while(live)
@@ -222,11 +218,9 @@ void motorControl::controlLoop(void)
         createDataSampleString();
         fprintf(dataFile,dataSample);
         tick = timeData.getCurrentTime();
-
     }
     isControlling = FALSE;
-    muscleObj->stopMuscles();
-    
+    muscleObj->stopMuscles();   
     fclose(dataFile);
 }
 
@@ -393,36 +387,32 @@ void motorControl::proceedExperimentalProtocol(void)
                 expProtocol = gammaStatic[muscleNumber];
                 muscleNumber++;
             }
-            expProtocol = gammaStatic1;
-            expProtocoAdvance = 4;
+            else
+            {
+                expProtocoAdvance = 4;
+                muscleNumber = 0;    
+            }
             expProtocolRunningStateMachine = true;
             break;
         case 4:
-            expProtocol =  cortexDrive[0];
-            expProtocoAdvance = 5;
+            if (muscleNumber<=No_of_musc)
+            {
+                expProtocol = cortexDrive[muscleNumber];
+                muscleNumber++;
+            }
+            else
+            {
+                expProtocoAdvance = 5;
+                muscleNumber = 0;    
+            }
             expProtocolRunningStateMachine = true;
             break;
-        case 5:
-            expProtocol = gammaDynamic2;
+        case 5: 
+            expProtocol = angle;
             expProtocoAdvance = 6;
             expProtocolRunningStateMachine = true;
             break;
         case 6:
-            expProtocol = gammaStatic2;
-            expProtocoAdvance = 7;
-            expProtocolRunningStateMachine = true;
-            break;
-        case 7:
-            expProtocol =  cortexDrive[1];
-            expProtocoAdvance = 8;
-            expProtocolRunningStateMachine = true;
-            break;
-        case 8: 
-            expProtocol = angle;
-            expProtocoAdvance = 9;
-            expProtocolRunningStateMachine = true;
-            break;
-        case 9:
             expProtocol = velocity;
             expProtocolRunningStateMachine = false;
             expProtocoAdvance = 0;
