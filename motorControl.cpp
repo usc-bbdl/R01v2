@@ -9,13 +9,9 @@ motorControl::motorControl(double offset1, double offset2)
     int musc[] = {1,3};
     //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
-
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
-
     createVariables();
     initializeVariables();
-
-
     //
     newPdgm_Flag = false;
     newPdgm_ref[0]=newPdgm_ref[1]=0;
@@ -31,17 +27,12 @@ motorControl::motorControl(double offset1, double offset2)
     angle = 0;
     velocity = 0;
     trialTrigger = 0;
-    spindleIa[0] = 0;
-    spindleII[0] = 0;
-    spindleIa[1] = 0;
-    spindleII[1] = 0;
     isEnable = FALSE;
     isWindUp = FALSE;
     isControlling = FALSE;
     live = FALSE;
     loadCellOffset1 = offset1;
     loadCellOffset2 = offset2;
-    std::cout<<"\n_______________________\nLoad cell offset1: "<<loadCellOffset1<<"\n_______________________\nLoad cell offset2: "<<loadCellOffset2<<std::endl;
     encoderData1[0] = 0;
     encoderData2[0] = 0;
     resetMuscleLength = TRUE;
@@ -52,6 +43,12 @@ motorControl::motorControl(double offset1, double offset2)
     motorControl::createHeader4DataFile();
     createWindingUpCommand();
     
+}
+motorControl::~motorControl()
+{
+    muscleObj->deleteMuscles();
+
+    live = FALSE;
 }
 void motorControl::createVariables()
 {
@@ -102,12 +99,7 @@ void motorControl::setDataAcquisitionFlag(bool flag[])
         this->dataAcquisitionFlag[i] = flag[i];
 
 }
-motorControl::~motorControl()
-{
-    muscleObj->deleteMuscles();
 
-    live = FALSE;
-}
 int motorControl::createWindingUpCommand()
 {
     windingUpCmnd = new float64[No_of_musc];
@@ -170,7 +162,7 @@ void motorControl::controlLoop(void)
     bool keepReading=TRUE;
     bool32 isLate = {0};
     double tick=0.0,tock=0.0;
-    float64 motorCommand[3]={0.0,0.0,0.0},errorForce[2]= {0.0,0.0},integral[2]={0.0,0.0},EMG={0.0};
+    float64 motorCommand[No_of_musc]={0.0},errorForce[No_of_musc]= {0.0},integral[No_of_musc]={0.0};
     char        errBuff[2048]={'\0'};
     FILE *dataFile;
     time_t t = time(NULL);
@@ -189,10 +181,10 @@ void motorControl::controlLoop(void)
             timePtr->tm_sec
             );
     dataFile = fopen(fileName,"w");
-   fprintf(dataFile,header);
+    fprintf(dataFile,header);
 
     muscleObj->startMuscles();
-   timeData.resetTimer();
+    timeData.resetTimer();
     tick = timeData.getCurrentTime();
     float64 goffsetLoadCell[2]={0};
     int expProtocol = 0;
@@ -201,66 +193,36 @@ void motorControl::controlLoop(void)
     {
         WaitForSingleObject(hIOMutex, INFINITE);
         
-        loadCellData = muscleObj->MuscleLc();
+        loadCellData = muscleObj->MuscleLc();// needs a better name LC
         muscleObj->MuscleCmd(motorCommand);
         double* encData = new double[No_of_musc];
         encData = muscleObj->MuscleEnc();
-        encoderData1[0] = encData[0];
-        encoderData2[0] = encData[1];
-
-        if (dataAcquisitionFlag[1]){
-            EMG = muscleEMG[0];
-            if (EMG > 6)
-                EMG = 6;
-            if (EMG < -6)
-                EMG = -6;
-        }
-        else
-            EMG = 0;
         tock = timeData.getCurrentTime();
         if (resetMuscleLength)
         {
-            muscleLengthOffset[0] = 2 * PI * shaftRadius * encoderData1[0] / 365;
-            muscleLengthOffset[1] = 2 * PI * shaftRadius * encoderData2[0] / 365;
+            for (int i=0;i<No_of_musc;i++)
+                muscleLengthOffset[i] = 2 * PI * shaftRadius * encData[i] / 365;
             resetMuscleLength = FALSE;
         }
-        muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]);
-        //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*24.7178;
-        //muscleLength[0] = 0.95 + (muscleLength[0] + 0.0059)*40;
-        muscleLength[0] = encoderBias[0] + muscleLength[0] *encoderGain[0];
-        muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]);
-        //muscleLength[1] = 1 + (muscleLength[1] - 0.0058)*30 + 0.5;
-        //muscleLength[1] = 0.95 + (muscleLength[1] - 0.0058)*24.4399;
-        muscleLength[1] = encoderBias[1] + muscleLength[1] *encoderGain[1];
-        muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
-        muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
-
-        muscleLengthPreviousTick[0] = muscleLength[0];
-        muscleLengthPreviousTick[1] = muscleLength[1];
-        
-        loadCellData[0] = (loadCellData[0] * loadCellScale[0]) - loadCellOffset1;
-        loadCellData[1] = (loadCellData[1] * loadCellScale[1]) - loadCellOffset2;
-        errorForce[0] = motorRef[0] - loadCellData[0];
-        errorForce[1] = motorRef[1] - loadCellData[1];
-        if(newPdgm_Flag)
+        for (int i=0;i<No_of_musc;i++)
         {
-            errorForce[0] = newPdgm_ref[0] - loadCellData[0];
-            errorForce[1] = newPdgm_ref[1] - loadCellData[1];
+            muscleLength[i] = ((2 * PI * shaftRadius * encData[i] / 365) - muscleLengthOffset[i]);   
+            muscleLength[i] = encoderBias[i] + muscleLength[i] * encoderGain[i];
+            muscleVel[i] = (muscleLength[i] -  muscleLengthPreviousTick[i]) / (tock - tick);
+            muscleLengthPreviousTick[i] = muscleLength[i];
+            loadCellData[i] = (loadCellData[i] * loadCellScale[i]) - loadCellOffset1;
+            errorForce[i] = motorRef[i] - loadCellData[i];
+            if(newPdgm_Flag)
+                errorForce[i] = newPdgm_ref[i] - loadCellData[i];
+            integral[i] = integral[i] + errorForce[i] * (tock - tick);
+            motorCommand[i] = integral[i] * I;
+            if (motorCommand[i] > motorMaxVoltage)
+                motorCommand[i] = motorMaxVoltage;
+            if (motorCommand[i] < motorMinVoltage)
+                motorCommand[i] = motorMinVoltage;
         }
-
-        integral[0] = integral[0] + errorForce[0] * (tock - tick);
-        integral[1] = integral[1] + errorForce[1] * (tock - tick);
-        motorCommand[0] = integral[0] * I;
-        motorCommand[1] = integral[1] * I;
-        motorCommand[2] = EMG;
-        if (motorCommand[0] > motorMaxVoltage)
-            motorCommand[0] = motorMaxVoltage;
-        if (motorCommand[0] < motorMinVoltage)
-            motorCommand[0] = motorMinVoltage;
-        if (motorCommand[1] > motorMaxVoltage)
-            motorCommand[1] = motorMaxVoltage;
-        if (motorCommand[1] < motorMinVoltage)
-            motorCommand[1] = motorMinVoltage;
+        
+    
         printf("LC1: %+6.2f; LC2: %+6.2f; ER1: %+6.2f; ER2: %+6.2f; MC1: %+6.2f, MC2: %+6.2f, \r",loadCellData[0],loadCellData[1],errorForce[0],errorForce[1],motorCommand[0], motorCommand[1]);
         
         ReleaseMutex( hIOMutex);
