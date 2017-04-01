@@ -26,30 +26,33 @@ class motorControl
 {
     int expProtocol;
     double loadCellOffset1, loadCellOffset2, I, tick, tock;
-    TimeData timeData;
-    static void motorControlLoop(void*);
-    void controlLoop(void);
     HANDLE hIOMutex;
     bool live;
     float64 *windingUpCmnd, *muscleLengthPreviousTick, *muscleLengthOffset;
-    char header[200];
+    char header[200],dataSample[600];
+    bool dataAcquisitionFlag[12];
+    TimeData timeData;
+
+    static void motorControlLoop(void*);
+    void controlLoop(void);
     int createHeader4DataFile(void);
     int createWindingUpComma(void);
     void motorControl::setExperimentalProtocol(void);
-    bool dataAcquisitionFlag[12];
-    char dataSample[600]="";
-
 public:    
     Muscles *muscleObj;
     int No_of_musc;
     motorData* mData;
     logger* mLogger;
-
     bool resetMuscleLength;
-    float64 *loadCellData,*motorRef,*muscleLength,*muscleVel, *encoderBias, *encoderGain;;
+    float64 *loadCellData,*motorRef,*muscleLength,*muscleVel, *encoderBias, *encoderGain, *newPdgm_ref;
+    float *muscleEMG, *spindleIa, *spindleII;
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
-    unsigned int muscleSpikeCount[2],raster_MN_1[2],raster_MN_2[2],raster_MN_3[2],raster_MN_4[2],raster_MN_5[2],raster_MN_6[2];
-    float muscleEMG[2],spindleIa[2], spindleII[2];
+    int *muscleSpikeCount, *raster_MN_1, *raster_MN_2, *raster_MN_3, *raster_MN_4, *raster_MN_5, *raster_MN_6;
+    int *gammaDynamic, *gammaStatic, *cortexDrive;
+    int trialTrigger;
+    double angle, velocity;
+    bool newPdgm_Flag;
+
     motorControl(double,double);
     ~motorControl(void);
     bool isEnable, isWindUp, isControlling;
@@ -58,11 +61,6 @@ public:
     int motorDisable();
     int motorControllerStart();
     int motorControllerEnd();
-    int* gammaDynamic, gammaStatic, cortexDrive;
-    int trialTrigger;
-    double angle, velocity;
-    bool newPdgm_Flag;
-    float64 *newPdgm_ref;
     void setDataAcquisitionFlag(bool *);
     double getTime();
     void dummy();

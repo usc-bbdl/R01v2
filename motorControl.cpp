@@ -23,28 +23,30 @@ motorControl::~motorControl()
 void motorControl::createVariables()
 {
     newPdgm_ref = new float64[No_of_musc];
-    loadCellData = new double[No_of_musc];
+    loadCellData = new float64[No_of_musc];
     muscleLengthPreviousTick = new float64[No_of_musc];
     muscleLengthOffset = new float64[No_of_musc];
     encoderBias = new float64[No_of_musc];
     encoderGain = new float64[No_of_musc];
-    motorRef = new double[No_of_musc];
-    muscleLength = new double[No_of_musc];
-    muscleVel = new double[No_of_musc];
+    motorRef = new float64[No_of_musc];
+    muscleLength = new float64[No_of_musc];
+    muscleVel = new float64[No_of_musc];
+
     gammaStatic = new int[No_of_musc];
     gammaDynamic = new int[No_of_musc];
     cortexDrive = new int[No_of_musc];
-    muscleEMG = new int[No_of_musc];
-    spindleIa = new int[No_of_musc];
-    spindleII = new int[No_of_musc];
     muscleSpikeCount  = new int[No_of_musc];
+
+    muscleEMG = new float[No_of_musc];
+    spindleIa = new float[No_of_musc];
+    spindleII = new float[No_of_musc];
+    
     raster_MN_1 = new int[No_of_musc];
     raster_MN_2 = new int[No_of_musc];
     raster_MN_3 = new int[No_of_musc];
     raster_MN_4 = new int[No_of_musc];
     raster_MN_5 = new int[No_of_musc];
     raster_MN_6 = new int[No_of_musc];
-
 }
 void initializeVariables()
 {
