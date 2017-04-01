@@ -5,18 +5,16 @@
 #include <algorithm>
 motorControl::motorControl(double offset1, double offset2)
 {
+
     int musc[] = {1,3};
     //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
 
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
 
-    //muscleObj->
+    createVariables();
+    initializeVariables();
 
-    loadCellData = new double[No_of_musc];
-    motorRef = new double[No_of_musc];
-    muscleLength = new double[No_of_musc];
-    muscleVel = new double[No_of_musc];
 
     //
     newPdgm_Flag = false;
@@ -33,12 +31,6 @@ motorControl::motorControl(double offset1, double offset2)
     angle = 0;
     velocity = 0;
     trialTrigger = 0;
-    gammaStatic1 = 0;
-    gammaDynamic1 = 0;
-    gammaStatic2 = 0;
-    gammaDynamic2 = 0;
-    cortexDrive[0] = 0;
-    cortexDrive[1] = 0;
     spindleIa[0] = 0;
     spindleII[0] = 0;
     spindleIa[1] = 0;
@@ -50,10 +42,6 @@ motorControl::motorControl(double offset1, double offset2)
     loadCellOffset1 = offset1;
     loadCellOffset2 = offset2;
     std::cout<<"\n_______________________\nLoad cell offset1: "<<loadCellOffset1<<"\n_______________________\nLoad cell offset2: "<<loadCellOffset2<<std::endl;
-    loadCellData[0] = 0;
-    loadCellData[1] = 0;
-    motorRef[0] = 4;
-    motorRef[1] = 4;
     encoderData1[0] = 0;
     encoderData2[0] = 0;
     resetMuscleLength = TRUE;
@@ -63,10 +51,51 @@ motorControl::motorControl(double offset1, double offset2)
     muscleLengthOffset [1] = 0;
     motorControl::createHeader4DataFile();
     createWindingUpCommand();
-    bool daqFlag[12] = {1,0,0,0,0,0,0,0,0,0,0,0};
-    setDataAcquisitionFlag(daqFlag);
+    
 }
-
+void motorControl::createVariables()
+{
+    loadCellData = new double[No_of_musc];
+    motorRef = new double[No_of_musc];
+    muscleLength = new double[No_of_musc];
+    muscleVel = new double[No_of_musc];
+    gammaStatic = new int[No_of_musc];
+    gammaDynamic = new int[No_of_musc];
+    cortexDrive = new int[No_of_musc];
+    muscleEMG = new int[No_of_musc];
+    spindleIa = new int[No_of_musc];
+    spindleII = new int[No_of_musc];
+    muscleSpikeCount  = new int[No_of_musc];
+    raster_MN_1 = new int[No_of_musc];
+    raster_MN_2 = new int[No_of_musc];
+    raster_MN_3 = new int[No_of_musc];
+    raster_MN_4 = new int[No_of_musc];
+    raster_MN_5 = new int[No_of_musc];
+    raster_MN_6 = new int[No_of_musc];
+}
+void initializeVariables()
+{
+    for (int i=0;i<No_of_musc;i++)
+    {
+        loadCellData[i] = 0;
+        motorRef[i] = 0;
+        muscleLength[i] = 0;
+        muscleVel[i] = 0;
+        gammaStatic[i] = 0;
+        gammaDynamic[i] = 0;
+        cortexDrive[i] = 0;
+        muscleEMG[i] = 0;
+        spindleIa[i] = 0;
+        spindleII[i] = 0;
+        muscleSpikeCount[i] = 0;
+        raster_MN_1[i] = 0;
+        raster_MN_2[i] = 0;
+        raster_MN_3[i] = 0;
+        raster_MN_4[i] = 0;
+        raster_MN_5[i] = 0;
+        raster_MN_6[i] = 0;
+    }
+}
 void motorControl::setDataAcquisitionFlag(bool flag[])
 {
     for (int i = 0 ; i< 12; i++)
