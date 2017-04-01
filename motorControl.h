@@ -24,7 +24,8 @@ public:
 
 class motorControl
 {
-    double loadCellOffset1, loadCellOffset2,I;
+    int expProtocol;
+    double loadCellOffset1, loadCellOffset2, I, tick, tock;
     TimeData timeData;
     static void motorControlLoop(void*);
     void controlLoop(void);
@@ -35,8 +36,10 @@ class motorControl
     char header[200];
     int createHeader4DataFile(void);
     int createWindingUpComma(void);
+    void motorControl::setExperimentalProtocol(void);
     bool dataAcquisitionFlag[12];
     char dataSample[600]="";
+
 public:    
     Muscles *muscleObj;
     int No_of_musc;

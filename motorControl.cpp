@@ -5,7 +5,9 @@
 #include <algorithm>
 motorControl::motorControl(double offset1, double offset2)
 {
-
+    expProtocol = 0;
+    tick = 0;
+    tock = 0;
     int musc[] = {1,3};
     //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
@@ -161,7 +163,6 @@ void motorControl::controlLoop(void)
     float cotexDrive = 0.0;
     bool keepReading=TRUE;
     bool32 isLate = {0};
-    double tick=0.0,tock=0.0;
     float64 motorCommand[No_of_musc]={0.0},errorForce[No_of_musc]= {0.0},integral[No_of_musc]={0.0};
     char        errBuff[2048]={'\0'};
     FILE *dataFile;
@@ -186,8 +187,8 @@ void motorControl::controlLoop(void)
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
     float64 goffsetLoadCell[2]={0};
-    int expProtocol = 0;
-    int expProtocoAdvance = 0;
+    
+    
     while(live)
     {
         WaitForSingleObject(hIOMutex, INFINITE);
@@ -239,180 +240,180 @@ void motorControl::controlLoop(void)
 void motorControl::createDataSampleString()
 {
     char dataTemp[100]="";
+    //Mandatory data log
     sprintf(dataSmaple,"%.3f,%d,",tock,expProtocol);
-    for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+    for (int i=0; i < No_of_musc; i++)
     {
         sprintf(dataTemp,",%.6f",loadCellData[i]);
         strcat (dataSample, dataTemp);
     }
-    for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+    for (int i=0; i < No_of_musc; i++)
     {
         sprintf(dataTemp,",%.6f",muscleLength[i]);
         strcat (dataSample, dataTemp);
     }
-
-    if (dataAcquisitionFlag[0]){
-        sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorRef[1]);
-        strcat (dataSample, dataTemp);
+    //Optional data log
+    if (dataAcquisitionFlag[0])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%.6f",motorRef[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[1]){
-        sprintf(dataTemp,",%.6f,%.6f",muscleEMG[0], muscleEMG[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[1])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%.6f",muscleEMG[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-     if (dataAcquisitionFlag[2]){
-        sprintf(dataTemp,",%.6f,%.6f",spindleIa[0], spindleIa[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[2])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%.6f",spindleIa[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[3]){
-        sprintf(dataTemp,",%.6f,%.6f",spindleII[0], spindleII[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[3])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%.6f",spindleII[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[4]){
-        sprintf(dataTemp,",%d,%d",muscleSpikeCount[0], muscleSpikeCount[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[4])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%.6f",muscleSpikeCount[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[5]){
-        sprintf(dataTemp,",%u,%u",raster_MN_1[0], raster_MN_1[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[5])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%u",raster_MN_1[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[6]){
-        sprintf(dataTemp,",%u,%u",raster_MN_2[0], raster_MN_2[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[6])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%u",raster_MN_2[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[7]){
-        sprintf(dataTemp,",%u,%u",raster_MN_3[0], raster_MN_3[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[7])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%u",raster_MN_3[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[8]){
-        sprintf(dataTemp,",%u,%u",raster_MN_4[0], raster_MN_4[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[8])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%u",raster_MN_4[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[9]){
-        sprintf(dataTemp,",%u,%u",raster_MN_5[0], raster_MN_5[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[9])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%u",raster_MN_5[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[10]){
-        sprintf(dataTemp,",%u,%u",raster_MN_6[0], raster_MN_6[1]);
-        strcat (dataSample, dataTemp);
+    if (dataAcquisitionFlag[10])
+    {
+        for (int i=0; i < No_of_musc; i++)
+        {
+            sprintf(dataTemp,",%u",raster_MN_6[i]);
+            strcat (dataSample, dataTemp);
+        }
     }
-    if (dataAcquisitionFlag[11]){
-        cortexDrive[0] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick), 0);
-        cortexDrive[1] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick + 3.1416), 0);
+    
+    if (dataAcquisitionFlag[11])
+    {
+        for (int i=0; i < No_of_musc; i++)
+            cortexDrive[i] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick), 0);
     }
         
-        sprintf(dataTemp,"\n");
-        if (trialTrigger == 1){
-            expProtocoAdvance = 1;
-            trialTrigger = 0;
-        }
-        if (trialTrigger == 2){
-            expProtocoAdvance = 10;
-            trialTrigger = 0;
-        }
-        if (trialTrigger == 3){
-            expProtocoAdvance = 11;
-            trialTrigger = 0;
-        }
-        expProtocol = 0;
-        switch(expProtocoAdvance){
-            case 1:
-                expProtocol = -1000;
-                expProtocoAdvance = 2;
-                break;
-            case 2:
-                expProtocol = gammaDynamic1;
-                expProtocoAdvance = 3;
-                break;
-            case 3:
-                expProtocol = gammaStatic1;
-                expProtocoAdvance = 4;
-                break;
-            case 4:
-                expProtocol =  cortexDrive[0];
-                expProtocoAdvance = 5;
-                break;
-            case 5:
-                expProtocol = gammaDynamic2;
-                expProtocoAdvance = 6;
-                break;
-            case 6:
-                expProtocol = gammaStatic2;
-                expProtocoAdvance = 7;
-                break;
-            case 7:
-                expProtocol =  cortexDrive[1];
-                expProtocoAdvance = 8;
-                break;
-            case 8: 
-                expProtocol = angle;
-                expProtocoAdvance = 9;
-                break;
-            case 9:
-                expProtocol = velocity;
-                expProtocoAdvance = 0;
-                break;
-            case 10:
-                expProtocol = -1;
-                expProtocoAdvance = 0;
-                break;
-            case 11:
-                expProtocol = -2;
-                expProtocoAdvance = 0;
-                break;
-        }
-        strcat (dataSample, dataTemp);
-
-///victor file
-    char dataTemp[100]="";
-    static int k;
-    if ((newTrial) | (k>0))
-    {
-        experimentControl = paradigm [k];
-        k = k + 1;
-        if (k == 4)
-            k = 0;
+    sprintf(dataTemp,"\n");
+    strcat (dataSample, dataTemp);
+    setExperimentalProtocol();
+}
+void motorControl::setExperimentalProtocol(void)
+{
+    int expProtocoAdvance = 0;
+    if (trialTrigger == 1){
+        expProtocoAdvance = 1;
+        trialTrigger = 0;
     }
-    else
-    {
-        k = 0;
-        experimentControl = 0;
+    if (trialTrigger == 2){
+        expProtocoAdvance = 10;
+        trialTrigger = 0;
     }
-    sprintf(dataSample,"%.3f,%08.3f",tock,experimentControl);
-        if (dataAcquisitionFlag[0])
-        {
-            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
-            {
-                sprintf(dataTemp,",%.6f",loadCellData[i]);
-                strcat (dataSample, dataTemp);
-            }
-        }
-        if (dataAcquisitionFlag[1])
-        {
-            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
-            {
-                sprintf(dataTemp,",%.6f",encoderData[i]);
-                strcat (dataSample, dataTemp);
-            }
-        }
-        if (dataAcquisitionFlag[2])
-        {
-            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
-            {
-                sprintf(dataTemp,",%.6f",motorRef[i]);
-                strcat (dataSample, dataTemp);
-            }
-        }
-        if (dataAcquisitionFlag[3])
-        {
-            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
-            {
-                sprintf(dataTemp,",%.6f",motorCommand[i]);
-                strcat (dataSample, dataTemp);
-            }
-        }
-
-        sprintf(dataTemp,"\n");
-        strcat (dataSample, dataTemp);
+    if (trialTrigger == 3){
+        expProtocoAdvance = 11;
+        trialTrigger = 0;
+    }
+    expProtocol = 0;
+    switch(expProtocoAdvance){
+        case 1:
+            expProtocol = -1000;
+            expProtocoAdvance = 2;
+            break;
+        case 2:
+            expProtocol = gammaDynamic1;
+            expProtocoAdvance = 3;
+            break;
+        case 3:
+            expProtocol = gammaStatic1;
+            expProtocoAdvance = 4;
+            break;
+        case 4:
+            expProtocol =  cortexDrive[0];
+            expProtocoAdvance = 5;
+            break;
+        case 5:
+            expProtocol = gammaDynamic2;
+            expProtocoAdvance = 6;
+            break;
+        case 6:
+            expProtocol = gammaStatic2;
+            expProtocoAdvance = 7;
+            break;
+        case 7:
+            expProtocol =  cortexDrive[1];
+            expProtocoAdvance = 8;
+            break;
+        case 8: 
+            expProtocol = angle;
+            expProtocoAdvance = 9;
+            break;
+        case 9:
+            expProtocol = velocity;
+            expProtocoAdvance = 0;
+            break;
+        case 10:
+            expProtocol = -1;
+            expProtocoAdvance = 0;
+            break;
+        case 11:
+            expProtocol = -2;
+            expProtocoAdvance = 0;
+            break;
+    }
 }
 int motorControl::motorControllerStart()
 {
