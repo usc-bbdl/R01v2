@@ -742,3 +742,7 @@ void motorControl::getMuscleVelocity(double *muscleVel)
     for (int i = 0; i<No_of_musc; i++)
         muscleVel[i] = ((double)this->muscleVel[i]);
 }
+void void motorControl::resetLength()
+{
+    resetMuscleLength = true;
+}
