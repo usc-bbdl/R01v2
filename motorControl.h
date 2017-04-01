@@ -36,6 +36,7 @@ class motorControl
     int createHeader4DataFile(void);
     int createWindingUpComma(void);
     bool dataAcquisitionFlag[12];
+    char dataSample[600]="";
 public:    
     Muscles *muscleObj;
     int No_of_musc;

@@ -168,7 +168,6 @@ void motorControl::controlLoop(void)
     time_t t = time(NULL);
     tm* timePtr = localtime(&t);
     char fileName[200];
-    char dataSample[600]="";
     char dataTemp[100]="";
     sprintf_s(
             fileName,
@@ -222,60 +221,84 @@ void motorControl::controlLoop(void)
                 motorCommand[i] = motorMinVoltage;
         }
         
-    
+        // print some data to screen
         printf("LC1: %+6.2f; LC2: %+6.2f; ER1: %+6.2f; ER2: %+6.2f; MC1: %+6.2f, MC2: %+6.2f, \r",loadCellData[0],loadCellData[1],errorForce[0],errorForce[1],motorCommand[0], motorCommand[1]);
         
         ReleaseMutex( hIOMutex);
-        
-        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f",tock,expProtocol,muscleLength[0], muscleLength[1], loadCellData[0],loadCellData[1]);
-        if (dataAcquisitionFlag[0]){
-            sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorRef[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[1]){
-            sprintf(dataTemp,",%.6f,%.6f",muscleEMG[0], muscleEMG[1]);
-            strcat (dataSample, dataTemp);
-        }
-         if (dataAcquisitionFlag[2]){
-            sprintf(dataTemp,",%.6f,%.6f",spindleIa[0], spindleIa[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[3]){
-            sprintf(dataTemp,",%.6f,%.6f",spindleII[0], spindleII[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[4]){
-            sprintf(dataTemp,",%d,%d",muscleSpikeCount[0], muscleSpikeCount[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[5]){
-            sprintf(dataTemp,",%u,%u",raster_MN_1[0], raster_MN_1[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[6]){
-            sprintf(dataTemp,",%u,%u",raster_MN_2[0], raster_MN_2[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[7]){
-            sprintf(dataTemp,",%u,%u",raster_MN_3[0], raster_MN_3[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[8]){
-            sprintf(dataTemp,",%u,%u",raster_MN_4[0], raster_MN_4[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[9]){
-            sprintf(dataTemp,",%u,%u",raster_MN_5[0], raster_MN_5[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[10]){
-            sprintf(dataTemp,",%u,%u",raster_MN_6[0], raster_MN_6[1]);
-            strcat (dataSample, dataTemp);
-        }
-        if (dataAcquisitionFlag[11]){
-            cortexDrive[0] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick), 0);
-            cortexDrive[1] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick + 3.1416), 0);
-        }
+        createDataSampleString();
+        fprintf(dataFile,dataSample);
+        tick = timeData.getCurrentTime();
+
+    }
+    isControlling = FALSE;
+    muscleObj->stopMuscles();
+    
+    fclose(dataFile);
+}
+
+void motorControl::createDataSampleString()
+{
+    char dataTemp[100]="";
+    sprintf(dataSmaple,"%.3f,%d,",tock,expProtocol);
+    for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+    {
+        sprintf(dataTemp,",%.6f",loadCellData[i]);
+        strcat (dataSample, dataTemp);
+    }
+    for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+    {
+        sprintf(dataTemp,",%.6f",muscleLength[i]);
+        strcat (dataSample, dataTemp);
+    }
+
+    if (dataAcquisitionFlag[0]){
+        sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorRef[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[1]){
+        sprintf(dataTemp,",%.6f,%.6f",muscleEMG[0], muscleEMG[1]);
+        strcat (dataSample, dataTemp);
+    }
+     if (dataAcquisitionFlag[2]){
+        sprintf(dataTemp,",%.6f,%.6f",spindleIa[0], spindleIa[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[3]){
+        sprintf(dataTemp,",%.6f,%.6f",spindleII[0], spindleII[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[4]){
+        sprintf(dataTemp,",%d,%d",muscleSpikeCount[0], muscleSpikeCount[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[5]){
+        sprintf(dataTemp,",%u,%u",raster_MN_1[0], raster_MN_1[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[6]){
+        sprintf(dataTemp,",%u,%u",raster_MN_2[0], raster_MN_2[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[7]){
+        sprintf(dataTemp,",%u,%u",raster_MN_3[0], raster_MN_3[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[8]){
+        sprintf(dataTemp,",%u,%u",raster_MN_4[0], raster_MN_4[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[9]){
+        sprintf(dataTemp,",%u,%u",raster_MN_5[0], raster_MN_5[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[10]){
+        sprintf(dataTemp,",%u,%u",raster_MN_6[0], raster_MN_6[1]);
+        strcat (dataSample, dataTemp);
+    }
+    if (dataAcquisitionFlag[11]){
+        cortexDrive[0] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick), 0);
+        cortexDrive[1] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick + 3.1416), 0);
+    }
         
         sprintf(dataTemp,"\n");
         if (trialTrigger == 1){
@@ -338,16 +361,59 @@ void motorControl::controlLoop(void)
                 break;
         }
         strcat (dataSample, dataTemp);
-        fprintf(dataFile,dataSample);
-        tick = timeData.getCurrentTime();
 
+///victor file
+    char dataTemp[100]="";
+    static int k;
+    if ((newTrial) | (k>0))
+    {
+        experimentControl = paradigm [k];
+        k = k + 1;
+        if (k == 4)
+            k = 0;
     }
-    isControlling = FALSE;
-    muscleObj->stopMuscles();
-    
-    fclose(dataFile);
-}
+    else
+    {
+        k = 0;
+        experimentControl = 0;
+    }
+    sprintf(dataSample,"%.3f,%08.3f",tock,experimentControl);
+        if (dataAcquisitionFlag[0])
+        {
+            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+            {
+                sprintf(dataTemp,",%.6f",loadCellData[i]);
+                strcat (dataSample, dataTemp);
+            }
+        }
+        if (dataAcquisitionFlag[1])
+        {
+            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+            {
+                sprintf(dataTemp,",%.6f",encoderData[i]);
+                strcat (dataSample, dataTemp);
+            }
+        }
+        if (dataAcquisitionFlag[2])
+        {
+            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+            {
+                sprintf(dataTemp,",%.6f",motorRef[i]);
+                strcat (dataSample, dataTemp);
+            }
+        }
+        if (dataAcquisitionFlag[3])
+        {
+            for (int i=0; i < NUMBER_OF_MUSCLES; i++)
+            {
+                sprintf(dataTemp,",%.6f",motorCommand[i]);
+                strcat (dataSample, dataTemp);
+            }
+        }
 
+        sprintf(dataTemp,"\n");
+        strcat (dataSample, dataTemp);
+}
 int motorControl::motorControllerStart()
 {
     if ((isEnable) && (isWindUp))
