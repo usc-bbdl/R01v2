@@ -52,7 +52,7 @@ public:
     logger* mLogger;
     bool newPdgm_Flag;
 
-    motorControl(double,double);
+    motorControl();
     ~motorControl(void);
     bool isEnable, isWindUp, isControlling;
     int motorEnable();
