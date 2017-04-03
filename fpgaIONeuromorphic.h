@@ -4,8 +4,9 @@
 #include "utilities.h"
 //#include <pthread.h>
 #include <malloc.h>
+#include <fpgaIO.h>
 
-class SomeFpga 
+class fpgaIONeuromorphic 
 {
     public:
         fpgaIONeuromorphic(int , int);

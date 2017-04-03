@@ -4,6 +4,8 @@
 //#include <pthread.h>
 #include "motorControl.h"
 #include "SomeFpga.h"
+#include <fpgaIONeuromorphic.h>
+#include <fpgaIO.h>
 
 class FPGAControl {
 

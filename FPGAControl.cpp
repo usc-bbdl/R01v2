@@ -8,6 +8,9 @@
 #include <windows.h>
 #include <process.h>
 #include <math.h>
+#include <fpgaIONeuromorphic.h>
+#include <fpgaIO.h>
+
 //const char FPGAControl::spindleSerial[2][11] = {"113700021E", "11160001CG"};
 //const char FPGAControl::muscleSerial[2][11]  = {"0000000542", "1137000222"};
 bool killThread = 0;

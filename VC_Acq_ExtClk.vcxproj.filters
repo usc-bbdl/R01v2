@@ -52,6 +52,13 @@
     <ClCompile Include="expParadigmCDMRPimplant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="fpgaIONeuromorphic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="fpgaIO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataLogger.h">
@@ -94,6 +101,12 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="expParadigmCDMRPimplant.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fpgaIONeuromorphic.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fpgaIO.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

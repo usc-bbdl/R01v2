@@ -2,6 +2,9 @@
 #include "utilities.h"
 #include <assert.h>
 #include <Windows.h>
+#include <fpgaIONeuromorphic.h>
+#include <fpgaIO.h>
+
 fpgaIONeuromorphic::fpgaIONeuromorphic(int fpgaType, int muscleType){
 	this->fpgaType = fpgaType;
 	this->muscleType = muscleType;
