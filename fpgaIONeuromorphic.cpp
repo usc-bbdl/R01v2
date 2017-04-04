@@ -27,11 +27,13 @@ fpgaIONeuromorphic::fpgaIONeuromorphic(int fpgaType, int muscleType){
 }
 int fpgaIONeuromorphic::readMuscleSignals(){
 	int blockSize = 2;
-	long length = 16; //128 bits is 16 bytes
+	long length = 128; //128 bits is 16 bytes
 	unsigned char blockData [128];
 	readBlock(forceAdressBlock, blockSize, length, unsigned char *blockData);
-	float force = *((float *) blockData);
-	muscleForcePipe = force;
+	int outValLo = *(((int *) blockData) +  8) + & 0xffff;
+    int outValLo = *(((int *) blockData) + 10) + & 0xffff;
+    int outValInt = ((outValHi << 16) + outValLo) & 0xFFFFFFFF;
+	ReInterpret(outValInt, &(muscleForcePipe));
 }
 int fpgaIONeuromorphic::readForceWire(){
 	uint32_t outVal[2];
@@ -40,8 +42,7 @@ int fpgaIONeuromorphic::readForceWire(){
 	int outValLo = outVal[0] & 0xffff;
 	int outValHi = outVal[1] & 0xffff;
     int outValInt = ((outValHi << 16) + outValLo) & 0xFFFFFFFF;
-    ReInterpret(outValInt, force);
-    muscleForceWire = force;
+    ReInterpret(outValInt, &(muscleForceWire));
     return 0;
 }
 	

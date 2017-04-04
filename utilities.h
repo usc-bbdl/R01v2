@@ -4,6 +4,8 @@
 #include <math.h>
 #include <NIDAQmx.h>
 #include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
 //#include "DAQ.h"
 
 #define TRUE  1
@@ -81,20 +83,20 @@ extern float TBIAS;
 void configParser(FILE *);
 void testParser(FILE *);
 
-const string spindleBicFPGASerialNum = "113700021E";
-const string motorBicFPGASerialNum = "0000000542";
-const string cortexBicFPGASerialNum = "0000000547";
-const string spindleTriFPGASerialNum = "11160001CG";
-const string motorTriFPGASerialNum = "1137000222";
-const string cortexTriFPGASerialNum = "000000054B";
+const std::string spindleBicFPGASerialNum = "113700021E";
+const std::string motorBicFPGASerialNum = "0000000542";
+const std::string cortexBicFPGASerialNum = "0000000547";
+const std::string spindleTriFPGASerialNum = "11160001CG";
+const std::string motorTriFPGASerialNum = "1137000222";
+const std::string cortexTriFPGASerialNum = "000000054B";
 
 
-const string spindleBicFPGABitFile= "spindle.v";
-const string motorBicFPGABitFile = "muscle.v";
-const string cortexBicFPGABitFile = "cortex.v";
-const string spindleTriFPGABitFile = "spindle.v";
-const string motorTriFPGABitFile = "muscle.v";
-const string cortexTriFPGABitFile = "cortex.v";
+const std::string spindleBicFPGABitFile= "spindle.v";
+const std::string motorBicFPGABitFile = "muscle.v";
+const std::string cortexBicFPGABitFile = "cortex.v";
+const std::string spindleTriFPGABitFile = "spindle.v";
+const std::string motorTriFPGABitFile = "muscle.v";
+const std::string cortexTriFPGABitFile = "cortex.v";
 
 
 #endif

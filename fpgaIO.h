@@ -1,7 +1,7 @@
 #ifndef FPGAIO_HPP
 #ifdef __cplusplus
 #include <iostream>
-#include <stdbool.h>
+//#include <stdbool.h>
 #include <stdint.h>
 //#include "./include/utilities.h"
 #ifdef _WIN64
@@ -58,7 +58,7 @@ class fpgaIO{
     okCDeviceSensors sensors;
     
     //Device Abstraction Layer (DAL) flags
-                bool setPLL, setFMC, isFP3, designBurned, deviceReady;
+                int setPLL, setFMC, isFP3, designBurned, deviceReady;
     unsigned int selectUSB, usbSpeed, selectPLL;
     
     //
