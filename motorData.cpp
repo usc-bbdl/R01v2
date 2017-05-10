@@ -1,84 +1,117 @@
 #include "motorData.h"
 
 
-motorData::motorData(double offset1, double offset2)
+motorData::motorData()
 {
     handleName =0;
     //initialize stuff
     // moving muscle declaration from motorControl constructor to here
     int musc[] = {1,3};
-    //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
+    muscleObj = new Muscles(musc, (sizeof(musc))/(sizeof(*musc)));
+
+    // TODO: check for type consistency, ie. float64 vs. double
+    newPdgm_ref = new double[No_of_musc]; // consider moving this to motroControl
+    encoderData = new double[No_of_musc];
     loadCellData = new double[No_of_musc];
+    loadCellOffset = new double[No_of_musc];
+    muscleLengthPreviousTick = new double[No_of_musc];
+    muscleLengthOffset = new double[No_of_musc];
+    encoderBias = new double[No_of_musc];
+    encoderGain = new double[No_of_musc];
     motorRef = new double[No_of_musc];
     muscleLength = new double[No_of_musc];
     muscleVel = new double[No_of_musc];
-    muscleLengthOffset = new double[No_of_musc];
-    encoderData = new double[No_of_musc];
-    muscleLengthPreviousTick = new double[No_of_musc];
-    encoderBias = new double[No_of_musc];
+    
+    gammaStatic = new int[No_of_musc];
+    gammaDynamic = new int[No_of_musc];
+    cortexDrive = new double[No_of_musc];
+    muscleSpikeCount = new int[No_of_musc];
+
     muscleEMG = new double[No_of_musc];
     spindleIa  = new double[No_of_musc];
     spindleII = new double[No_of_musc];
-    encoderBias = new double[No_of_musc];
-    encoderGain = new double[No_of_musc];
-    cortexDrive = new double[No_of_musc];
+   
+    raster_MN_1 = new int[No_of_musc];
+    raster_MN_2 = new int[No_of_musc];
+    raster_MN_3 = new int[No_of_musc];
+    raster_MN_4 = new int[No_of_musc];
+    raster_MN_5 = new int[No_of_musc];
+    raster_MN_6 = new int[No_of_musc];
 
-    initVariables(offset1, offset2);
+    initVariables();
 
 }
 
 
 motorData::~motorData(void)
 {
+    // TODO: deallocate all assigned memory
+    delete[] newPdgm_ref; // consider moving this to motroControl
+    delete[] encoderData;
+    delete[] loadCellData;
+    delete[] loadCellOffset;
+    delete[] muscleLengthPreviousTick;
+    delete[] muscleLengthOffset;
+    delete[] encoderBias;
+    delete[] encoderGain;
+    delete[] motorRef;
+    delete[] muscleLength;
+    delete[] muscleVel;
+    
+    delete[] gammaStatic;
+    delete[] gammaDynamic;
+    delete[] cortexDrive;
+    delete[] muscleSpikeCount;
+
+    delete[] muscleEMG;
+    delete[] spindleIa;
+    delete[] spindleII;
+   
+    delete[] raster_MN_1;
+    delete[] raster_MN_2;
+    delete[] raster_MN_3;
+    delete[] raster_MN_4;
+    delete[] raster_MN_5;
+    delete[] raster_MN_6;
 }
 
-void motorData::initVariables(double offset1, double offset2) {
+void motorData::initVariables() {
     
-    encoderBias[0] = encoderBias[1] = 0;
-    encoderGain[0] = encoderGain[1] = 0;
+    for (int i=0; i<No_of_musc; i++) {
+        encoderGain[i] = 0;
+        encoderBias[i] = 0;
+        encoderData[i] = 0;
+        newPdgm_ref[i] = 0;
+        loadCellData[i] = 0;
+        motorRef[i] = 0;
+        muscleLength[i] = 0; 
+        muscleVel[i] = 0;
+        gammaStatic[i] = 0;
+        gammaDynamic[i] = 0;
+        cortexDrive[i] = 0;
+        muscleEMG[i] = 0;
+        spindleIa[i] = 0;
+        spindleII[i] = 0;
+        muscleLengthPreviousTick[i] = 1;
+        // loadCellOffset[i] = offset[i];
+        muscleLengthOffset[i] = 0;  
+    }
+    // experimental control parameters
+    expProtocol = tick = tock = 0;
+    expProtocolAdvance = 0;
     I = 4;
     cortexVoluntaryAmp = 10000;
     cortexVoluntaryFreq = 0.25;
     angle = 0;
     velocity = 0;
     trialTrigger = 0;
-    gammaStatic1 = 0;
-    gammaDynamic1 = 0;
-    gammaStatic2 = 0;
-    gammaDynamic2 = 0;
-    cortexDrive[0] = 0;
-    cortexDrive[1] = 0;
-    spindleIa[0] = 0;
-    spindleII[0] = 0;
-    spindleIa[1] = 0;
-    spindleII[1] = 0;
-    loadCellOffset[0] = offset1;
-    loadCellOffset[1] = offset2;
-    loadCellData[0] = 0;
-    loadCellData[1] = 0;
-    motorRef[0] = 4;
-    motorRef[1] = 4;
-    encoderData[0] = 0;
-    encoderData[1] = 0;
-    resetMuscleLength = true;
-    muscleLengthPreviousTick[0] = 1;
-    muscleLengthPreviousTick[1] = 1;
-    muscleLengthOffset [0] = 0;
-    muscleLengthOffset [1] = 0;
 
-    motorCommand[0]=0;
-    motorCommand[1]=0;
-    motorCommand[2]=0;
-    //errorForce[0]=0;
-    //errorForce[1]=0;
-    //integral[0]=0;
-    //integral[1]=0;
-    //EMG=0.0;
-
-    tick=0.0;
-    tock=0.0;
-
-    expProtocol=0;
-    expProtocolAdvance=0;
+    // motorControl experiment commands
+    // isEnable = false;
+    // isWindUp = false;
+    // isControlling = false;
+    // live = false;
+    // resetMuscleLength = true;
+    // expProtocolRunningStateMachine = false;
 }

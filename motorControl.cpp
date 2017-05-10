@@ -5,14 +5,14 @@
 #include <algorithm>
 #define NEW_TRIAL 1
 #define NEW_PERTURBATION 2
-motorControl::motorControl(double offset1, double offset2)
+motorControl::motorControl()
 {
     int musc[] = {1,3};//This should be read from configuration file and propagated appropriately to this and other classes
     No_of_musc = (sizeof(musc))/(sizeof(*musc));
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
     createVariables();
     initializeVariables();
-    mData = new motorData(offset1,offset2);
+    mData = new motorData();
     createHeader4DataFile();
 }
 motorControl::~motorControl()
