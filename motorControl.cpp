@@ -12,7 +12,7 @@ motorControl::motorControl(double offset1, double offset2)
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
     createVariables();
     initializeVariables();
-    mData = new motorData(offset1,offset2)
+    mData = new motorData(offset1,offset2);
     createHeader4DataFile();
 }
 motorControl::~motorControl()
@@ -48,7 +48,7 @@ void motorControl::createVariables()
     raster_MN_5 = new int[No_of_musc];
     raster_MN_6 = new int[No_of_musc];
 }
-void initializeVariables()
+void motorControl::initializeVariables()
 {
     //Muscle specific parameters
     for (int i=0;i<No_of_musc;i++)
@@ -155,7 +155,10 @@ void motorControl::controlLoop(void)
     float cotexDrive = 0.0;
     bool keepReading=TRUE;
     bool32 isLate = {0};
-    float64 motorCommand[No_of_musc]={0.0},errorForce[No_of_musc]= {0.0},integral[No_of_musc]={0.0};
+    float64 * motorCommand, * errorForce, * integral, *loadCellOffset;
+    motorCommand = new float64[No_of_musc];
+    errorForce = new float64[No_of_musc];
+    integral = new float64[No_of_musc];
     FILE *dataFile;
     time_t t = time(NULL);
     tm* timePtr = localtime(&t);
@@ -228,7 +231,7 @@ void motorControl::createDataSampleString()
 {
     char dataTemp[100]="";
     //Mandatory data log
-    sprintf(dataSmaple,"%.3f,%d,",tock,expProtocol);
+    sprintf(dataSample,"%.3f,%d,",tock,expProtocol);
     for (int i=0; i < No_of_musc; i++)
     {
         sprintf(dataTemp,",%.6f",loadCellData[i]);
@@ -350,7 +353,7 @@ void motorControl::setExperimentalProtocol(void)
 void motorControl::proceedExperimentalProtocol(void)
 {
     static int expProtocoAdvance = 0;
-    static muscleNumber = 0;
+    static int muscleNumber = 0;
     if (trialTrigger == NEW_TRIAL){
         expProtocoAdvance = 1;
         trialTrigger = 0;
@@ -588,7 +591,7 @@ int motorControl::createHeader4DataFile()
     }
     sprintf(dataTemp,"\n");
     strcat (header, dataTemp);
-    char dataTemp[100]="";
+    //char dataTemp[100]="";
     strcat(header,"\n");
     sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[0],dataAcquisitionFlag[1],dataAcquisitionFlag[2],dataAcquisitionFlag[3]);
     strcat(header,dataTemp);
@@ -620,11 +623,7 @@ void motorControl::setMuscleReferenceForce(float *motorRef)
     for (int i = 0; i<No_of_musc; i++)
         this->motorRef[i] = ((float64) motorRef[i]);
 }
-void motorControl::setMuscleReferenceForce(float64 *motorRef)
-{
-    for (int i = 0; i<No_of_musc; i++)
-        this->motorRef[i] = motorRef[i];
-}
+
 void motorControl::setMuscleEMG(double *muscleEMG)
 {
     for (int i = 0; i<No_of_musc; i++)
@@ -635,11 +634,7 @@ void motorControl::setMuscleEMG(float *muscleEMG)
     for (int i = 0; i<No_of_musc; i++)
         this->muscleEMG[i] = muscleEMG[i];
 }
-void motorControl::setMuscleEMG(float64 *muscleEMG)
-{
-    for (int i = 0; i<No_of_musc; i++)
-        this->muscleEMG[i] = ((float) muscleEMG[i]);   
-}
+
 void motorControl::setSpindleIa(double *spindleIa)
 {
     for (int i = 0; i<No_of_musc; i++)
@@ -649,11 +644,6 @@ void motorControl::setSpindleIa(float *spindleIa)
 {
     for (int i = 0; i<No_of_musc; i++)
         this->spindleIa[i] = spindleIa[i];   
-}
-void motorControl::setSpindleIa(float64 *spindleIa)
-{
-    for (int i = 0; i<No_of_musc; i++)
-        this->spindleIa[i] = ((float) spindleIa[i]);
 }
 
 void motorControl::setSpindleII(double *spindleII)
@@ -666,11 +656,7 @@ void motorControl::setSpindleII(float *spindleII)
     for (int i = 0; i<No_of_musc; i++)
         this->spindleII[i] = spindleII[i];    
 }
-void motorControl::setSpindleII(float64 *spindleII)
-{
-    for (int i = 0; i<No_of_musc; i++)
-        this->spindleII[i] = ((float) spindleII[i]);    
-}
+
 void motorControl::setSpindleGammaDynamic(int *gammaDynamic)
 {
     for (int i = 0; i<No_of_musc; i++)
@@ -742,7 +728,7 @@ void motorControl::getMuscleVelocity(double *muscleVel)
     for (int i = 0; i<No_of_musc; i++)
         muscleVel[i] = ((double)this->muscleVel[i]);
 }
-void void motorControl::resetLength()
+void motorControl::resetLength()
 {
     resetMuscleLength = true;
 }

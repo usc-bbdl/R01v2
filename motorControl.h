@@ -37,15 +37,19 @@ class motorControl
     bool dataAcquisitionFlag[12], resetMuscleLength;;
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
     TimeData timeData;
-    int trialTrigger, No_of_musc;;
+    int trialTrigger, No_of_musc;
     double angle, velocity;
 
     static void motorControlLoop(void*);
     void controlLoop(void);
     int createHeader4DataFile(void);
     int createWindingUpComma(void);
+    void createVariables();
+    int createWindingUpCommand(void);
+    void createDataSampleString(void);
     void setExperimentalProtocol(void);
     void proceedExperimentalProtocol(void);
+    void initializeVariables(void);
 public:    
     Muscles *muscleObj;
     motorData* mData;
@@ -65,34 +69,30 @@ public:
     void newTrial(int);
     void resetLength();
     //Functions to Communicate with real-time controller
-    setEncoderCalibration(double *encoderGain, double *encoderBias);
-    setMuscleReferenceForce(double *);
-    setMuscleReferenceForce(float *);
-    setMuscleReferenceForce(float64 *);
-    getLoadCellData(double *);
-    getLoadCellData(double *);
-    getMuscleVelocity(double *);
+    void setEncoderCalibration(double *encoderGain, double *encoderBias);
+    void setMuscleReferenceForce(double *);
+    void setMuscleReferenceForce(float *);
+    void getLoadCellData(double *);
+    void getMuscleVelocity(double *);
+    void getMuscleLength(double *muscleLength);
     //Functions to Communicate with data Logger
-    setMuscleEMG(double*);
-    setMuscleEMG(float*);
-    setMuscleEMG(float64*);
-    setSpindleIa(double*);
-    setSpindleIa(float*);
-    setSpindleIa(float64*);
-    setSpindleII(double*);
-    setSpindleII(float*);
-    setSpindleII(float64*);
-    setSpindleGammaDynamic(int *);
-    setSpindleGammaStatic(int *);
-    setMuscleSpikeCount(int*);
-    setRaster1(int *);
-    setRaster2(int *);
-    setRaster3(int *);
-    setRaster4(int *);
-    setRaster5(int *);
-    setRaster6(int *);
-    setPerturbationAngle(double);
-    setPerturbationVelocity(double);
+    void setMuscleEMG(double*);
+    void setMuscleEMG(float*);
+    void setSpindleIa(double*);
+    void setSpindleIa(float*);
+    void setSpindleII(double*);
+    void setSpindleII(float*);
+    void setSpindleGammaDynamic(int *);
+    void setSpindleGammaStatic(int *);
+    void setMuscleSpikeCount(int*);
+    void setRaster1(int *);
+    void setRaster2(int *);
+    void setRaster3(int *);
+    void setRaster4(int *);
+    void setRaster5(int *);
+    void setRaster6(int *);
+    void setPerturbationAngle(double);
+    void setPerturbationVelocity(double);
 };
 
 #endif
