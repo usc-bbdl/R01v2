@@ -227,13 +227,13 @@ int FPGAControl::updateGamma() {
     Sleep(100);
     if (muscleIndex == 0)
     {
-        pMotorControl->mData->gammaStatic1 = (int)(gammaStatic);
-        pMotorControl->mData->gammaDynamic1 = (int)(gammaDynamic);
+        pMotorControl->mData->gammaStatic[0] = (int)(gammaStatic);
+        pMotorControl->mData->gammaDynamic[0] = (int)(gammaDynamic);
     }
     if (muscleIndex == 1)
     {
-        pMotorControl->mData->gammaStatic2 = (int)(gammaStatic);
-        pMotorControl->mData->gammaDynamic2 = (int)(gammaDynamic);
+        pMotorControl->mData->gammaStatic[1] = (int)(gammaStatic);
+        pMotorControl->mData->gammaDynamic[1] = (int)(gammaDynamic);
     }
     return 0;
 }

@@ -32,7 +32,7 @@ int proceedState(int *state)
     Sleep(1000);
     servo.goDefault();
     static dataOneSample loadCellOffsets;
-    static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2);
+    static motorControl motors;
     static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);
     static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&servo);
     static expParadigmManualPerturbation paradigmManualPerturbation;
