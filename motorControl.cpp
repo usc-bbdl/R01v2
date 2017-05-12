@@ -27,6 +27,7 @@ motorControl::~motorControl()
 }
 void motorControl::createVariables()
 {
+    motorCommand = new float64[No_of_musc];
     newPdgm_ref = new float64[No_of_musc];
     loadCellData = new float64[No_of_musc];
     muscleLengthPreviousTick = new float64[No_of_musc];
@@ -58,6 +59,7 @@ void motorControl::initializeVariables()
     //Muscle specific parameters
     for (int i=0;i<No_of_musc;i++)
     {
+        motorCommand[i] = 0;
         encoderGain[i] = 0;
         encoderBias [i] = 0;
         newPdgm_ref[i] = 0;
@@ -160,8 +162,7 @@ void motorControl::controlLoop(void)
     float cotexDrive = 0.0;
     bool keepReading=TRUE;
     bool32 isLate = {0};
-    float64 * motorCommand, * errorForce, * integral, *loadCellOffset;
-    motorCommand = new float64[No_of_musc];
+    float64 * errorForce, * integral, *loadCellOffset;
     errorForce = new float64[No_of_musc];
     integral = new float64[No_of_musc];
     FILE *dataFile;
@@ -216,6 +217,7 @@ void motorControl::controlLoop(void)
                 errorForce[i] = newPdgm_ref[i] - loadCellData[i];
             integral[i] = integral[i] + errorForce[i] * (tock - tick);
             motorCommand[i] = integral[i] * I;
+            motorCommand[i] = 0;
             if (motorCommand[i] > motorMaxVoltage)
                 motorCommand[i] = motorMaxVoltage;
             if (motorCommand[i] < motorMinVoltage)
