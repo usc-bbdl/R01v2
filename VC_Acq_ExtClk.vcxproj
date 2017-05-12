@@ -20,21 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DAQ.cpp" />
-    <ClCompile Include="dataOneSample.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="expParadigmManualPerturbation.cpp" />
     <ClCompile Include="expParadigmMuscleLengthCalibration.cpp" />
     <ClCompile Include="expParadigmServoPerturbation.cpp" />
     <ClCompile Include="expParadigmVoluntaryMovement.cpp" />
     <ClCompile Include="FPGAControl.cpp" />
-    <ClCompile Include="FPGATest.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="hardwareConfiguration.cpp" />
-    <ClCompile Include="listman.cpp" />
-    <ClCompile Include="logger.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="motorControl.cpp" />
-    <ClCompile Include="motorData.cpp" />
     <ClCompile Include="okFrontPanelDLL.cpp" />
     <ClCompile Include="servoControl.cpp" />
     <ClCompile Include="SomeFpga.cpp" />
@@ -42,7 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DAQ.h" />
-    <ClInclude Include="dataOneSample.h" />
     <ClInclude Include="expParadigmManualPerturbation.h" />
     <ClInclude Include="expParadigmMuscleLengthCalibration.h" />
     <ClInclude Include="expParadigmServoPerturbation.h" />
@@ -50,7 +43,6 @@
     <ClInclude Include="FPGAControl.h" />
     <ClInclude Include="hardwareConfiguration.h" />
     <ClInclude Include="motorControl.h" />
-    <ClInclude Include="motorData.h" />
     <ClInclude Include="NIDAQmx.h" />
     <ClInclude Include="okFrontPanelDLL.h" />
     <ClInclude Include="servoControl.h" />

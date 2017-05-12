@@ -1,7 +1,6 @@
 #include "utilities.h"
 #include <stdio.h>
 #include <conio.h>
-#include "dataOneSample.h"
 #include "motorControl.h"
 #include "expParadigmMuscleLengthCalibration.h"
 #include "expParadigmServoPerturbation.h"
@@ -57,7 +56,7 @@ int proceedState(int *state)
         //Connect the Neural FPGA and DAQ, Start controlling muscle force
         motors.motorControllerStart();
         Sleep(1000);
-        motors.mData->resetMuscleLength = TRUE;
+        //motors.mData->resetMuscleLength = TRUE;
         printf("Closed-Loop ; Next stage is Experiment Paradigm\n");
         *state = STATE_CLOSED_LOOP;
         break;

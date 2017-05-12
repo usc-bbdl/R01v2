@@ -15,10 +15,9 @@ motorControl::motorControl()
     hwdConfig.getMuscleNumbers(musc);
     //int musc[] = {1,3};
     //No_of_musc = (sizeof(musc))/(sizeof(*musc));
-    muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
+    muscleObj = new Muscles(musc,No_of_musc);
     createVariables();
     initializeVariables();
-    //mData = new motorData();
     createHeader4DataFile();
 }
 motorControl::~motorControl()

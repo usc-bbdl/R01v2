@@ -118,50 +118,50 @@ int FPGAControl::update() { //This is the function called in the thread
     //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
-        pMotorControl->mData->motorRef[muscleIndex] = ((float64)muscleForce);
+        //pMotorControl->mData->motorRef[muscleIndex] = ((float64)muscleForce);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
-        pMotorControl->mData->muscleEMG[muscleIndex] = muscleEMG;
+        //pMotorControl->mData->muscleEMG[muscleIndex] = muscleEMG;
     }
     if (dataAcquisitionFlag[2]){
         readSpindleIaFPGA();
-        pMotorControl->mData->spindleIa[muscleIndex] = spindleIa;
+       // pMotorControl->mData->spindleIa[muscleIndex] = spindleIa;
     }
     if (dataAcquisitionFlag[3]){
         readSpindleIIFPGA();
-        pMotorControl->mData->spindleII[muscleIndex] = spindleII;
+       // pMotorControl->mData->spindleII[muscleIndex] = spindleII;
     }
     if (dataAcquisitionFlag[4]){
         readMuscleFPGASpikeCount();
-        pMotorControl->mData->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
+        //pMotorControl->mData->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
     }
     if (dataAcquisitionFlag[5]){
         readMuscleFPGARaster_MN_1();
-        pMotorControl->mData->raster_MN_1[muscleIndex] = raster_MN_1;
+        //pMotorControl->mData->raster_MN_1[muscleIndex] = raster_MN_1;
     }
     if (dataAcquisitionFlag[6]){
         readMuscleFPGARaster_MN_2();
-        pMotorControl->mData->raster_MN_2[muscleIndex] = raster_MN_2;
+        //pMotorControl->mData->raster_MN_2[muscleIndex] = raster_MN_2;
     }
     if (dataAcquisitionFlag[7]){
         readMuscleFPGARaster_MN_3();
-        pMotorControl->mData->raster_MN_3[muscleIndex] = raster_MN_3;
+        //pMotorControl->mData->raster_MN_3[muscleIndex] = raster_MN_3;
     }
     if (dataAcquisitionFlag[8]){
         readMuscleFPGARaster_MN_4();
-        pMotorControl->mData->raster_MN_4[muscleIndex] = raster_MN_4;
+        //pMotorControl->mData->raster_MN_4[muscleIndex] = raster_MN_4;
     }
     if (dataAcquisitionFlag[9]){
         readMuscleFPGARaster_MN_5();
-        pMotorControl->mData->raster_MN_5[muscleIndex] = raster_MN_5;
+        //pMotorControl->mData->raster_MN_5[muscleIndex] = raster_MN_5;
     }
     if (dataAcquisitionFlag[10]){
         readMuscleFPGARaster_MN_6();
-        pMotorControl->mData->raster_MN_6[muscleIndex] = raster_MN_6;
+        //pMotorControl->mData->raster_MN_6[muscleIndex] = raster_MN_6;
     }
     if (dataAcquisitionFlag[11]){
-        cortexDrive = (int32)pMotorControl->mData->cortexDrive[muscleIndex];
+        //cortexDrive = (int32)pMotorControl->mData->cortexDrive[muscleIndex];
         //writeCortexCommand();
         updateCortexDrive();
         if (muscleIndex==0)

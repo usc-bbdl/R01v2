@@ -7,8 +7,6 @@
 #include <windows.h>
 #include <process.h>
 #include <ctime>
-#include "motorData.h"
-#include "logger.h"
 #include "DAQ.h"
 class TimeData
 {
@@ -52,8 +50,6 @@ class motorControl
     void initializeVariables(void);
 public:    
     Muscles *muscleObj;
-    motorData* mData;
-    logger* mLogger;
     bool newPdgm_Flag;
 
     motorControl();
