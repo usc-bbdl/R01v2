@@ -198,6 +198,7 @@ void motorControl::controlLoop(void)
 
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
+    double* encData = new double[No_of_musc];
     while(live)
     {
         WaitForSingleObject(hIOMutex, INFINITE);        
@@ -205,7 +206,7 @@ void motorControl::controlLoop(void)
 
         loadCellData = muscleObj->MuscleLc();// needs a better name than LC
         muscleObj->MuscleCmd(motorCommand);
-        double* encData = new double[No_of_musc];
+        
         encData = muscleObj->MuscleEnc();
         
         tock = timeData.getCurrentTime();
@@ -219,6 +220,7 @@ void motorControl::controlLoop(void)
         {
             muscleLength[i] = ((2 * PI * shaftRadius * encData[i] / 365) - muscleLengthOffset[i]);   
             muscleLength[i] = encoderBias[i] + muscleLength[i] * encoderGain[i];
+            muscleLength[i] = encData[i];
             muscleVel[i] = (muscleLength[i] -  muscleLengthPreviousTick[i]) / (tock - tick);
             muscleLengthPreviousTick[i] = muscleLength[i];
             loadCellData[i] = (loadCellData[i] - loadCellOffset[i]) * loadCellScale[i];
@@ -227,6 +229,7 @@ void motorControl::controlLoop(void)
                 errorForce[i] = newPdgm_ref[i] - loadCellData[i];
             integral[i] = integral[i] + errorForce[i] * (tock - tick);
             motorCommand[i] = integral[i] * I;
+            motorCommand[i] = 0.2;
             if (motorCommand[i] > motorMaxVoltage)
             {
                 motorCommand[i] = motorMaxVoltage;
@@ -238,9 +241,9 @@ void motorControl::controlLoop(void)
                 integral[i] = motorMinVoltage / I;
             }
         }
-        
         // print some data to screen
-        printf("L0: %+6.2f; R0: %+6.2f; C0: %+6.2f; E0: %+6.2f; L1: %+6.2f, R1: %+6.2f, \r",loadCellData[0],motorRef[0],motorCommand[0],errorForce[0],loadCellData[1],motorRef[1]);
+        //printf("LC0: %+6.2f; RF0: %+6.2f; EN0: %+6.2f; LC1: %+6.2f; RE1: %+6.2f, EN1: %+6.2f, \r",loadCellData[0],motorRef[0],muscleLength[0],loadCellData[1],motorRef[1],muscleLength[1]);
+        //printf("EN0: %+6.2f; EN1: %+6.2f; \r",muscleLength[0],muscleLength[1]);
         ReleaseMutex( hIOMutex);
         //Log data to file
         createDataSampleString();
@@ -256,7 +259,7 @@ void motorControl::createDataSampleString()
 {
     char dataTemp[100]="";
     //Mandatory data log
-    sprintf(dataSample,"%.3f,%d,",tock,expProtocol);
+    sprintf(dataSample,"%.3f,%d",tock,expProtocol);
     for (int i=0; i < No_of_musc; i++)
     {
         sprintf(dataTemp,",%.6f",loadCellData[i]);
@@ -643,10 +646,20 @@ void motorControl::setMuscleReferenceForce(double *motorRef)
     for (int i = 0; i<No_of_musc; i++)
         this->motorRef[i] = ((float64) motorRef[i]);
 }
+
+void motorControl::setMuscleReferenceForce(double motorRef, int muscleIndex)
+{
+        this->motorRef[muscleIndex] = ((float64) motorRef);
+}
 void motorControl::setMuscleReferenceForce(float *motorRef)
 {
     for (int i = 0; i<No_of_musc; i++)
         this->motorRef[i] = ((float64) motorRef[i]);
+}
+
+void motorControl::setMuscleReferenceForce(float motorRef, int muscleIndex)
+{
+    this->motorRef[muscleIndex] = ((float64) motorRef);
 }
 
 void motorControl::setMuscleEMG(double *muscleEMG)
@@ -749,20 +762,43 @@ void motorControl::getMuscleLength(double *muscleLength)
         muscleLength[i] = ((double)this->muscleLength[i]);
 }
 
+void motorControl::getMuscleLength(double *muscleLength, int muscleIndex)
+{
+        *muscleLength = ((double)this->muscleLength[muscleIndex]);
+}
+
+
 void motorControl::getMuscleLength(float *muscleLength)
 {
     for (int i = 0; i<No_of_musc; i++)
         muscleLength[i] = ((float)this->muscleLength[i]);
 }
+
+void motorControl::getMuscleLength(float *muscleLength,int muscleIndex)
+{
+        *muscleLength = ((float)this->muscleLength[muscleIndex]);
+}
+
+
 void motorControl::getMuscleVelocity(double *muscleVel)
 {
     for (int i = 0; i<No_of_musc; i++)
         muscleVel[i] = ((double)this->muscleVel[i]);
 }
+
+void motorControl::getMuscleVelocity(double *muscleVel, int muscleIndex)
+{
+    *muscleVel = ((double)this->muscleVel[muscleIndex]);
+}
+
 void motorControl::getMuscleVelocity(float *muscleVel)
 {
     for (int i = 0; i<No_of_musc; i++)
         muscleVel[i] = ((float)this->muscleVel[i]);
+}
+void motorControl::getMuscleVelocity(float *muscleVel, int muscleIndex)
+{
+    *muscleVel = ((float)this->muscleVel[muscleIndex]);
 }
 
 void motorControl::resetLength()

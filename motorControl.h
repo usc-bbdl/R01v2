@@ -68,11 +68,17 @@ public:
     void setEncoderCalibration(double *encoderGain, double *encoderBias);
     void setMuscleReferenceForce(double *);
     void setMuscleReferenceForce(float *);
+    void setMuscleReferenceForce(double, int);
+    void setMuscleReferenceForce(float, int);
     void getLoadCellData(double *);
-    void getMuscleVelocity(double *);
-    void getMuscleLength(double *muscleLength);
-    void getMuscleLength(float *muscleLength);
-    void getMuscleVelocity(float *muscleVel);
+    void getMuscleLength(double *);
+    void getMuscleLength(float *);
+    void getMuscleLength(double *, int);
+    void getMuscleLength(float *,int );
+    void getMuscleVelocity(double *);    
+    void getMuscleVelocity(float *);
+    void getMuscleVelocity(double *, int);
+    void getMuscleVelocity(float *, int);
     //Functions to Communicate with data Logger
     void setMuscleEMG(double*);
     void setMuscleEMG(float*);

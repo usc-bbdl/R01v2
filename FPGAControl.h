@@ -10,7 +10,6 @@ class FPGAControl {
     //static const char * spindleSerial[2][11];
     //static const char muscleSerial[2][11];
     motorControl *pMotorControl;
-    //pthread_t thread;
     bool killThread;
     int muscleIndex;
     HANDLE hIOMutex;

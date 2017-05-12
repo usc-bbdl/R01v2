@@ -189,4 +189,3 @@ int proceedState(int *state)
 void waitkey() {
 	getchar();
 }
-

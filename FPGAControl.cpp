@@ -97,11 +97,8 @@ FPGAControl::~FPGAControl() {
 
 int FPGAControl::update() { //This is the function called in the thread
     
-    float muscleLength1[2],muscleVelocity1[2];
-    pMotorControl->getMuscleLength(muscleLength1);
-    muscleLength = muscleLength1[muscleIndex];
-    pMotorControl->getMuscleVelocity(muscleVelocity1);
-    muscleVel = muscleVelocity1[muscleIndex];
+    pMotorControl->getMuscleLength(&muscleLength, muscleIndex);
+    pMotorControl->getMuscleVelocity(&muscleVel, muscleIndex);
     if (updateGammaFlag == '1') {
         updateGamma();
         updateGammaFlag = '0';
@@ -118,7 +115,9 @@ int FPGAControl::update() { //This is the function called in the thread
     //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
-        //pMotorControl->mData->motorRef[muscleIndex] = ((float64)muscleForce);
+        pMotorControl->setMuscleReferenceForce((float64)muscleForce, muscleIndex);
+        if (muscleIndex == 1)
+            printf("Length: %6.2f, Force: %6.2f in FPGA#%d; \r",muscleLength,muscleForce,muscleIndex);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
