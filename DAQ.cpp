@@ -25,13 +25,13 @@ const char* motorCmd_list[7] =
 
 uInt32 motorEnb_list[7] = 
 {
-    0x01,
-    0x02, //default should be 0x02
-    0x04,
-    0x08, //default should be 0x04
-    0x10,
-    0x20,
-    0x40
+    0xff,
+    0xff, //default should be 0x02
+    0xff,
+    0xff, //default should be 0x04
+    0xff,
+    0xff,
+    0xff
 };
 
 const char* motorEnc_list[7] = 
