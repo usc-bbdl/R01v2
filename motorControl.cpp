@@ -729,11 +729,23 @@ void motorControl::getMuscleLength(double *muscleLength)
     for (int i = 0; i<No_of_musc; i++)
         muscleLength[i] = ((double)this->muscleLength[i]);
 }
+
+void motorControl::getMuscleLength(float *muscleLength)
+{
+    for (int i = 0; i<No_of_musc; i++)
+        muscleLength[i] = ((float)this->muscleLength[i]);
+}
 void motorControl::getMuscleVelocity(double *muscleVel)
 {
     for (int i = 0; i<No_of_musc; i++)
         muscleVel[i] = ((double)this->muscleVel[i]);
 }
+void motorControl::getMuscleVelocity(float *muscleVel)
+{
+    for (int i = 0; i<No_of_musc; i++)
+        muscleVel[i] = ((float)this->muscleVel[i]);
+}
+
 void motorControl::resetLength()
 {
     resetMuscleLength = true;

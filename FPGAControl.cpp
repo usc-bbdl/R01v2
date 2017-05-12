@@ -97,8 +97,11 @@ FPGAControl::~FPGAControl() {
 
 int FPGAControl::update() { //This is the function called in the thread
     
-    muscleLength = (float)pMotorControl->mData->muscleLength[muscleIndex];
-    muscleVel = (float)pMotorControl->mData->muscleVel[muscleIndex];
+    float muscleLength1[2],muscleVelocity1[2];
+    pMotorControl->getMuscleLength(muscleLength1);
+    muscleLength = muscleLength1[muscleIndex];
+    pMotorControl->getMuscleVelocity(muscleVelocity1);
+    muscleVel = muscleVelocity1[muscleIndex];
     if (updateGammaFlag == '1') {
         updateGamma();
         updateGammaFlag = '0';
@@ -212,7 +215,7 @@ int FPGAControl::updateCortexDrive()
     ReInterpret((int32)(cortexDrive), &bitValCortexDrive);
     cortexFPGA->SendPara(bitValCortexDrive, DATA_EVT_CORTEX_DRIVE);
     //Sleep(100);
-    pMotorControl->mData->cortexDrive[muscleIndex] = (int)(cortexDrive);
+    //pMotorControl->mData->cortexDrive[muscleIndex] = (int)(cortexDrive);
     return 0;
 }
 
@@ -227,13 +230,13 @@ int FPGAControl::updateGamma() {
     Sleep(100);
     if (muscleIndex == 0)
     {
-        pMotorControl->mData->gammaStatic[0] = (int)(gammaStatic);
-        pMotorControl->mData->gammaDynamic[0] = (int)(gammaDynamic);
+        //pMotorControl->mData->gammaStatic[0] = (int)(gammaStatic);
+        //pMotorControl->mData->gammaDynamic[0] = (int)(gammaDynamic);
     }
     if (muscleIndex == 1)
     {
-        pMotorControl->mData->gammaStatic[1] = (int)(gammaStatic);
-        pMotorControl->mData->gammaDynamic[1] = (int)(gammaDynamic);
+        //pMotorControl->mData->gammaStatic[1] = (int)(gammaStatic);
+        //pMotorControl->mData->gammaDynamic[1] = (int)(gammaDynamic);
     }
     return 0;
 }

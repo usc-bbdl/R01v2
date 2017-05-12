@@ -75,6 +75,8 @@ public:
     void getLoadCellData(double *);
     void getMuscleVelocity(double *);
     void getMuscleLength(double *muscleLength);
+    void getMuscleLength(float *muscleLength);
+    void getMuscleVelocity(float *muscleVel);
     //Functions to Communicate with data Logger
     void setMuscleEMG(double*);
     void setMuscleEMG(float*);
