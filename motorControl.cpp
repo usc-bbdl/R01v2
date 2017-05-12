@@ -9,7 +9,7 @@
 motorControl::motorControl()
 {
     hardwareConfiguration hwdConfig;
-    hwdConfig.getNumberOfMuscles(No_of_musc);
+    hwdConfig.getNumberOfMuscles(&No_of_musc);
     int * musc;
     musc = new int[No_of_musc];
     hwdConfig.getMuscleNumbers(musc);
@@ -18,7 +18,7 @@ motorControl::motorControl()
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
     createVariables();
     initializeVariables();
-    mData = new motorData();
+    //mData = new motorData();
     createHeader4DataFile();
 }
 motorControl::~motorControl()

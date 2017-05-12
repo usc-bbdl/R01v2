@@ -12,8 +12,8 @@ hardwareConfiguration::hardwareConfiguration()
     }
     else{
         numberOfActiveMuscles = 0;
-        fscanf(configFile,"%s\n",&header);
-        fscanf(configFile,"%d\n",&numberOfActiveMuscles);
+        //fscanf(configFile,"%s\n",&header);
+        fscanf(configFile,"%d,\n",&numberOfActiveMuscles);
         activeMuscleNumbers = new int[numberOfActiveMuscles];
 
         for(int i = 0; i<numberOfActiveMuscles;i++)
@@ -47,11 +47,11 @@ int hardwareConfiguration::getMuscleNumbers(int * activeMuscleNumbers)
     }
 }
 
-int hardwareConfiguration::getNumberOfMuscles(int number)
+int hardwareConfiguration::getNumberOfMuscles(int *number)
 {
     if (isConfigured)
     {
-        number = numberOfActiveMuscles;
+        *number = numberOfActiveMuscles;
         return 1;
     }
     else

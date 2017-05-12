@@ -1,7 +1,7 @@
 #include "expParadigmServoPerturbation.h"
 #include "FPGAControl.h"
 #include "servoControl.h"
-expParadigmServoPerturbation::expParadigmServoPerturbation(double offset1,double offset2,servoControl *param)
+expParadigmServoPerturbation::expParadigmServoPerturbation(servoControl *param)
 {
     servo = param;
     int gD1 = 0, gS1 = 0, gD2 = 0, gS2 = 0;

@@ -21,7 +21,7 @@ class expParadigmServoPerturbation
     //dataLogger log;
 public:
     int currentTrialNum,  currentRepNum;
-    expParadigmServoPerturbation(double,double,servoControl *);
+    expParadigmServoPerturbation(servoControl *);
     ~expParadigmServoPerturbation(void);
     int startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController);    
     bool isRunning();

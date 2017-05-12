@@ -10,6 +10,6 @@ public:
     hardwareConfiguration(void);	
     ~hardwareConfiguration(void);
     int getMuscleNumbers(int *);
-    int getNumberOfMuscles(int);
+    int getNumberOfMuscles(int *);
 };
 #endif

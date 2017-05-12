@@ -31,10 +31,10 @@ int proceedState(int *state)
     servo.setPosition(91);
     Sleep(1000);
     servo.goDefault();
-    static dataOneSample loadCellOffsets;
+//    static dataOneSample loadCellOffsets;
     static motorControl motors;
     static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);
-    static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&servo);
+    static expParadigmServoPerturbation paradigmServoPerturbation(&servo);
     static expParadigmManualPerturbation paradigmManualPerturbation;
     static expParadigmVoluntaryMovement paradigmVoluntaryMovement(&motors);
     static FPGAControl bicepFPGA(BICEP,&motors);
