@@ -39,7 +39,9 @@ public:
 };
 
 extern muscleAddress muscles;
+
 class Task;
+
 class Muscles
 {
     typedef const char* string;
@@ -108,15 +110,16 @@ public:
     //Task(TaskHandle,string,string,int);
     void assignTask(void*&,string,string,int,int enc=0);
     void assignTask(void*&,string,int,int);
+
     void createTask(void*&,string);
     void createChan();
     char* assignSlot(int);
     void initTask(int s=1); //after creating all the task only you should init the task
     void startTask();
     
-    double* daqTask(void);
-    void daqTask(double*);
-    void daqTask(uInt32*);
+    double* daqTask(void); //read data from DAQ
+    void daqTask(double*); // write motorCmd data to DAQ
+    void daqTask(uInt32*); // write motorEnb data to DAQ
     //template <typename T> void daqTask(T&);
     void stopTask();
     void deleteTask();
@@ -138,16 +141,20 @@ public:
     //void bar(Task& taskObj);
     DAQ(void);
     ~DAQ(void);
+
     void createHandle(void*&, string);
+    void startHandle(void*&);
+    void stopHandle(void*&);
+    void clearHandle(void*&);
+
     void createChan(Task&);
     void createClk(Task&, int);
-    void startHandle(void*&);
+    
     void readDAQ(Task&);
     void writeDAQ(void*&, double*);
     void writeDAQ(void*&, uInt32*);
-    void stopHandle(void*&);
-    void clearHandle(void*&);
-    void errorCheck(int, TaskHandle&);
+    
+    void errorCheck(int, TaskHandle&); // private function
 };
 
 #endif

@@ -49,8 +49,6 @@
     <ClInclude Include="expParadigmVoluntaryMovement.h" />
     <ClInclude Include="FPGAControl.h" />
     <ClInclude Include="hardwareConfiguration.h" />
-    <ClInclude Include="listman.h" />
-    <ClInclude Include="logger.h" />
     <ClInclude Include="motorControl.h" />
     <ClInclude Include="motorData.h" />
     <ClInclude Include="NIDAQmx.h" />

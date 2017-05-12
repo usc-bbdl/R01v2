@@ -191,10 +191,13 @@ void motorControl::controlLoop(void)
     while(live)
     {
         WaitForSingleObject(hIOMutex, INFINITE);        
+
+
         loadCellData = muscleObj->MuscleLc();// needs a better name than LC
         muscleObj->MuscleCmd(motorCommand);
         double* encData = new double[No_of_musc];
         encData = muscleObj->MuscleEnc();
+        
         tock = timeData.getCurrentTime();
         if (resetMuscleLength)
         {
