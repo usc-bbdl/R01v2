@@ -1,4 +1,5 @@
 #include "motorControl.h"
+#include "hardwareConfiguration.h"
 #include <utilities.h>
 #include <stdio.h>
 #include <math.h>
@@ -7,8 +8,13 @@
 #define NEW_PERTURBATION 2
 motorControl::motorControl()
 {
-    int musc[] = {1,3};//This should be read from configuration file and propagated appropriately to this and other classes
-    No_of_musc = (sizeof(musc))/(sizeof(*musc));
+    hardwareConfiguration hwdConfig;
+    hwdConfig.getNumberOfMuscles(No_of_musc);
+    int * musc;
+    musc = new int[No_of_musc];
+    hwdConfig.getMuscleNumbers(musc);
+    //int musc[] = {1,3};
+    //No_of_musc = (sizeof(musc))/(sizeof(*musc));
     muscleObj = new Muscles(musc,(sizeof(musc))/(sizeof(*musc)));
     createVariables();
     initializeVariables();

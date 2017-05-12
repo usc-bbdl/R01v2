@@ -66,6 +66,10 @@
     </ClCompile>
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="hardwareConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utilities.h">
@@ -114,6 +118,9 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="DAQ.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hardwareConfiguration.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

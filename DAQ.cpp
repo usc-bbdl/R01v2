@@ -94,7 +94,7 @@ Muscles::Muscles()
 Muscles::Muscles(int* musc,int M)
 {
     No_of_musc = M;
-    for(int i =0 ;i<MAX_MUS; i++) activeMuscles[i] = -1;
+    for(int i = 0; i<MAX_NUM_MUSCLES; i++) activeMuscles[i] = -1;
     EnbData = new uInt32[1];
     EnbData[0] = 0x00000000;
     LcTask = new Task();
@@ -106,7 +106,7 @@ Muscles::Muscles(int* musc,int M)
     //char* buf = new char[10];
 
     //std::cout<<"\n"<<(sizeof(musc))<<(sizeof(*musc));
-    for(int i=0;i<M;i++)
+    for(int i=0;i<No_of_musc;i++)
         {
             std::cout<<"\n"<<musc[i]<<"~~~\n";
             activeMuscles[musc[i]] = musc[i];
@@ -154,7 +154,7 @@ void Muscles::initMuscles()
     //std::cout<<"\ninitCmd";
     CmdTask->initTask();
     //std::cout<<"\ninitEnc";
-    for(int i=0; i<MAX_MUS; i++)
+    for(int i=0; i<MAX_NUM_MUSCLES; i++)
         if(activeMuscles[i] != -1) EncTask[i]->initTask();
 }
 
@@ -163,7 +163,7 @@ void Muscles::startMuscles()
     LcTask->startTask();
     EnbTask->startTask();
     CmdTask->startTask();
-    for(int i=0; i<MAX_MUS; i++)
+    for(int i=0; i<MAX_NUM_MUSCLES; i++)
         if(activeMuscles[i] != -1) EncTask[i]->startTask();
 }
 
@@ -172,7 +172,7 @@ void Muscles::stopMuscles()
     LcTask->stopTask();
     EnbTask->stopTask();
     CmdTask->stopTask();
-    for(int i=0; i<MAX_MUS; i++)
+    for(int i=0; i<MAX_NUM_MUSCLES; i++)
         if(activeMuscles[i] != -1) EncTask[i]->stopTask();
 }
 
@@ -181,7 +181,7 @@ void Muscles::deleteMuscles()
     LcTask->deleteTask();
     EnbTask->deleteTask();
     CmdTask->deleteTask();
-    for(int i=0; i<MAX_MUS; i++)
+    for(int i=0; i<MAX_NUM_MUSCLES; i++)
         if(activeMuscles[i] != -1) EncTask[i]->deleteTask();
 }
 
@@ -192,9 +192,9 @@ double* Muscles::MuscleLc()
 
 double* Muscles::MuscleEnc()
 {
-    double* temp = new double[MAX_MUS];
+    double* temp = new double[MAX_NUM_MUSCLES];
     int j=0;
-    for(int i=0; i<MAX_MUS; i++) 
+    for(int i=0; i<MAX_NUM_MUSCLES; i++) 
         if(activeMuscles[i] != -1) temp[j++] = (EncTask[i]->daqTask())[0];
 
     //double* ptr;
@@ -266,7 +266,6 @@ Task::Task()
     slotNo=0;
     data = NULL;
     temp = new char[20];
-
     //daqObj = new DAQ();
 }
 

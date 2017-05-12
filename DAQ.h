@@ -20,7 +20,7 @@ static char* Cmd_slot = "PXI1Slot2/";
 static char* Enb_slot ="PXI1Slot2/port0";
 static char* Enc_slot ="PXI1Slot3/";
 static char* SampleClk = "/PXI1Slot5/ai/SampleClock";
-#define MAX_MUS 7
+#define MAX_NUM_MUSCLES 7
 
 class muscleAddress
 {
@@ -48,12 +48,12 @@ class Muscles
     TaskHandle LcHandle;
     TaskHandle CmdHandle;
     TaskHandle EnbHandle;
-    TaskHandle EncHandle[MAX_MUS];
+    TaskHandle EncHandle[MAX_NUM_MUSCLES];
     Task *LcTask;
     Task *CmdTask;
     Task *EnbTask;
-    Task *EncTask[MAX_MUS];
-    int activeMuscles[MAX_MUS];
+    Task *EncTask[MAX_NUM_MUSCLES];
+    int activeMuscles[MAX_NUM_MUSCLES];
     int No_of_musc;
     double* LcData, CmdData, EncData;
     uInt32* EnbData;
@@ -149,4 +149,5 @@ public:
     void clearHandle(void*&);
     void errorCheck(int, TaskHandle&);
 };
+
 #endif

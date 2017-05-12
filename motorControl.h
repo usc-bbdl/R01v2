@@ -94,5 +94,4 @@ public:
     void setPerturbationAngle(double);
     void setPerturbationVelocity(double);
 };
-
 #endif
