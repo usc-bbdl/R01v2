@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdeptArmAPI.cpp" />
     <ClCompile Include="dataLogger.cpp" />
     <ClCompile Include="dataOneSample.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdeptArmAPI.h" />
     <ClInclude Include="dataLogger.h" />
     <ClInclude Include="dataOneSample.h" />
     <ClInclude Include="expParadigmCDMRPimplant.h" />

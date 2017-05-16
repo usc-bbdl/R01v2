@@ -49,6 +49,7 @@ void expParadigmCDMRPimplant::readData()
 int expParadigmCDMRPimplant::setAdeptDefaultPosition(double * position)
 {
     defaultPoint = PPoint(position[0],position[1],position[2],position[3],position[4],position[5]);
+    return 1;
 }
 
 
@@ -58,6 +59,7 @@ int expParadigmCDMRPimplant::startAdeptPerturbations(int numberOfPerturbations)
     robotPerturbationLive = TRUE;
     hIOMutex = CreateMutex(NULL, FALSE, NULL);
 	_beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
+    return 1;
 }
 void expParadigmCDMRPimplant::AdeptPerturbationsLoop(void* a)
 {
