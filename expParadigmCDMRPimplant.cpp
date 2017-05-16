@@ -6,6 +6,9 @@
 const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(void)
 {
+    robotPerturbationLive = false;
+    numberOfPerturbations = 0;
+    adeptRobot.connectToController();
     numTrials = 0;
     readData();
 }
@@ -43,7 +46,56 @@ void expParadigmCDMRPimplant::readData()
     }
     fclose(configFile);
 }
+int expParadigmCDMRPimplant::setAdeptDefaultPosition(double * position)
+{
+    defaultPoint = PPoint(position[0],position[1],position[2],position[3],position[4],position[5]);
+}
 
+
+int expParadigmCDMRPimplant::startAdeptPerturbations(int numberOfPerturbations)
+{
+    this->numberOfPerturbations = numberOfPerturbations;
+    robotPerturbationLive = TRUE;
+    hIOMutex = CreateMutex(NULL, FALSE, NULL);
+	_beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
+}
+void expParadigmCDMRPimplant::AdeptPerturbationsLoop(void* a)
+{
+	((expParadigmCDMRPimplant*)a)->perturbAdept();
+}
+int expParadigmCDMRPimplant::perturbAdept()
+{
+//    PPoint defaultPoint, newPoint;
+//    defaultPoint = PPoint(169.99,-15.63,80.339,75.465,28.90,11);
+    long double angle[6];
+    angle[0] = defaultPoint.x;
+    angle[1] = defaultPoint.y;
+    angle[2] = defaultPoint.z;
+    angle[3] = defaultPoint.a;
+    angle[4] = defaultPoint.b;
+    angle[5] = defaultPoint.c;
+    double flexAngle = 45; 
+    double extendAngle = -45;
+    bool isFlex = true;
+    //adeptRobot.setVelocity (10, 10, MONITOR, true);
+    for (int i = 0; i<numberOfPerturbations; i++)
+    {
+        if (isFlex==true)
+        {
+            angle[5] = angle[5] + flexAngle;
+            isFlex = false;
+        }
+        else if (isFlex==false)
+        {
+            angle[5] = angle[5] + extendAngle;
+            isFlex = true;
+        }
+        newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
+        adeptRobot.move(newPoint);
+        Sleep(100);
+    }
+    return 1;
+}
 int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
 {
     //numTrials = Trials;
