@@ -18,7 +18,8 @@ int dataAcquisitionFlag[12] = {1,0,0,0,0,0,0,0,0,0,0,0}; //force(0), EMG(1), spi
 
 int proceedState(int *state)
 {
-    static double defaultPosition[6] = {169.99,-15.63,80.339,75.465,28.90,11};
+    //static double defaultPosition[6] = {169.99,-15.63,80.339,75.465,28.90,11};
+    
     int retVal = 0;
     int menu = 0;
     //static servoControl servo;
@@ -132,7 +133,9 @@ int proceedState(int *state)
         break;
     case STATE_RUN_PARADIGM_CDMRP_IMPLANT:
         //paradigmCDMRPimplant.readData();
-        paradigmCDMRPimplant.setAdeptDefaultPosition(defaultPosition);
+        //paradigmCDMRPimplant.setAdeptDefaultPosition(defaultPosition);
+        paradigmCDMRPimplant.setPerturbationAngle(10);
+        paradigmCDMRPimplant.startAdeptPerturbations(20);
         //retVal = paradigmCDMRPimplant.startParadigm(&motors); //this is for sinusoid force control...
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;

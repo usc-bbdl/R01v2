@@ -10,6 +10,7 @@
 
 class expParadigmCDMRPimplant
 {
+    double perturbationAngle;
     HANDLE hIOMutex;
     bool robotPerturbationLive;
     int numberOfPerturbations;
@@ -22,6 +23,7 @@ class expParadigmCDMRPimplant
     double amp[100];
     double freq[100];
 public:
+    int expParadigmCDMRPimplant::setPerturbationAngle(double angle);
     int setAdeptDefaultPosition(double * position);
     int startAdeptPerturbations(int numberOfPerturbations);
     expParadigmCDMRPimplant(void);

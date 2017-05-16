@@ -6,16 +6,35 @@
 const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(void)
 {
+    defaultPoint.x = 161.7;
+    defaultPoint.y = -87.4;
+    defaultPoint.z = 193.8;
+    defaultPoint.a = 97.93;
+    defaultPoint.b = 69.2;
+    defaultPoint.c = -24.6;
     robotPerturbationLive = false;
     numberOfPerturbations = 0;
     adeptRobot.connectToController();
     numTrials = 0;
     readData();
+    perturbationAngle = 0;
 }
 
-
+int expParadigmCDMRPimplant::setPerturbationAngle(double angle)
+{
+    this->perturbationAngle = angle;
+    return 1;
+}
 expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
 {
+    long double angle[6];
+    adeptRobot.move(defaultPoint);
+    angle[0] = defaultPoint.x;
+    angle[1] = defaultPoint.y;
+    angle[2] = defaultPoint.z;
+    angle[3] = defaultPoint.a;
+    angle[4] = defaultPoint.b;
+    angle[5] = defaultPoint.c;
 }
 
 void expParadigmCDMRPimplant::readData()
@@ -76,12 +95,19 @@ int expParadigmCDMRPimplant::perturbAdept()
     angle[3] = defaultPoint.a;
     angle[4] = defaultPoint.b;
     angle[5] = defaultPoint.c;
-    double flexAngle = 45; 
-    double extendAngle = -45;
+    double flexAngle = perturbationAngle; 
+    double extendAngle = -perturbationAngle;
     bool isFlex = true;
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
     for (int i = 0; i<numberOfPerturbations; i++)
     {
+        adeptRobot.move(defaultPoint);
+        angle[0] = defaultPoint.x;
+        angle[1] = defaultPoint.y;
+        angle[2] = defaultPoint.z;
+        angle[3] = defaultPoint.a;
+        angle[4] = defaultPoint.b;
+        angle[5] = defaultPoint.c;
         if (isFlex==true)
         {
             angle[5] = angle[5] + flexAngle;
@@ -96,6 +122,7 @@ int expParadigmCDMRPimplant::perturbAdept()
         adeptRobot.move(newPoint);
         Sleep(100);
     }
+    adeptRobot.move(defaultPoint);
     return 1;
 }
 int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
