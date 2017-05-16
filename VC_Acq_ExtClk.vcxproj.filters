@@ -56,6 +56,7 @@
     <ClCompile Include="AdeptArmAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataLogger.h">
