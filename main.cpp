@@ -75,14 +75,15 @@ int proceedState(int *state)
         *state = STATE_WINDING_UP;
         break;
     case STATE_WINDING_UP:
-        //Start Neural FPGA and Feeding muscle length data        
+        //Start Neural FPGA and Feeding muscle length data
         *state = STATE_OPEN_LOOP;
+        //CONNECT FPGA HERE
         printf("Open-Loop ; Next stage is Closed-Loop\n");
         break;
     case STATE_OPEN_LOOP:
         //Connect the Neural FPGA and DAQ, Start controlling muscle force
         motors.motorControllerStart();
-        Sleep(1000);
+        Sleep(500);
         //motors.mData->resetMuscleLength = TRUE;
         printf("Closed-Loop ; Next stage is Experiment Paradigm\n");
         *state = STATE_CLOSED_LOOP;

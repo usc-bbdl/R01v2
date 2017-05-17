@@ -8,8 +8,6 @@ expParadigmServoPerturbation::expParadigmServoPerturbation(servoControl *param)
     int cortex1 = 0, cortex2 =0, inPos = 0, finPos = 0,rampVel = 0, trialLen = 0, r = 0;
     currentTrialNum = 0;
     currentRepNum = 0;
-    //log.loadCellOffset1 = offset1;
-    //log.loadCellOffset2 = offset2;
     char *configFileName = "spindleTest.txt";
     FILE *configFile;
     char *header[200];
@@ -41,63 +39,6 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
     bool stayInTheLoop = TRUE;
     char key = 0;
     printf("This experiment has %d trials\n",numTrials);
-
-    /*bicepFPGA->spindleIaGain = 1.2;
-    bicepFPGA->spindleIIGain = 2;
-    bicepFPGA->spindleIaOffset = 250;
-    bicepFPGA->spindleIIOffset = 50;
-    bicepFPGA->spindleIaSynapseGain = 60;
-    bicepFPGA->spindleIISynapseGain = 60;
-    bicepFPGA->forceLengthCurve = 1;
-    bicepFPGA->updateParametersFlag = '1';
-    Sleep(500);*/
-    
-    
-    //bicepFPGA->spindleIaOffset = 250;
-    //bicepFPGA->spindleIIOffset = 50;
-    //bicepFPGA->spindleIaGain = 100;
-    //bicepFPGA->spindleIaSynapseGain = 10;
-    //bicepFPGA->forceLengthCurve = 1;
-    //bicepFPGA->updateParametersFlag = '1';
-    //Sleep(500);
-
-    //tricepFPGA->spindleIaOffset = 250;
-    //tricepFPGA->spindleIIOffset = 50;
-    //tricepFPGA->spindleIaGain = 1000;
-    //tricepFPGA->updateParametersFlag = '1';
-    //Sleep(500);
-
-    /*tricepFPGA->spindleIaGain = 1.2;
-    tricepFPGA->spindleIIGain = 2;
-    tricepFPGA->spindleIaOffset = 250;
-    tricepFPGA->spindleIIOffset = 50;
-    tricepFPGA->spindleIaSynapseGain = 60;
-    tricepFPGA->spindleIISynapseGain = 60;
-    tricepFPGA->forceLengthCurve = 1;
-    tricepFPGA->updateParametersFlag = '1';
-    Sleep(500);*/
-
-
-
-    //bicepFPGA->spindleIaGain = 0.2;
-    //bicepFPGA->spindleIIGain = 0.4;
-    //bicepFPGA->spindleIaOffset = 1;
-    //bicepFPGA->spindleIIOffset = 1;
-    //bicepFPGA->spindleIaSynapseGain = 0;
-    //bicepFPGA->spindleIISynapseGain = 0;
-    //bicepFPGA->updateParametersFlag = '1';
-    //Sleep(500);
-
-
-
-    //tricepFPGA->spindleIaGain = 0.2;
-    //tricepFPGA->spindleIIGain = 0.4;
-    //tricepFPGA->spindleIaOffset = 0;
-    //tricepFPGA->spindleIIOffset = 0;
-    //tricepFPGA->spindleIaSynapseGain = 0;
-    //tricepFPGA->spindleIISynapseGain = 0;
-    //tricepFPGA->updateParametersFlag = '1';
-    //Sleep(500);
     for(int i = 0; i < numTrials && stayInTheLoop == TRUE; i++){
         printf("This trial has %d repetitions\t\n\n",rep[i]);
         //printf("Gamma Dynamic is: %2f & Gamma Static is: %2f\n",gammaDyn[i],gammaSta[i]);
@@ -105,8 +46,6 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         Sleep(100);
 
         bicepFPGA->gammaDynamic = gammaDyn1[i];
-        //printf("Hey  hey just updated gamma dynamic of muscle 1:%d\n\n\n",gammaDyn1[i]);
-
         bicepFPGA->gammaStatic = gammaSta1[i];
         bicepFPGA->updateGammaFlag = '1';
         Sleep(500);
@@ -127,10 +66,12 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         servo->goDefault();
         servo->waitMoving();
         Sleep(100);
-        //realTimeController->mData->resetMuscleLength = TRUE;
-        //realTimeController->mData->trialTrigger = 1;
-        //realTimeController->mData->angle = (initPos[i] + finalPos[i]) /2;
-        //realTimeController->mData->velocity = rampVelocity[i];
+
+        realTimeController->resetLength();
+        realTimeController->newTrial(1);
+        realTimeController->setPerturbationAngle((initPos[i] + finalPos[i]) /2);
+        realTimeController->setPerturbationVelocity(rampVelocity[i]);
+
         Sleep(100);
         currentTrialNum = i;
         for (int j = 0; j<rep[i] && stayInTheLoop == TRUE; j++){
@@ -153,16 +94,14 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             gammaSta1[i],
             j+1
             );
-            //realTimeController->mData->trialTrigger = 2;//prints -1
+            realTimeController->newTrial(1);
             servo->setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
-            //servo->rampHold();
-
             servo->setVelocity(rampVelocity[i]);
             servo->setPosition(initPos[i]);
             servo->waitMoving();
             Sleep(holdPeriod);
 
-            //realTimeController->mData->trialTrigger = 3;//prints -2
+            realTimeController->newTrial(3);
             servo->setPosition(finalPos[i]);
             servo->waitMoving();
             Sleep(holdPeriod);    
