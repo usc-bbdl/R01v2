@@ -258,7 +258,7 @@ void motorControl::controlLoop(void)
         {
             muscleLength[i] = ((2 * PI * shaftRadius * encData[i] / 365) - muscleLengthOffset[i]);   
             muscleLength[i] = encoderBias[i] + muscleLength[i] * encoderGain[i];
-            muscleLength[i] = encData[i];
+            //muscleLength[i] = encData[i];
             muscleVel[i] = (muscleLength[i] -  muscleLengthPreviousTick[i]) / (tock - tick);
             muscleLengthPreviousTick[i] = muscleLength[i];
             loadCellData[i] = (loadCellData[i] - loadCellOffset[i]) * loadCellScale[i];
@@ -280,7 +280,7 @@ void motorControl::controlLoop(void)
             }
         }
         // print some data to screen
-        //printf("LC0: %+6.2f; RF0: %+6.2f; EN0: %+6.2f; LC1: %+6.2f; RE1: %+6.2f, EN1: %+6.2f, \r",loadCellData[0],motorRef[0],muscleLength[0],loadCellData[1],motorRef[1],muscleLength[1]);
+        printf("L0: %+6.2f; RF0: %+6.2f; MF0: %+6.2f; L1: %+6.2f; RF1: %+6.2f, MF1: %+6.2f, \r",muscleLength[0],motorRef[0],loadCellData[0],muscleLength[1],motorRef[1],loadCellData[1]);
         //printf("EN0: %+6.2f; EN1: %+6.2f; \r",muscleLength[0],muscleLength[1]);
         ReleaseMutex( hIOMutex);
         //Log data to file

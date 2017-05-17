@@ -2,24 +2,30 @@
 #include "motorControl.h"
 #include "servoControl.h"
 #include "utilities.h"
-//#include <NIDAQmx.h>
 
 expParadigmMuscleLengthCalibration::expParadigmMuscleLengthCalibration(servoControl *param)
 {
     servo = param;
     rampVelocity = 100;
     holdPeriod = 2000;
-    //printf("Enter initial position (degrees): ");
-    //std::cin>>initPos;
-    //printf("\n Enter final position (degrees):\t");
-    //std::cin>>finalPos;
-    //printf("\n");
     initPos = -90;
     finalPos = 90;
 }
 
+expParadigmMuscleLengthCalibration::~expParadigmMuscleLengthCalibration()
+{
+
+}
+int expParadigmMuscleLengthCalibration::setInitFinalPos(int initPos, int finalPos)
+{
+    this->initPos = initPos;
+    this->finalPos = finalPos;
+    return 1;
+}
 int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeController)
 {
+  realTimeController->resetLength();
+  Sleep(20);
   double fpgaForceGain = 0, fpgaForceBias = 0;
   float64 * muscleLengthBeforePert, * muscleLengthAfterPert, * encoderGain, * encoderBias;
   int numberOfMuscles = 0;
@@ -48,25 +54,29 @@ int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeCont
   realTimeController->getNumberOfMuscles(&numberOfMuscles);
   realTimeController->getMuscleLength(muscleLengthBeforePert);
   servo->setPosition(finalPos);
+
   //Read Encoder data at finalPos
   Sleep(holdPeriod);
   realTimeController->getMuscleLength(muscleLengthAfterPert);
   servo->goDefault();
   for (int i = 0; i<numberOfMuscles;i++)
   {
-      gain[i] = 1/(muscleLengthBeforePert[i] - muscleLengthAfterPert[i]);
-      bias[i] = 0.6 - (gain[i] * muscleLengthAfterPert[i]);
+      if (i % 2 == 0)
+      {
+          encoderGain[i] = 1/(muscleLengthBeforePert[i] - muscleLengthAfterPert[i]);
+          encoderBias[i] = 0.6 - (encoderGain[i] * muscleLengthAfterPert[i]);
+      }
+      else
+      {
+          encoderGain[i] = 1/(muscleLengthAfterPert[i] - muscleLengthBeforePert[i]);
+          encoderBias[i] = 0.6 - (encoderGain[i] * muscleLengthBeforePert[i]);
+          
+      }
   }
-  printf("Muscle Length Before Pert: %f\n",muscleLengthBeforePert[1]);
-  printf("Muscle Length After Pert: %f\n",muscleLengthAfterPert[1]);
-  printf("Gain is: %f\n",gain[1]);
-  printf("Bias is: %f\n",bias[1]);
+  
   realTimeController->setEncoderCalibration(encoderGain,encoderBias);
   realTimeController->setForceGainOffset(fpgaForceGain,fpgaForceBias);
-  printf("Calibration finished. Press space to continue.\n");
+  printf("Scaling from Encoder to muscle length is updated: Calibration finished. \n");
+  printf("Press space to continue.\n");
   return 1;
-}
-expParadigmMuscleLengthCalibration::~expParadigmMuscleLengthCalibration()
-{
-
 }

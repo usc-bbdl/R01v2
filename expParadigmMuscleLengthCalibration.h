@@ -13,11 +13,11 @@ class expParadigmMuscleLengthCalibration
 {
     servoControl *servo;
     int initPos,finalPos;
-    double gain[2], bias[2];
     int rampVelocity, holdPeriod;
 public:
     expParadigmMuscleLengthCalibration(servoControl *);
     ~expParadigmMuscleLengthCalibration(void);
+    int expParadigmMuscleLengthCalibration::setInitFinalPos(int initPos, int finalPos);
     int startParadigm(motorControl *);
     bool isRunning();
 };

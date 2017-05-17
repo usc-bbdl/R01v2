@@ -116,8 +116,8 @@ int FPGAControl::update() { //This is the function called in the thread
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
         pMotorControl->setMuscleReferenceForce((float64)muscleForce, muscleIndex);
-        if (muscleIndex == 1)
-            printf("Length: %6.2f, Force: %6.2f in FPGA#%d; \r",muscleLength,muscleForce,muscleIndex);
+        //if (muscleIndex == 1)
+            //printf("Length: %6.2f, Force: %6.2f in FPGA#%d; \r",muscleLength,muscleForce,muscleIndex);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();

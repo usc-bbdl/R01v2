@@ -57,10 +57,7 @@ int proceedState(int *state)
     int menu = 0;
     static servoControl servo;
     servo.goDefault();
-    Sleep(1000);
-    servo.setPosition(91);
-    Sleep(1000);
-    servo.goDefault();
+    Sleep(200);
     static motorControl motors;
     static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);
     static expParadigmServoPerturbation paradigmServoPerturbation(&servo);
