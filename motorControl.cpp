@@ -19,11 +19,18 @@ motorControl::motorControl()
     createVariables();
     initializeVariables();
     createHeader4DataFile();
+    
+    fpgaForceGain = 0.00002;
+    fpgaForceOffset = 2;
 }
 motorControl::~motorControl()
 {
     muscleObj->deleteMuscles();
     live = FALSE;
+}
+void motorControl::getNumberOfMuscles(int *No_of_musc)
+{
+    *No_of_musc = this->No_of_musc;
 }
 void motorControl::createVariables()
 {
@@ -100,6 +107,30 @@ void motorControl::initializeVariables()
     live = FALSE;
     resetMuscleLength = TRUE;
     expProtocolRunningStateMachine = false;
+}
+
+void motorControl::setMuscleReferenceForceScaling(double *motorRef)
+{
+    for (int i = 0; i<No_of_musc; i++)
+        this->motorRef[i] = ((float64) motorRef[i]) * fpgaForceGain + fpgaForceOffset;
+}
+void motorControl::setMuscleReferenceForceScaling(float *motorRef)
+{
+    for (int i = 0; i<No_of_musc; i++)
+        this->motorRef[i] = ((float64) motorRef[i]) * fpgaForceGain + fpgaForceOffset;
+}
+void motorControl::setMuscleReferenceForceScaling(double *motorRef, int muscleNumber)
+{
+    this->motorRef[muscleNumber] = ((float64) motorRef[muscleNumber]) * fpgaForceGain + fpgaForceOffset;
+}
+void motorControl::setMuscleReferenceForceScaling(float *motorRef, int muscleNumber)
+{
+    this->motorRef[muscleNumber] = ((float64) motorRef[muscleNumber]) * fpgaForceGain + fpgaForceOffset;
+}
+void motorControl::setForceGainOffset(double forceGain, double forceOffset)
+{
+    this->fpgaForceGain = forceGain;
+    this->fpgaForceGain = forceOffset;
 }
 void motorControl::setDataAcquisitionFlag(bool flag[])
 {

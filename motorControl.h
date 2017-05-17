@@ -29,6 +29,7 @@ class motorControl
     int expProtocol;
     int *gammaDynamic, *gammaStatic, *cortexDrive;
     double loadCellOffset1, loadCellOffset2, I, tick, tock;
+    double fpgaForceGain, fpgaForceOffset;
     HANDLE hIOMutex;
     bool live, expProtocolRunningStateMachine;
     char header[200],dataSample[600];
@@ -65,11 +66,17 @@ public:
     void newTrial(int);
     void resetLength();
     //Functions to Communicate with real-time controller
+    void setForceGainOffset(double forceGain, double forceOffset);
     void setEncoderCalibration(double *encoderGain, double *encoderBias);
     void setMuscleReferenceForce(double *);
     void setMuscleReferenceForce(float *);
+    void setMuscleReferenceForceScaling(double *);
+    void setMuscleReferenceForceScaling(float *);
+    void setMuscleReferenceForceScaling(double *,int);
+    void setMuscleReferenceForceScaling(float *, int);
     void setMuscleReferenceForce(double, int);
     void setMuscleReferenceForce(float, int);
+    void getNumberOfMuscles(int *);
     void getLoadCellData(double *);
     void getMuscleLength(double *);
     void getMuscleLength(float *);

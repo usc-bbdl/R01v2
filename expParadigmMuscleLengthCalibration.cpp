@@ -21,6 +21,7 @@ expParadigmMuscleLengthCalibration::expParadigmMuscleLengthCalibration(servoCont
 int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeController)
 {
   float64 muscleLengthBeforePert[2], muscleLengthAfterPert[2];
+  int numberOfMuscles = 0;
   //realTimeController->mData->encoderBias[0] = realTimeController->mData->encoderBias[1] = 0;
   //realTimeController->mData->encoderGain[0] = realTimeController->mData->encoderGain[1] = 1;
   ggain = GGAIN;
@@ -34,6 +35,7 @@ int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeCont
   //realTimeController->resetMuscleLength = 1;
   Sleep(10);
   //Read Encoder data at initPos
+  realTimeController->getNumberOfMuscles(&numberOfMuscles);
   //muscleLengthBeforePert[0] = realTimeController->mData->muscleLength[0];
   //muscleLengthBeforePert[1] = realTimeController->mData->muscleLength[1];    
   servo->setPosition(finalPos);
