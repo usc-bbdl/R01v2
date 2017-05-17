@@ -76,6 +76,7 @@ public:
     void setMuscleReferenceForceScaling(float *, int);
     void setMuscleReferenceForce(double, int);
     void setMuscleReferenceForce(float, int);
+    void getForceGainOffset(double *forceGain, double *forceOffset);
     void getNumberOfMuscles(int *);
     void getLoadCellData(double *);
     void getMuscleLength(double *);

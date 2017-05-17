@@ -119,6 +119,7 @@ void motorControl::setMuscleReferenceForceScaling(float *motorRef)
     for (int i = 0; i<No_of_musc; i++)
         this->motorRef[i] = ((float64) motorRef[i]) * fpgaForceGain + fpgaForceOffset;
 }
+
 void motorControl::setMuscleReferenceForceScaling(double *motorRef, int muscleNumber)
 {
     this->motorRef[muscleNumber] = ((float64) motorRef[muscleNumber]) * fpgaForceGain + fpgaForceOffset;
@@ -132,6 +133,12 @@ void motorControl::setForceGainOffset(double forceGain, double forceOffset)
     this->fpgaForceGain = forceGain;
     this->fpgaForceGain = forceOffset;
 }
+void motorControl::getForceGainOffset(double *forceGain, double *forceOffset)
+{
+    *forceGain = this->fpgaForceGain;
+    *forceOffset = this->fpgaForceOffset;
+}
+
 void motorControl::setDataAcquisitionFlag(bool flag[])
 {
     for (int i = 0 ; i< 12; i++)
