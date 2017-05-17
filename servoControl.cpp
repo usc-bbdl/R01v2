@@ -27,7 +27,7 @@ servoControl::servoControl(int ID) {
 
     //set servo ID and check if servo is alive
     //dxl_set_txpacket_id(servoID);
-    defaultPosition = -40;
+    defaultPosition = 0;
     setLimit(-90,90);
     limitLowAngle;
     limitHighAngle;
