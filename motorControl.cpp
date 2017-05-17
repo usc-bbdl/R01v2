@@ -258,7 +258,6 @@ void motorControl::controlLoop(void)
         {
             muscleLength[i] = ((2 * PI * shaftRadius * encData[i] / 365) - muscleLengthOffset[i]);   
             muscleLength[i] = encoderBias[i] + muscleLength[i] * encoderGain[i];
-            //muscleLength[i] = encData[i];
             muscleVel[i] = (muscleLength[i] -  muscleLengthPreviousTick[i]) / (tock - tick);
             muscleLengthPreviousTick[i] = muscleLength[i];
             loadCellData[i] = (loadCellData[i] - loadCellOffset[i]) * loadCellScale[i];
@@ -267,7 +266,6 @@ void motorControl::controlLoop(void)
                 errorForce[i] = newPdgm_ref[i] - loadCellData[i];
             integral[i] = integral[i] + errorForce[i] * (tock - tick);
             motorCommand[i] = integral[i] * I;
-            motorCommand[i] = 0.2;
             if (motorCommand[i] > motorMaxVoltage)
             {
                 motorCommand[i] = motorMaxVoltage;
