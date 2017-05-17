@@ -4,13 +4,14 @@
 #include <ctime>
 #include <math.h>
 const int Trials = 32; //replace numTrials with Trials and vice versa
-expParadigmCDMRPimplant::expParadigmCDMRPimplant(void)
+expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
-    defaultPoint.x = 161.7;
-    defaultPoint.y = -87.4;
-    defaultPoint.z = 193.8;
-    defaultPoint.a = 97.93;
-    defaultPoint.b = 69.2;
+    this->motorObj = temp;
+    defaultPoint.x = 163.4;
+    defaultPoint.y = -88.5;
+    defaultPoint.z = 206.6;
+    defaultPoint.a = 114;
+    defaultPoint.b = 72.9;
     defaultPoint.c = -24.6;
     robotPerturbationLive = false;
     numberOfPerturbations = 0;
@@ -101,6 +102,7 @@ int expParadigmCDMRPimplant::perturbAdept()
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
     for (int i = 0; i<numberOfPerturbations; i++)
     {
+        motorObj->trialTrigger = 2;
         adeptRobot.move(defaultPoint);
         angle[0] = defaultPoint.x;
         angle[1] = defaultPoint.y;
@@ -120,7 +122,7 @@ int expParadigmCDMRPimplant::perturbAdept()
         }
         newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
         adeptRobot.move(newPoint);
-        Sleep(100);
+        Sleep(1000);
     }
     adeptRobot.move(defaultPoint);
     return 1;

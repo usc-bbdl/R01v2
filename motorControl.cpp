@@ -53,9 +53,9 @@ motorControl::motorControl(double offset1, double offset2, double offset3)
     muscleLengthPreviousTick[1] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
-    strcpy(header,"Time, trigger out, Exp Prot, Len1, Len2, Len3, ForcMeas1, ForcMeas2, ForcMeas3");
+    strcpy(header,"Time, Exp Prot, Len1, ForcMeas, ForcRef, Digit 2 Force, Digit 1 Force");
     if (dataAcquisitionFlag[0]){
-        strcat (header, ", ForceRef1, ForceRef2, ForceRef3, motorCmnd1, motorCmnd2, motorCmnd3");
+        //strcat (header, "");
     }
     if (dataAcquisitionFlag[1]){
         strcat (header, ", EMG1, EMG2");
@@ -87,7 +87,6 @@ motorControl::motorControl(double offset1, double offset2, double offset3)
     if (dataAcquisitionFlag[10]){
         strcat (header, ", Raster 1-6,  Raster 2-6");
     }
-    strcpy(header,", Digit 1 Force, Digit 2 Force");
     char dataTemp[100]="";
     strcat(header,"\n");
     sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[0],dataAcquisitionFlag[1],dataAcquisitionFlag[2],dataAcquisitionFlag[3]);
@@ -236,6 +235,7 @@ void motorControl::controlLoop(void)
     char fileName[200];
     char dataSample[600]="";
     char dataTemp[100]="";
+    sprintf(dataTemp,"\n");
     sprintf_s(
             fileName,
             "C:\\data\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",
@@ -371,11 +371,11 @@ void motorControl::controlLoop(void)
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock, muscleLength[0], muscleLength[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
-        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f",tock,expProtocol,muscleLength[0], loadCellData[0],loadCellData[5],loadCellData[6]);
+        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f,%.6f",tock,expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5]);
         strcat (dataSample, dataTemp);
         if (dataAcquisitionFlag[0]){
-            sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorCommand[0]);
-            strcat (dataSample, dataTemp);
+            //sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorCommand[0]);
+            //strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[1]){
             sprintf(dataTemp,",%.6f,%.6f",muscleEMG[0], muscleEMG[1]);
@@ -422,7 +422,6 @@ void motorControl::controlLoop(void)
             cortexDrive[1] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick + 3.1416), 0);
         }
         //sprintf(dataTemp,",%d,%d,%d,%d,%.3f,%.3f,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, cortexDrive[0], cortexDrive[1],newTrial);
-        sprintf(dataTemp,"\n");
         if (trialTrigger == 1){
             expProtocoAdvance = 1;
             trialTrigger = 0;

@@ -31,7 +31,7 @@ int proceedState(int *state)
     static expParadigmVoluntaryMovement paradigmVoluntaryMovement(&motors);
     //static FPGAControl bicepFPGA(BICEP,&motors);
     //static FPGAControl tricepFPGA(TRICEP,&motors);
-    static expParadigmCDMRPimplant paradigmCDMRPimplant;
+    static expParadigmCDMRPimplant paradigmCDMRPimplant(&motors);
 
     switch(*state)
     {
@@ -134,8 +134,8 @@ int proceedState(int *state)
     case STATE_RUN_PARADIGM_CDMRP_IMPLANT:
         //paradigmCDMRPimplant.readData();
         //paradigmCDMRPimplant.setAdeptDefaultPosition(defaultPosition);
-        paradigmCDMRPimplant.setPerturbationAngle(10);
-        paradigmCDMRPimplant.startAdeptPerturbations(20);
+        paradigmCDMRPimplant.setPerturbationAngle(20);
+        paradigmCDMRPimplant.startAdeptPerturbations(100);
         //retVal = paradigmCDMRPimplant.startParadigm(&motors); //this is for sinusoid force control...
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;

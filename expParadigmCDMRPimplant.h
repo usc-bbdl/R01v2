@@ -7,9 +7,11 @@
 #include "FPGAControl.h"
 #include "AdeptArmAPI.h"
 #include <process.h>
+#include "motorControl.h"
 
 class expParadigmCDMRPimplant
 {
+    motorControl * motorObj;
     double perturbationAngle;
     HANDLE hIOMutex;
     bool robotPerturbationLive;
@@ -23,10 +25,10 @@ class expParadigmCDMRPimplant
     double amp[100];
     double freq[100];
 public:
-    int expParadigmCDMRPimplant::setPerturbationAngle(double angle);
+    int setPerturbationAngle(double angle);
     int setAdeptDefaultPosition(double * position);
     int startAdeptPerturbations(int numberOfPerturbations);
-    expParadigmCDMRPimplant(void);
+    expParadigmCDMRPimplant(motorControl *);
     void readData(void);
     int startParadigm(motorControl *motorObj);
     ~expParadigmCDMRPimplant(void);
