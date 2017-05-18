@@ -35,6 +35,8 @@ void motorControl::getNumberOfMuscles(int *No_of_musc)
 void motorControl::createVariables()
 {
     motorCommand = new float64[No_of_musc];
+    pcsa = new float64[No_of_musc];
+    pennationAngle = new float64[No_of_musc];
     loadCellOffset = new float64[No_of_musc];
     newPdgm_ref = new float64[No_of_musc];
     loadCellData = new float64[No_of_musc];
@@ -67,6 +69,8 @@ void motorControl::initializeVariables()
     //Muscle specific parameters
     for (int i=0;i<No_of_musc;i++)
     {
+        pcsa[i] = 1.5;
+        pennationAngle[i] = 6 * 3.1416 / 180;
         loadCellOffset[i] = 0;
         motorCommand[i] = 0;
         encoderGain[i] = 0;

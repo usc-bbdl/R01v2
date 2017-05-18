@@ -24,7 +24,7 @@ class motorControl
 {
     int *muscleSpikeCount, *raster_MN_1, *raster_MN_2, *raster_MN_3, *raster_MN_4, *raster_MN_5, *raster_MN_6;
     float64 *windingUpCmnd, *muscleLengthPreviousTick, *muscleLengthOffset, *motorCommand, *loadCellOffset;
-    float64 *loadCellData,*motorRef,*muscleLength,*muscleVel, *encoderBias, *encoderGain, *newPdgm_ref;
+    float64 *loadCellData,*motorRef,*muscleLength,*muscleVel, *encoderBias, *encoderGain, *newPdgm_ref, *pcsa, *pennationAngle;
     float *muscleEMG, *spindleIa, *spindleII;
     int expProtocol;
     int *gammaDynamic, *gammaStatic, *cortexDrive;
