@@ -58,3 +58,15 @@ int FPGAControl::update() { //This is the function called in the thread
     
     return 1;
 }
+int FPGAControl::updateFPGA()
+{
+    updateParametersFlag = true;
+}
+int FPGAControl::writeFPGA2RTC()
+{
+
+}
+int FPGAControl::writeRTC2FPGA()
+{
+    
+}
