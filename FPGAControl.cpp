@@ -8,24 +8,14 @@
 #include <windows.h>
 #include <process.h>
 #include <math.h>
-//const char FPGAControl::spindleSerial[2][11] = {"113700021E", "11160001CG"};
-//const char FPGAControl::muscleSerial[2][11]  = {"0000000542", "1137000222"};
 bool killThread = 0;
 int muscleIndex = 0;
 
 
 FPGAControl::FPGAControl(int param, motorControl *param2)
 {
-    //pcsa[0] = 0.56;
-    pcsa[0] = 1.5;
-    //pcsa[1] = 1.77;
-    pcsa[1] = 1.5;
-    theta[0] = 6 * 3.1416 / 180;
-    theta[1] = 7 * 3.1416 / 180;
     updateGammaFlag = '0';
     updateParametersFlag = '0';
-    //SomeFpga    *spindleFPGA;
-    //SomeFpga    *muscleFPGA;
     muscleSpikeCount = 0;
     muscleForceFPGA = 0;
     muscleLength = 0;
@@ -69,7 +59,6 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
     updateCortexDrive();
     Sleep(500);
     printf("\nMuscle %d gamma update\n\n",muscleIndex);
-    //pthread_create(&(this->thread), 0, &FPGAControl::threadRoutine, NULL);
     live = TRUE;
     hIOMutex = CreateMutex(NULL, FALSE, NULL);
 	_beginthread(FPGAControl::FPGAControlLoop,0,this);
@@ -79,9 +68,6 @@ void FPGAControl::FPGAControlLoop(void* a)
 	((FPGAControl*)a)->controlLoop();
 }
 void FPGAControl::controlLoop(void){
-    //gammaDynamic = 5;
-    //gammaStatic = 5;
-    //updateGamma();
     while (live)
     {
         update();
@@ -116,8 +102,6 @@ int FPGAControl::update() { //This is the function called in the thread
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
         pMotorControl->setMuscleReferenceForceScaling((float64) muscleForce, muscleIndex);
-        //if (muscleIndex == 1)
-            //printf("Length: %6.2f, Force: %6.2f in FPGA#%d; \r",muscleLength,muscleForce,muscleIndex);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
@@ -169,14 +153,6 @@ int FPGAControl::update() { //This is the function called in the thread
             int a33 = 1;
     }
 
-    switch (this->muscleIndex) {
-    case 0:
-        //printf(" Bicep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
-        break;
-    case 1:
-        //printf("Tricep Length is: %+6.2f, muscle force is: %+6.2f, muscle Vel is: %6.2f \r",muscleLength, muscleForce,muscleVel);
-        break;
-    }
     Sleep(5);
     return 0;
 }
@@ -185,7 +161,6 @@ void * FPGAControl::threadRoutine(void *ptr) {
     while(!killThread) {
         update();
     }
-    //pthread_exit(0);
     return NULL;
 }
 int FPGAControl::writeSpindleLengthVel()
