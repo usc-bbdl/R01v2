@@ -72,8 +72,8 @@ public:
     void setMuscleReferenceForce(float *);
     void setMuscleReferenceForceScaling(double *);
     void setMuscleReferenceForceScaling(float *);
-    void setMuscleReferenceForceScaling(double *,int);
-    void setMuscleReferenceForceScaling(float *, int);
+    void setMuscleReferenceForceScaling(double,int);
+    void setMuscleReferenceForceScaling(float, int);
     void setMuscleReferenceForce(double, int);
     void setMuscleReferenceForce(float, int);
     void getForceGainOffset(double *forceGain, double *forceOffset);

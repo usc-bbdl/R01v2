@@ -115,7 +115,7 @@ int FPGAControl::update() { //This is the function called in the thread
     //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
-        pMotorControl->setMuscleReferenceForce((float64)muscleForce, muscleIndex);
+        pMotorControl->setMuscleReferenceForceScaling((float64) muscleForce, muscleIndex);
         //if (muscleIndex == 1)
             //printf("Length: %6.2f, Force: %6.2f in FPGA#%d; \r",muscleLength,muscleForce,muscleIndex);
     }
@@ -293,9 +293,8 @@ int FPGAControl::readMuscleFPGAForce()
 {
     muscleFPGA->ReadFpga(0x32, "float32", &muscleForceFPGA);
     //muscleForceFPGA = 0;
-    float tCtrl = ((muscleForceFPGA) * GGAIN);
+    float tCtrl = muscleForceFPGA;
     muscleForce = (float)((tCtrl >= 0.0) ? tCtrl : 0.0f);
-    muscleForce = muscleForce*pcsa[muscleIndex]*cos(theta[muscleIndex])*22.54 + TBIAS;
     return 0;
 }
 

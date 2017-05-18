@@ -25,6 +25,8 @@
     <ClCompile Include="expParadigmServoPerturbation.cpp" />
     <ClCompile Include="expParadigmVoluntaryMovement.cpp" />
     <ClCompile Include="FPGAControl.cpp" />
+    <ClCompile Include="fpgaIO.cpp" />
+    <ClCompile Include="fpgaIONeuromorphic.cpp" />
     <ClCompile Include="hardwareConfiguration.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="motorControl.cpp" />
@@ -40,6 +42,8 @@
     <ClInclude Include="expParadigmServoPerturbation.h" />
     <ClInclude Include="expParadigmVoluntaryMovement.h" />
     <ClInclude Include="FPGAControl.h" />
+    <ClInclude Include="fpgaIO.h" />
+    <ClInclude Include="fpgaIONeuromorphic.h" />
     <ClInclude Include="hardwareConfiguration.h" />
     <ClInclude Include="motorControl.h" />
     <ClInclude Include="NIDAQmx.h" />

@@ -116,21 +116,21 @@ void motorControl::initializeVariables()
 void motorControl::setMuscleReferenceForceScaling(double *motorRef)
 {
     for (int i = 0; i<No_of_musc; i++)
-        this->motorRef[i] = ((float64) motorRef[i]) * fpgaForceGain + fpgaForceOffset;
+        this->motorRef[i] = ((float64) motorRef[i]*pcsa[i]*cos(pennationAngle[i])*22.54) * fpgaForceGain + fpgaForceOffset;
 }
 void motorControl::setMuscleReferenceForceScaling(float *motorRef)
 {
     for (int i = 0; i<No_of_musc; i++)
-        this->motorRef[i] = ((float64) motorRef[i]) * fpgaForceGain + fpgaForceOffset;
+        this->motorRef[i] = ((float64) motorRef[i]*pcsa[i]*cos(pennationAngle[i])*22.54) * fpgaForceGain + fpgaForceOffset;
 }
 
-void motorControl::setMuscleReferenceForceScaling(double *motorRef, int muscleNumber)
+void motorControl::setMuscleReferenceForceScaling(double motorRef, int muscleNumber)
 {
-    this->motorRef[muscleNumber] = ((float64) motorRef[muscleNumber]) * fpgaForceGain + fpgaForceOffset;
+    this->motorRef[muscleNumber] = ((float64) motorRef*pcsa[muscleNumber]*cos(pennationAngle[muscleNumber])*22.54) * fpgaForceGain + fpgaForceOffset;
 }
-void motorControl::setMuscleReferenceForceScaling(float *motorRef, int muscleNumber)
+void motorControl::setMuscleReferenceForceScaling(float motorRef, int muscleNumber)
 {
-    this->motorRef[muscleNumber] = ((float64) motorRef[muscleNumber]) * fpgaForceGain + fpgaForceOffset;
+    this->motorRef[muscleNumber] = ((float64) motorRef*pcsa[muscleNumber]*cos(pennationAngle[muscleNumber])*22.54) * fpgaForceGain + fpgaForceOffset;
 }
 void motorControl::setForceGainOffset(double forceGain, double forceOffset)
 {
