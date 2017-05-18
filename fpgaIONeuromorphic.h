@@ -4,7 +4,49 @@
 #include "utilities.h"
 #include <malloc.h>
 #include <fpgaIO.h>
+struct dataSensoryRead{
+    float32 firingRateIa;
+    float32 firingRateII;
+    float32 mixedInput;
+    int32 populationNeuron;
+};
+struct dataSensoryWrite{
+    float length;
+    float velocity;
+    float gammaDynamic;
+    float gammaStatic;
+    float IaGain;
+    float IaOffset;
+    float IIGain;
+    float IIOffset;
+};
+struct dataMotorRead{
+    float32 muscleForce;
+    float32 muscleEMG;
+    int spikeCount;
+    int32 rasterMN1;
+    int32 rasterMN2;
+    int32 rasterMN3;
+    int32 rasterMN4;
+    int32 rasterMN5;
+    int32 rasterMN6;
+};
+struct dataMotorWrite{
+    float synapseIaGain;
+    float synapseIIGain;
+    float synapseCortexGain;
+    float length;
+    float velocity;
 
+};
+
+struct dataCortexRead{
+    //TBD
+};
+struct dataCortexWrite{
+    int32 cortexDrive;
+    //TBD
+};
 class fpgaIONeuromorphic 
 {
     public:
