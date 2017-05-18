@@ -8,12 +8,14 @@
 #include <windows.h>
 #include <process.h>
 #include <math.h>
+#include "fpgaIONeuromorphic.h"
 bool killThread = 0;
 int muscleIndex = 0;
 
 
 FPGAControl::FPGAControl(int param, motorControl *param2)
 {
+
     updateGammaFlag = '0';
     updateParametersFlag = '0';
     muscleSpikeCount = 0;
