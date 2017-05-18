@@ -7,9 +7,8 @@
 
 class FPGAControl {
 
-    //static const char * spindleSerial[2][11];
-    //static const char muscleSerial[2][11];
-    motorControl *pMotorControl;
+    fpgaIONeuromorphic spindleFPGA, cortexFPGA, motorFPGA;
+    motorControl *realTimeController;
     bool killThread;
     int muscleIndex;
     HANDLE hIOMutex;

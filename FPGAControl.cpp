@@ -11,56 +11,17 @@
 #include "fpgaIONeuromorphic.h"
 bool killThread = 0;
 int muscleIndex = 0;
-
-
-FPGAControl::FPGAControl(int param, motorControl *param2)
+FPGAControl::FPGAControl(int muscleIndex, motorControl *realTimeController)
 {
-
-    updateGammaFlag = '0';
-    updateParametersFlag = '0';
-    muscleSpikeCount = 0;
-    muscleForceFPGA = 0;
-    muscleLength = 0;
-    muscleVel = 0;
-    muscleForce = 0;
-    muscleEMG = 0;
-    spindleII = 0;
-    spindleIa = 0;
-    this->muscleIndex = param;
-    gammaDynamic = 0;
-    gammaStatic = 0;
-    spindleIaGain = spindleIIGain = spindleIaOffset = spindleIIOffset = spindleIaSynapseGain = spindleIISynapseGain =0;
-    pMotorControl = param2;
-    switch (param) {
-    case 0:
-        spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "113700021E");
-        muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000542");
-        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000547");
-        break;
-    case 1:
-        spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "11160001CG");
-        muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "1137000222");
-        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "000000054B");
-        break;
-    default:
-        std::cout<<"\nFATAL: Logical error in FPGAControl Params\n";
-        std::abort();
-    }
+    this->muscleIndex = muscleIndex;
+    this->realTimeController = realTimeController;
+    fpgaIONeuromorphic spindleFPGA(SPINDLE,muscleIndex);
+    fpgaIONeuromorphic cortexFPGA(CORTEX,muscleIndex);
+    fpgaIONeuromorphic motorFPGA(MOTOR,muscleIndex);
     initializeParameters();
 
-    gammaDynamic = 0;
-    gammaStatic = 0;
-    updateGamma();
-    Sleep(500);
-    updateGamma();
-    Sleep(500);
-    updateGamma();
-    Sleep(500);
-    cortexDrive = 0;
     forceLengthCurve = 1;
-    updateCortexDrive();
-    Sleep(500);
-    printf("\nMuscle %d gamma update\n\n",muscleIndex);
+
     live = TRUE;
     hIOMutex = CreateMutex(NULL, FALSE, NULL);
 	_beginthread(FPGAControl::FPGAControlLoop,0,this);
@@ -85,8 +46,8 @@ FPGAControl::~FPGAControl() {
 
 int FPGAControl::update() { //This is the function called in the thread
     
-    pMotorControl->getMuscleLength(&muscleLength, muscleIndex);
-    pMotorControl->getMuscleVelocity(&muscleVel, muscleIndex);
+    realTimeController->getMuscleLength(&muscleLength, muscleIndex);
+    realTimeController->getMuscleVelocity(&muscleVel, muscleIndex);
     if (updateGammaFlag == '1') {
         updateGamma();
         updateGammaFlag = '0';
@@ -103,50 +64,50 @@ int FPGAControl::update() { //This is the function called in the thread
     //writeMuscleFPGALengthVel();
     if (dataAcquisitionFlag[0]){
         readMuscleFPGAForce();
-        pMotorControl->setMuscleReferenceForceScaling((float64) muscleForce, muscleIndex);
+        realTimeController->setMuscleReferenceForceScaling((float64) muscleForce, muscleIndex);
     }
     if (dataAcquisitionFlag[1]){
         readEMG();
-        //pMotorControl->mData->muscleEMG[muscleIndex] = muscleEMG;
+        //realTimeController->mData->muscleEMG[muscleIndex] = muscleEMG;
     }
     if (dataAcquisitionFlag[2]){
         readSpindleIaFPGA();
-       // pMotorControl->mData->spindleIa[muscleIndex] = spindleIa;
+       // realTimeController->mData->spindleIa[muscleIndex] = spindleIa;
     }
     if (dataAcquisitionFlag[3]){
         readSpindleIIFPGA();
-       // pMotorControl->mData->spindleII[muscleIndex] = spindleII;
+       // realTimeController->mData->spindleII[muscleIndex] = spindleII;
     }
     if (dataAcquisitionFlag[4]){
         readMuscleFPGASpikeCount();
-        //pMotorControl->mData->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
+        //realTimeController->mData->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
     }
     if (dataAcquisitionFlag[5]){
         readMuscleFPGARaster_MN_1();
-        //pMotorControl->mData->raster_MN_1[muscleIndex] = raster_MN_1;
+        //realTimeController->mData->raster_MN_1[muscleIndex] = raster_MN_1;
     }
     if (dataAcquisitionFlag[6]){
         readMuscleFPGARaster_MN_2();
-        //pMotorControl->mData->raster_MN_2[muscleIndex] = raster_MN_2;
+        //realTimeController->mData->raster_MN_2[muscleIndex] = raster_MN_2;
     }
     if (dataAcquisitionFlag[7]){
         readMuscleFPGARaster_MN_3();
-        //pMotorControl->mData->raster_MN_3[muscleIndex] = raster_MN_3;
+        //realTimeController->mData->raster_MN_3[muscleIndex] = raster_MN_3;
     }
     if (dataAcquisitionFlag[8]){
         readMuscleFPGARaster_MN_4();
-        //pMotorControl->mData->raster_MN_4[muscleIndex] = raster_MN_4;
+        //realTimeController->mData->raster_MN_4[muscleIndex] = raster_MN_4;
     }
     if (dataAcquisitionFlag[9]){
         readMuscleFPGARaster_MN_5();
-        //pMotorControl->mData->raster_MN_5[muscleIndex] = raster_MN_5;
+        //realTimeController->mData->raster_MN_5[muscleIndex] = raster_MN_5;
     }
     if (dataAcquisitionFlag[10]){
         readMuscleFPGARaster_MN_6();
-        //pMotorControl->mData->raster_MN_6[muscleIndex] = raster_MN_6;
+        //realTimeController->mData->raster_MN_6[muscleIndex] = raster_MN_6;
     }
     if (dataAcquisitionFlag[11]){
-        //cortexDrive = (int32)pMotorControl->mData->cortexDrive[muscleIndex];
+        //cortexDrive = (int32)realTimeController->mData->cortexDrive[muscleIndex];
         //writeCortexCommand();
         updateCortexDrive();
         if (muscleIndex==0)
@@ -191,7 +152,7 @@ int FPGAControl::updateCortexDrive()
     ReInterpret((int32)(cortexDrive), &bitValCortexDrive);
     cortexFPGA->SendPara(bitValCortexDrive, DATA_EVT_CORTEX_DRIVE);
     //Sleep(100);
-    //pMotorControl->mData->cortexDrive[muscleIndex] = (int)(cortexDrive);
+    //realTimeController->mData->cortexDrive[muscleIndex] = (int)(cortexDrive);
     return 0;
 }
 
@@ -206,13 +167,13 @@ int FPGAControl::updateGamma() {
     Sleep(100);
     if (muscleIndex == 0)
     {
-        //pMotorControl->mData->gammaStatic[0] = (int)(gammaStatic);
-        //pMotorControl->mData->gammaDynamic[0] = (int)(gammaDynamic);
+        //realTimeController->mData->gammaStatic[0] = (int)(gammaStatic);
+        //realTimeController->mData->gammaDynamic[0] = (int)(gammaDynamic);
     }
     if (muscleIndex == 1)
     {
-        //pMotorControl->mData->gammaStatic[1] = (int)(gammaStatic);
-        //pMotorControl->mData->gammaDynamic[1] = (int)(gammaDynamic);
+        //realTimeController->mData->gammaStatic[1] = (int)(gammaStatic);
+        //realTimeController->mData->gammaDynamic[1] = (int)(gammaDynamic);
     }
     return 0;
 }
