@@ -50,7 +50,7 @@ struct dataCortexWrite{
 class fpgaIONeuromorphic 
 {
     public:
-        fpgaIONeuromorphic(int , int);
+        fpgaIONeuromorphic(int fpgaType, int muscleType);
         ~fpgaIONeuromorphic();
         //Main FPGA communication functions
         int readFPGAStream(dataSensoryRead *);
