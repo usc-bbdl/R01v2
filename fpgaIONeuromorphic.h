@@ -13,9 +13,11 @@ class fpgaIONeuromorphic
         //Main FPGA communication functions
         int readFPGAStream(dataSensoryRead *);
         int readFPGAStream(dataMotorRead *);
+        int readFPGAStream(dataCortexRead *);
 
         int writeFPGAStream(dataSensoryWrite *);
         int writeFPGAStream(dataMotorWrite *);
+        int writeFPGAStream(dataCortexWrite *);
 
         //Test functions to study synchrony between wire and stream and shall be deleted in future versions
         int readForceStream(float *);

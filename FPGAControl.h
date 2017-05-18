@@ -16,8 +16,8 @@ class FPGAControl {
     bool live;
     static void FPGAControlLoop(void*);
     void controlLoop(void);
-    
     int update(void);
+
     int writeSpindleLengthVel(void);
     int readSpindleIaFPGA(void);
     int readSpindleIIFPGA(void);
