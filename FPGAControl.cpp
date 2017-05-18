@@ -80,5 +80,27 @@ int FPGAControl::writeFPGA2RTC()
 }
 int FPGAControl::writeRTC2FPGA()
 {
+
+    float muscleLength,muscleVelocity;
+    realTimeController->getMuscleLength(&muscleLength,muscleIndex);
+    realTimeController->getMuscleVelocity(&muscleVelocity,muscleIndex);
+    streamSensoryWrite.length = muscleLength;
+    streamSensoryWrite.velocity = muscleVelocity;
+    //For now set gammas and gains to default values
+    //Needs to be updated once we have muscle data class
+    streamSensoryWrite.gammaDynamic = 0;
+    streamSensoryWrite.gammaStatic = 0;
+    streamSensoryWrite.IaGain = 0;
+    streamSensoryWrite.IaOffset = 0;
+    streamSensoryWrite.IIGain = 0;
+    streamSensoryWrite.IIOffset = 0;
+    
+    streamMotorWrite.length = muscleLength;
+    streamMotorWrite.velocity = muscleVelocity;
+    //For now set gains to default values
+    //Needs to be updated once we have muscle data class
+    streamMotorWrite.synapseIaGain = 0;
+    streamMotorWrite.synapseIIGain = 0;
+    streamMotorWrite.synapseCortexGain = 0;
     
 }

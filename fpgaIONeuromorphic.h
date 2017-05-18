@@ -44,7 +44,6 @@ struct dataMotorWrite{
     float synapseCortexGain;
     float length;
     float velocity;
-
 };
 
 struct dataCortexRead{
