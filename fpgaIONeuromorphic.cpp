@@ -12,20 +12,20 @@ fpgaIONeuromorphic::fpgaIONeuromorphic(int fpgaType, int muscleType){
 	this->forceAdressPipe = 0x0080;
 	this->forceAdressBlock = 0x00BF;
 	if ((fpgaType == SPINDLE_FPGA) && (muscleType == BICEP))
-		myFPGA = fpgaIO(spindleBicFPGASerialNum,spindleBicFPGABitFile);
-	fpgaIO::fpgaIO(std::string serialNum, std::string bitfile, /*uint16_t designHASH,*/ unsigned int confType) {
+		fpgaIO myFPGA(spindleBicFPGASerialNum,spindleBicFPGABitFile,MANUALCONF);
 	else if ((fpgaType == SPINDLE_FPGA) && (muscleType == TRICEP))
-		myFPGA = fpgaIO(spindleTriFPGASerialNum,spindleTriFPGABitFile);
+		fpgaIO myFPGA(spindleTriFPGASerialNum,spindleTriFPGABitFile,MANUALCONF);
 	else if ((fpgaType == MOTOR_FPGA) && (muscleType == BICEP))
-		myFPGA = fpgaIO(motorBicFPGASerialNum,motorBicFPGABitFile);
+		fpgaIO myFPGA(motorBicFPGASerialNum,motorBicFPGABitFile,MANUALCONF);
 	else if ((fpgaType == MOTOR_FPGA) && (muscleType == TRICEP))
-		myFPGA = fpgaIO(motorTriFPGASerialNum,motorTriFPGABitFile);
+		fpgaIO myFPGA(motorTriFPGASerialNum,motorTriFPGABitFile,MANUALCONF);
 	else if ((fpgaType == CORTEX_FPGA) && (muscleType == BICEP))
-		myFPGA = fpgaIO(cortexBicFPGASerialNum,cortexBicFPGABitFile);
+		fpgaIO myFPGA(cortexBicFPGASerialNum,cortexBicFPGABitFile,MANUALCONF);
 	else if ((fpgaType == CORTEX_FPGA) && (muscleType == TRICEP))
-		myFPGA = fpgaIO(cortexTriFPGASerialNum,cortexTriFPGABitFile);
+		fpgaIO myFPGA(cortexTriFPGASerialNum,cortexTriFPGABitFile,MANUALCONF);
 }
-int fpgaIONeuromorphic::readMuscleSignals(){
+
+/**int fpgaIONeuromorphic::readMuscleSignals(){
 	int blockSize = 2;
 	long length = 128; //128 bits is 16 bytes
 	unsigned char blockData [128];
@@ -45,6 +45,6 @@ int fpgaIONeuromorphic::readForceWire(){
     ReInterpret(outValInt, &(muscleForceWire));
     return 0;
 }
-	
-}
+**/	
+
 //muscleFPGA->readForceStream(&muscleForceFpgaPipe);
