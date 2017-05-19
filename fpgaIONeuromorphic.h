@@ -55,6 +55,12 @@ struct dataCortexWrite{
 };
 class fpgaIONeuromorphic 
 {
+    private:
+        fpgaIO myFPGA;
+        int muscleType, fpgaType;
+        char serX[50];
+        int forceAdressWire,forceAdressPipe,forceAdressBlock, readMuscleSignals;
+        float muscleForceWire, muscleForcePipe;
     public:
         fpgaIONeuromorphic(int fpgaType, int muscleType);
         ~fpgaIONeuromorphic();
@@ -68,17 +74,12 @@ class fpgaIONeuromorphic
         int writeFPGAStream(dataCortexWrite);
 
         //Test functions to study synchrony between wire and stream and shall be deleted in future versions
-        int readForceStream(float *);
+/*        int readForceStream(float *);
         int readForceBlock(float *);
         int readForceWire(float *);
         int writeLengthVelocityWire(float *);
-
-    private:
-    	fpgaIO myFPGA;
-    	int muscleType, fpgaType;
-        char serX[50];
-        int forceAdressWire,forceAdressPipe,forceAdressBlock, readMuscleSignals;
-        float muscleForceWire, muscleForcePipe;
+*/
+    
 };
 
 #endif

@@ -38,7 +38,31 @@ fpgaIONeuromorphic::fpgaIONeuromorphic(int fpgaType, int muscleType){
 	else if ((fpgaType == CORTEX) && (muscleType == TRICEPS))
 		fpgaIO myFPGA(cortexTriFPGASerialNum,cortexTriFPGABitFile,MANUALCONF);
 }
+int readFPGAStream(dataSensoryRead *data)
+{
+// Read stream of data from spindle FPGA
+}
+int readFPGAStream(dataMotorRead *data)
+{
+// Read stream of data from motor FPGA
+}
+int readFPGAStream(dataCortexRead *data)
+{
+// Read stream of data from cortex FPGA
+}
 
+int writeFPGAStream(dataSensoryWrite data)
+{
+// Write stream of data to spindle FPGA
+}
+int writeFPGAStream(dataMotorWrite data)
+{
+// Write stream of data to Motor FPGA
+}
+int writeFPGAStream(dataCortexWrite data)
+{
+// Write stream of data to Cortex FPGA
+}
 /**int fpgaIONeuromorphic::readMuscleSignals(){
 	int blockSize = 2;
 	long length = 128; //128 bits is 16 bytes
