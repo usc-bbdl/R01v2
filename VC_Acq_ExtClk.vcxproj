@@ -32,7 +32,6 @@
     <ClCompile Include="motorControl.cpp" />
     <ClCompile Include="okFrontPanelDLL.cpp" />
     <ClCompile Include="servoControl.cpp" />
-    <ClCompile Include="SomeFpga.cpp" />
     <ClCompile Include="utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -49,7 +48,6 @@
     <ClInclude Include="NIDAQmx.h" />
     <ClInclude Include="okFrontPanelDLL.h" />
     <ClInclude Include="servoControl.h" />
-    <ClInclude Include="SomeFpga.h" />
     <ClInclude Include="utilities.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
