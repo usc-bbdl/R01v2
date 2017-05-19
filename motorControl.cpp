@@ -713,6 +713,16 @@ void motorControl::setMuscleEMG(float *muscleEMG)
         this->muscleEMG[i] = muscleEMG[i];
 }
 
+void motorControl::setMuscleEMG(double muscleEMG, int muscleIndex)
+{
+    this->muscleEMG[muscleIndex] = ((float) muscleEMG);
+}
+void motorControl::setMuscleEMG(float muscleEMG,int muscleIndex)
+{
+    for (int i = 0; i<No_of_musc; i++)
+         this->muscleEMG[muscleIndex] = ((float) muscleEMG);
+}
+
 void motorControl::setSpindleIa(double *spindleIa)
 {
     for (int i = 0; i<No_of_musc; i++)
@@ -724,6 +734,15 @@ void motorControl::setSpindleIa(float *spindleIa)
         this->spindleIa[i] = spindleIa[i];   
 }
 
+void motorControl::setSpindleIa(double spindleIa, int muscleIndex)
+{
+    this->spindleIa[muscleIndex] = ((float) spindleIa);
+}
+void motorControl::setSpindleIa(float spindleIa, int muscleIndex)
+{
+    this->spindleIa[muscleIndex] = spindleIa;
+}
+
 void motorControl::setSpindleII(double *spindleII)
 {
     for (int i = 0; i<No_of_musc; i++)
@@ -733,6 +752,14 @@ void motorControl::setSpindleII(float *spindleII)
 {
     for (int i = 0; i<No_of_musc; i++)
         this->spindleII[i] = spindleII[i];    
+}
+void motorControl::setSpindleII(double spindleII, int muscleIndex)
+{
+    this->spindleII[muscleIndex] = ((float) spindleII);
+}
+void motorControl::setSpindleII(float spindleII, int muscleIndex)
+{
+    this->spindleII[muscleIndex] = ((float) spindleII);
 }
 
 void motorControl::setSpindleGammaDynamic(int *gammaDynamic)
@@ -750,6 +777,7 @@ void motorControl::setRaster1(int *raster_MN_1)
     for (int i = 0; i<No_of_musc; i++)
         this->raster_MN_1[i] = raster_MN_1[i];    
 }
+
 void motorControl::setRaster2(int *raster_MN_2)
 {
     for (int i = 0; i<No_of_musc; i++)
@@ -778,10 +806,38 @@ void motorControl::setRaster6(int *raster_MN_6)
     for (int i = 0; i<No_of_musc; i++)
         this->raster_MN_6[i] = raster_MN_6[i];
 }
+void motorControl::setRaster1(int raster_MN_1, int muscleIndex)
+{
+    this->raster_MN_1[muscleIndex] = raster_MN_1;
+}
+void motorControl::setRaster2(int raster_MN_2, int muscleIndex)
+{
+    this->raster_MN_2[muscleIndex] = raster_MN_2;
+}
+void motorControl::setRaster3(int raster_MN_3, int muscleIndex)
+{
+    this->raster_MN_3[muscleIndex] = raster_MN_3;
+}
+void motorControl::setRaster4(int raster_MN_4, int muscleIndex)
+{
+    this->raster_MN_4[muscleIndex] = raster_MN_4;
+}
+void motorControl::setRaster5(int raster_MN_5, int muscleIndex)
+{
+    this->raster_MN_5[muscleIndex] = raster_MN_5;
+}
+void motorControl::setRaster6(int raster_MN_6, int muscleIndex)
+{
+    this->raster_MN_6[muscleIndex] = raster_MN_6;
+}
 void motorControl::setMuscleSpikeCount(int *muscleSpikeCount)
 {
     for (int i = 0; i<No_of_musc; i++)
         this->muscleSpikeCount[i] = muscleSpikeCount[i];
+}
+void motorControl::setMuscleSpikeCount(int muscleSpikeCount, int muscleIndex)
+{
+    this->muscleSpikeCount[muscleIndex] = muscleSpikeCount;
 }
 void motorControl::setPerturbationAngle(double angle)
 {

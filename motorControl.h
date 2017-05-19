@@ -109,8 +109,6 @@ public:
     void setSpindleIa(float,int);
     void setSpindleII(double,int);
     void setSpindleII(float,int);
-    void setSpindleGammaDynamic(int,int);
-    void setSpindleGammaStatic(int,int);
     void setMuscleSpikeCount(int,int);
     void setRaster1(int,int);
     void setRaster2(int,int);
