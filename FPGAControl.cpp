@@ -65,18 +65,18 @@ int FPGAControl::updateFPGA()
 int FPGAControl::writeFPGA2RTC()
 {
 
-    realTimeController->setSpindleIa(streamSensoryRead.firingRateIa);
-    realTimeController->setSpindleII(streamSensoryRead.firingRateII);
+    realTimeController->setSpindleIa(streamSensoryRead.firingRateIa, muscleIndex);
+    realTimeController->setSpindleII(streamSensoryRead.firingRateII, muscleIndex);
 
     realTimeController->setMuscleReferenceForceScaling(streamMotorRead.muscleForce, muscleIndex);
     realTimeController->setMuscleEMG(streamMotorRead.muscleEMG, muscleIndex);
     realTimeController->setMuscleSpikeCount(streamMotorRead.spikeCount, muscleIndex);
     realTimeController->setRaster1(streamMotorRead.rasterMN1, muscleIndex);
-    realTimeController->setRaster2(streamMotorRead.rasterMN1, muscleIndex);
-    realTimeController->setRaster3(streamMotorRead.rasterMN1, muscleIndex);
-    realTimeController->setRaster4(streamMotorRead.rasterMN1, muscleIndex);
-    realTimeController->setRaster5(streamMotorRead.rasterMN1, muscleIndex);
-    realTimeController->setRaster6(streamMotorRead.rasterMN1, muscleIndex);
+    realTimeController->setRaster2(streamMotorRead.rasterMN2, muscleIndex);
+    realTimeController->setRaster3(streamMotorRead.rasterMN3, muscleIndex);
+    realTimeController->setRaster4(streamMotorRead.rasterMN4, muscleIndex);
+    realTimeController->setRaster5(streamMotorRead.rasterMN5, muscleIndex);
+    realTimeController->setRaster6(streamMotorRead.rasterMN6, muscleIndex);
 }
 int FPGAControl::writeRTC2FPGA()
 {

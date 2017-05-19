@@ -114,6 +114,7 @@ public:
     void setMuscleSpikeCount(int,int);
     void setRaster1(int,int);
     void setRaster2(int,int);
+    void setRaster3(int,int);
     void setRaster4(int,int);
     void setRaster5(int,int);
     void setRaster6(int,int);

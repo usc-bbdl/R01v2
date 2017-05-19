@@ -2,7 +2,6 @@
 #define FPGACONTROL_H
 
 #include "motorControl.h"
-#include "SomeFpga.h"
 #include "fpgaIONeuromorphic.h"
 class FPGAControl {
 
@@ -29,6 +28,7 @@ class FPGAControl {
 public:
     FPGAControl(int, motorControl *);
     ~FPGAControl();
+    int updateFPGA();
 
 };
 
