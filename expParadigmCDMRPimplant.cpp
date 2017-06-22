@@ -7,12 +7,12 @@ const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-    defaultPoint.x = 163.4;
-    defaultPoint.y = -88.5;
-    defaultPoint.z = 206.6;
-    defaultPoint.a = 114;
-    defaultPoint.b = 72.9;
-    defaultPoint.c = -24.6;
+    defaultPoint.x = 88.3;
+    defaultPoint.y = -88.8;
+    defaultPoint.z = 191.9;
+    defaultPoint.a = -78.7;
+    defaultPoint.b = -58.3;
+    defaultPoint.c = -110.2;
     robotPerturbationLive = false;
     numberOfPerturbations = 0;
     adeptRobot.connectToController();
