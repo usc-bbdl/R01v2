@@ -25,6 +25,7 @@ class expParadigmCDMRPimplant
     double amp[100];
     double freq[100];
 public:
+    int expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
     int setPerturbationAngle(double angle);
     int setAdeptDefaultPosition(double * position);
     int startAdeptPerturbations(int numberOfPerturbations);

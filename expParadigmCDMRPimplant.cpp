@@ -38,6 +38,19 @@ expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
     angle[5] = defaultPoint.c;
 }
 
+int expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations)
+{
+    for (double force = forceMin; force<forceMax; force = force + forceResolution)
+    {
+        for (double force = forceMin; force<forceMax; force = force + forceResolution)
+        {
+            for (int i = 0; i<numberOfPerturbations; i++)
+            {
+            }
+        }
+    }
+}
+
 void expParadigmCDMRPimplant::readData()
 {
     //numTrials = Trials;    
