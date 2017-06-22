@@ -7,12 +7,12 @@ const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-    defaultPoint.x = 88.3;
-    defaultPoint.y = -88.8;
-    defaultPoint.z = 191.9;
-    defaultPoint.a = -78.7;
-    defaultPoint.b = -58.3;
-    defaultPoint.c = -110.2;
+    defaultPoint.x = 86;
+    defaultPoint.y = -98;
+    defaultPoint.z = 182;
+    defaultPoint.a = -87;
+    defaultPoint.b = -60;
+    defaultPoint.c = 287;
     robotPerturbationLive = false;
     numberOfPerturbations = 0;
     adeptRobot.connectToController();
@@ -38,23 +38,31 @@ expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
     angle[5] = defaultPoint.c;
 }
 
-int expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations)
+void expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations)
 {
-    this->numberOfPerturbations = numberOfPerturbations;
     for (double force = forceMin; force<forceMax; force = force + forceResolution)
     {
         for (double angle = angleMin; angle<angleMax; angle = angle + angleResolution)
         {
+            printf("Force = %3.6f, Angle = %3.6f\n",force,angle);
+            this->numberOfPerturbations = numberOfPerturbations;
             setPerturbationAngle(angle);
             motorObj->motorRef[0] = force;
-            robotPerturbationLive = TRUE;
-            hIOMutex = CreateMutex(NULL, FALSE, NULL);
-	        _beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
-            return 1;
+            while (robotPerturbationLive == TRUE)
+            {
+            }
+            temp();
         }
     }
 }
 
+int expParadigmCDMRPimplant::temp(void)
+{
+    robotPerturbationLive = TRUE;
+    hIOMutex = CreateMutex(NULL, FALSE, NULL);
+	_beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
+    return 1;
+}
 void expParadigmCDMRPimplant::readData()
 {
     //numTrials = Trials;    
@@ -119,6 +127,7 @@ int expParadigmCDMRPimplant::perturbAdept()
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
     for (int i = 0; i<numberOfPerturbations; i++)
     {
+        printf("i = %d\n",i);
         motorObj->trialTrigger = 2;
         adeptRobot.move(defaultPoint);
         angle[0] = defaultPoint.x;
