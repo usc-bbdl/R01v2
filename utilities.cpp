@@ -134,8 +134,9 @@ int proceedState(int *state)
     case STATE_RUN_PARADIGM_CDMRP_IMPLANT:
         //paradigmCDMRPimplant.readData();
         //paradigmCDMRPimplant.setAdeptDefaultPosition(defaultPosition);
-        paradigmCDMRPimplant.setPerturbationAngle(40);
-        paradigmCDMRPimplant.startAdeptPerturbations(100);
+        //paradigmCDMRPimplant.setPerturbationAngle(40);
+        //paradigmCDMRPimplant.startAdeptPerturbations(100);
+        paradigmCDMRPimplant.sweepAngleForce(10, 21, 5,10, 40, 10, 5);
         //retVal = paradigmCDMRPimplant.startParadigm(&motors); //this is for sinusoid force control...
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;

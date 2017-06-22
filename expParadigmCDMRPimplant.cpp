@@ -40,13 +40,17 @@ expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
 
 int expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations)
 {
+    this->numberOfPerturbations = numberOfPerturbations;
     for (double force = forceMin; force<forceMax; force = force + forceResolution)
     {
-        for (double force = forceMin; force<forceMax; force = force + forceResolution)
+        for (double angle = angleMin; angle<angleMax; angle = angle + angleResolution)
         {
-            for (int i = 0; i<numberOfPerturbations; i++)
-            {
-            }
+            setPerturbationAngle(angle);
+            motorObj->motorRef[0] = force;
+            robotPerturbationLive = TRUE;
+            hIOMutex = CreateMutex(NULL, FALSE, NULL);
+	        _beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
+            return 1;
         }
     }
 }
@@ -135,9 +139,10 @@ int expParadigmCDMRPimplant::perturbAdept()
         }
         newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
         adeptRobot.move(newPoint);
-        Sleep(1000);
+        Sleep(2000);
     }
     adeptRobot.move(defaultPoint);
+    robotPerturbationLive = FALSE;
     return 1;
 }
 int expParadigmCDMRPimplant::startParadigm(motorControl *motorObj)
