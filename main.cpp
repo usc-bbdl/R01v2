@@ -7,13 +7,13 @@
 #include <stdio.h>
 
 #include "utilities.h"
-#include "okFrontPanelDLL.h"
-#include "servoControl.h"
-#include "motorControl.h"
-#include "expParadigmMuscleLengthCalibration.h"
-#include "expParadigmServoPerturbation.h"
-#include "expParadigmManualPerturbation.h"
-#include "expParadigmVoluntaryMovement.h"
+//#include "okFrontPanelDLL.h"
+//#include "servoControl.h"
+//#include "motorControl.h"
+//#include "expParadigmMuscleLengthCalibration.h"
+//#include "expParadigmServoPerturbation.h"
+//#include "expParadigmManualPerturbation.h"
+//#include "expParadigmVoluntaryMovement.h"
 #include "AdeptArmAPI.h"
 
 int main()
@@ -28,9 +28,9 @@ int main()
     defaultPoint.a = -87;
     defaultPoint.b = -60;
     defaultPoint.c = 287;
-    numberOfPerturbations = 10;
+    int numberOfPerturbations = 10;
     adeptRobot.connectToController();
-    perturbationAngle = 20;
+    double perturbationAngle = 20;
     long double angle[6];
 
     angle[0] = defaultPoint.x;

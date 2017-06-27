@@ -4,58 +4,19 @@
     <ClCompile Include="utilities.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="motorControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FPGAControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SomeFpga.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="servoControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="expParadigmServoPerturbation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="expParadigmMuscleLengthCalibration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="expParadigmManualPerturbation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="expParadigmVoluntaryMovement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="experimentUserInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="experimentUserInterface.cpp" />
-    <ClCompile Include="okFrontPanelDLL.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
-    <ClCompile Include="DAQ.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
-    <ClCompile Include="hardwareConfiguration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="fpgaIO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="fpgaIONeuromorphic.cpp">
+    <ClCompile Include="AdeptArmAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -63,46 +24,7 @@
     <ClInclude Include="utilities.h">
       <Filter>Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="motorControl.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NIDAQmx.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="okFrontPanelDLL.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FPGAControl.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SomeFpga.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="servoControl.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="expParadigmServoPerturbation.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="expParadigmManualPerturbation.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="expParadigmMuscleLengthCalibration.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="expParadigmVoluntaryMovement.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DAQ.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="hardwareConfiguration.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fpgaIO.h">
-      <Filter>Head Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fpgaIONeuromorphic.h">
+    <ClInclude Include="AdeptArmAPI.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>
