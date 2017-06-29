@@ -22,12 +22,12 @@ int main()
     AdeptArmAPI adeptRobot;
     // Get the default position using where command in V+ terminal
     // Get the configuration space not endpoint space , i.e. the numbers below are joint angles
-    defaultPoint.x = 86;
-    defaultPoint.y = -98;
-    defaultPoint.z = 182;
-    defaultPoint.a = -87;
-    defaultPoint.b = -60;
-    defaultPoint.c = 287;
+    defaultPoint.x = 80.0;
+    defaultPoint.y = -56.0;
+    defaultPoint.z = 143.0;
+    defaultPoint.a = -98.0;
+    defaultPoint.b = -116.0;
+    defaultPoint.c = 131.0;
     int numberOfPerturbations = 10;
     adeptRobot.connectToController();
     double perturbationAngle = 20;
