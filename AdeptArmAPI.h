@@ -7,59 +7,96 @@
 #include <winsock.h>
 #include <windows.h>
 
+struct EPoint
+{
+    long double X;
+    long double Y;
+    long double Z;
+    long double y;
+    long double p;
+    long double r;
+
+    EPoint() {
+        this->X = -505;
+        this->Y = 199;
+        this->Z = 279;
+        this->y = -93;
+        this->p = 93;
+        this->r = 103;
+    }
+
+    EPoint(long double X, long double Y, long double Z, long double y, long double p, long double r) {
+    this->X = X;
+    this->Y = Y;
+    this->Z = Z;
+    this->y = y;
+    this->p = p;
+    this->r = r;
+    }
+
+    std::string toString() {
+    return std::to_string(X) + ","
+                + std::to_string(Y) + ","
+                + std::to_string(Z) + ","
+                + std::to_string(y) + ","
+                + std::to_string(p) + ","
+                + std::to_string(r);
+    }
+};
+
 struct PPoint
 {
-  long double x;
-  long double y;
-  long double z;
-  long double a;
-  long double b;
-  long double c;
+    long double J1;
+    long double J2;
+    long double J3;
+    long double J4;
+    long double J5;
+    long double J6;
   
   PPoint() {  
-        this->x = 0;
-    this->y = -100;
-    this->z = 10;
-    this->a = 0;
-    this->b = -5;
-    this->c = 0;
+    this->J1 = 0;
+    this->J2 = -100;
+    this->J3 = 10;
+    this->J4 = 0;
+    this->J5 = -5;
+    this->J6 = 0;
   }
   
     PPoint(int signal) {
         if (signal == 0) { // Predefined point for connecting to cat limb
-            this->x = -138.50;   // Max is 170
-      this->y = -75.60;//-102;
-      this->z = 186.91;//20;
-      this->a = -90.62;//0;
-      this->b = 88.65;//-13;
-      this->c = 51.430;//42;
+            this->J1 = -138.50;   // Max is 170
+            this->J2 = -75.60;//-102;
+            this->J3 = 186.91;//20;
+            this->J4 = -90.62;//0;
+            this->J5 = 88.65;//-13;
+            this->J6 = 51.430;//42;
         }
         else if (signal == 1) { // Default position
-            this->x = 0;   // Max is 170
-      this->y = -60;
-      this->z = 20;
-      this->a = 0;
-      this->b = -9;
-      this->c = 42;
+            this->J1 = 0;   // Max is 170
+            this->J2 = -60;
+            this->J3 = 20;
+            this->J4 = 0;
+            this->J5 = -9;
+            this->J6 = 42;
         }
     }
 
-  PPoint(long double x, long double y, long double z, long double a, long double b, long double c) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-    this->a = a;
-    this->b = b;
-    this->c = c;
+  PPoint(long double J1, long double J2, long double J3, long double J4, long double J5, long double J6) {
+    this->J1 = J1;
+    this->J2 = J2;
+    this->J3 = J3;
+    this->J4 = J4;
+    this->J5 = J5;
+    this->J6 = J6;
   }
 
   std::string toString() {
-    return std::to_string(x) + ","
-                + std::to_string(y) + ","
-                + std::to_string(z) + ","
-                + std::to_string(a) + ","
-                + std::to_string(b) + ","
-                + std::to_string(c);
+    return std::to_string(J1) + ","
+                + std::to_string(J2) + ","
+                + std::to_string(J3) + ","
+                + std::to_string(J4) + ","
+                + std::to_string(J5) + ","
+                + std::to_string(J6);
   }
 };
 
@@ -85,6 +122,7 @@ public:
 
     // Action functions
     void move(PPoint position);
+    void moveE(EPoint position);
     void movetrans(PPoint position);
   void moveToOrigin();
   void moveInCircle(double startAngle, double endAngle, double radius, int numberOfPoints);

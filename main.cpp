@@ -19,26 +19,27 @@
 int main()
 {
     PPoint defaultPoint, newPoint;
+    EPoint defaultEPoint;
     AdeptArmAPI adeptRobot;
     // Get the default position using where command in V+ terminal
     // Get the configuration space not endpoint space , i.e. the numbers below are joint angles
-    defaultPoint.x = 80.0;
-    defaultPoint.y = -56.0;
-    defaultPoint.z = 143.0;
-    defaultPoint.a = -98.0;
-    defaultPoint.b = -116.0;
-    defaultPoint.c = 131.0;
+    defaultPoint.J1 = 150;
+    defaultPoint.J2 = -46.512;
+    defaultPoint.J3 = 128.336;
+    defaultPoint.J4 = -90;
+    defaultPoint.J5 = -117.136;
+    defaultPoint.J6 = 200.349;
     int numberOfPerturbations = 10;
     adeptRobot.connectToController();
     double perturbationAngle = 20;
     long double angle[6];
-
-    angle[0] = defaultPoint.x;
-    angle[1] = defaultPoint.y;
-    angle[2] = defaultPoint.z;
-    angle[3] = defaultPoint.a;
-    angle[4] = defaultPoint.b;
-    angle[5] = defaultPoint.c;
+    adeptRobot.move(defaultPoint);    //added
+   /* angle[0] = defaultPoint.J1;
+    angle[1] = defaultPoint.J2;
+    angle[2] = defaultPoint.J3;
+    angle[3] = defaultPoint.J4;
+    angle[4] = defaultPoint.J5;
+    angle[5] = defaultPoint.J6;
 
     double flexAngle = perturbationAngle; 
     double extendAngle = -perturbationAngle;
@@ -48,12 +49,12 @@ int main()
     {
         printf("i = %d\n",i);
         adeptRobot.move(defaultPoint);
-        angle[0] = defaultPoint.x;
-        angle[1] = defaultPoint.y;
-        angle[2] = defaultPoint.z;
-        angle[3] = defaultPoint.a;
-        angle[4] = defaultPoint.b;
-        angle[5] = defaultPoint.c;
+        angle[0] = defaultPoint.J1;
+        angle[1] = defaultPoint.J2;
+        angle[2] = defaultPoint.J3;
+        angle[3] = defaultPoint.J4;
+        angle[4] = defaultPoint.J5;
+        angle[5] = defaultPoint.J6;
         if (isFlex==true)
         {
             angle[5] = angle[5] + flexAngle;
@@ -68,8 +69,14 @@ int main()
         adeptRobot.move(newPoint);
         Sleep(1000);
     }
-
-    adeptRobot.move(defaultPoint);    
+ */
+    defaultEPoint.X = -462;
+    defaultEPoint.Y = 283.9;
+    defaultEPoint.Z = 279;
+    defaultEPoint.y = -103;
+    defaultEPoint.p = 93;
+    defaultEPoint.r = 103;
+    adeptRobot.moveE(defaultEPoint);    
     getch();
     return 0;
 }

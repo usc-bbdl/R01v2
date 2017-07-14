@@ -139,6 +139,13 @@ void AdeptArmAPI::move (PPoint position) {
     sendStr(move_command_string);
 }
 
+void AdeptArmAPI::moveE (EPoint position) {
+    std::string move_command_string = "6,";
+    move_command_string.append(position.toString());
+    move_command_string.append("!");
+
+    sendStr(move_command_string);
+}
 // Function Move
 void AdeptArmAPI::movetrans (PPoint displacement) {
     std::string move_command_string = "5,";
@@ -146,8 +153,8 @@ void AdeptArmAPI::movetrans (PPoint displacement) {
     move_command_string.append("!");
     
     sendStr(move_command_string);
-    current.x = current.x + displacement.x;
-    current.y = current.y + displacement.y;
+    current.J1 = current.J1 + displacement.J1;
+    current.J2 = current.J2 + displacement.J2;
 }
 
 void AdeptArmAPI::moveInCircle(double startAngle, double endAngle, double radius, int numberOfPoints) { 
@@ -169,10 +176,10 @@ void AdeptArmAPI::moveInCircleTrans(double radius, int numberOfPoints) {
     for (int i = 0; i <= numberOfPoints; i++) {
         std::cout << "This is the " << i << "th loop" << std::endl;
 
-        long double displacementFromDefaultX = cos((displacementAngle*i)*PI/180) * radius - current.x;
-        long double displacementFromDefaultY = -(sin((displacementAngle*i)*PI/180) * radius) - current.y;
+        long double displacementFromDefaultX = cos((displacementAngle*i)*PI/180) * radius - current.J1;
+        long double displacementFromDefaultY = -(sin((displacementAngle*i)*PI/180) * radius) - current.J2;
         
-        std::cout << "Current: " << current.x << "," << current.y << std::endl;
+        std::cout << "Current: " << current.J1 << "," << current.J2 << std::endl;
         std::cout << "This point " << displacementFromDefaultX << "|" << displacementFromDefaultY << std::endl;
         movetrans(PPoint(displacementFromDefaultX, displacementFromDefaultY, 0, 0, 0, 0));
     }
