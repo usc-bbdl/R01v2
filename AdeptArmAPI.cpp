@@ -36,6 +36,7 @@ AdeptArmAPI::AdeptArmAPI () {
     portNumber = adeptPort;
 	blockingFlag = true;
     current = PPoint(0, 0, 0, 0, 0, 0);
+    currentE = EPoint(0, 0, 0, 0, 0, 0);
 }
 // Constructor for localhost:givenPortNumber
 AdeptArmAPI::AdeptArmAPI (int inputPortNumber) {
@@ -43,6 +44,7 @@ AdeptArmAPI::AdeptArmAPI (int inputPortNumber) {
     portNumber = inputPortNumber;
 	blockingFlag = true;
     current = PPoint(0, 0, 0, 0, 0, 0);
+    currentE = EPoint(0, 0, 0, 0, 0, 0);
 }
 // Constructor for givenAddress:givenPortNumber
 AdeptArmAPI::AdeptArmAPI (std::string address, int inputPortNumber) {
@@ -50,6 +52,7 @@ AdeptArmAPI::AdeptArmAPI (std::string address, int inputPortNumber) {
     portNumber = inputPortNumber;
 	blockingFlag = true;
     current = PPoint(0, 0, 0, 0, 0, 0);
+    currentE = EPoint(0, 0, 0, 0, 0, 0);
 }
 
 // Function to start connection and initialize buffer
@@ -139,6 +142,13 @@ void AdeptArmAPI::move (PPoint position) {
     sendStr(move_command_string);
 }
 
+void AdeptArmAPI::moveE (EPoint position) {
+    std::string move_command_string = "6,";
+    move_command_string.append(position.toString());
+    move_command_string.append("!");
+
+    sendStr(move_command_string);
+}
 // Function Move
 void AdeptArmAPI::movetrans (PPoint displacement) {
     std::string move_command_string = "5,";
