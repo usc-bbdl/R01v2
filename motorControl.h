@@ -36,7 +36,7 @@ class motorControl
 public:    
     bool resetMuscleLength;
     float64 loadCellData[6],motorRef[3],muscleLength[3],muscleVel[2];
-    double cortexVoluntaryAmp, cortexVoluntaryFreq;
+    double cortexVoluntaryAmp, cortexVoluntaryFreq, perturbationAngle;
     unsigned int muscleSpikeCount[2],raster_MN_1[2],raster_MN_2[2],raster_MN_3[2],raster_MN_4[2],raster_MN_5[2],raster_MN_6[2];
     float muscleEMG[2],spindleIa[2], spindleII[2],encoderBias[3],encoderGain[3];
     motorControl(double,double,double);

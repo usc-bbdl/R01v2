@@ -12,6 +12,7 @@ motorControl::motorControl(double offset1, double offset2, double offset3)
     dataEnable = 7;//0x8111111F;//0x1111111;
     encoderBias[0] = encoderBias[1] = encoderBias[2] = 0;
     encoderGain[0] = encoderGain[1] = encoderGain[2] = 1;
+    perturbationAngle = 0;
     I = 3;
     cortexVoluntaryAmp = 10000;
     cortexVoluntaryFreq = 0.25;
@@ -441,43 +442,15 @@ void motorControl::controlLoop(void)
                 expProtocoAdvance = 2;
                 break;
             case 2:
-                expProtocol = gammaDynamic1;
+                expProtocol = perturbationAngle;
                 expProtocoAdvance = 3;
                 break;
             case 3:
-                expProtocol = gammaStatic1;
+                expProtocol = motorRef[0];
                 expProtocoAdvance = 4;
                 break;
             case 4:
-                expProtocol =  cortexDrive[0];
-                expProtocoAdvance = 5;
-                break;
-            case 5:
-                expProtocol = gammaDynamic2;
-                expProtocoAdvance = 6;
-                break;
-            case 6:
-                expProtocol = gammaStatic2;
-                expProtocoAdvance = 7;
-                break;
-            case 7:
-                expProtocol =  cortexDrive[1];
-                expProtocoAdvance = 8;
-                break;
-            case 8: 
-                expProtocol = angle;
-                expProtocoAdvance = 9;
-                break;
-            case 9:
-                expProtocol = velocity;
-                expProtocoAdvance = 0;
-                break;
-            case 10:
-                expProtocol = -1;
-                expProtocoAdvance = 0;
-                break;
-            case 11:
-                expProtocol = -2;
+                expProtocol =  motorRef[1];
                 expProtocoAdvance = 0;
                 break;
         }
