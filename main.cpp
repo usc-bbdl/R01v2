@@ -71,7 +71,7 @@ int main()
     }
  */
     defaultEPoint.X = -462;
-    defaultEPoint.Y = 283.9;
+    defaultEPoint.Y = 286.9;
     defaultEPoint.Z = 279;
     defaultEPoint.y = -103;
     defaultEPoint.p = 93;
