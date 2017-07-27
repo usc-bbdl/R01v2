@@ -248,7 +248,31 @@ void AdeptArmAPI::setBlocking(bool shouldBlock) {
   command.append(block);
   sendStr(command);
 }
-
+void AdeptArmAPI::wherePP() {
+    std::cout << "start where" << std::endl;
+    std::string command = "7,";
+    std::string pointType = "0";
+    command.append(pointType);
+    const char* sendbuf = command.c_str();              
+    int iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0 );
+    if (iResult == SOCKET_ERROR) {
+        printf("send failed with error: %d\n", WSAGetLastError());
+        closesocket(ConnectSocket);
+        WSACleanup();
+        return;
+    }
+    char recvbuf[75];
+    char* end;
+    char *precvbuf = &recvbuf[0];
+    iResult = recv(ConnectSocket, recvbuf, 75, 0);
+    //int J[6];
+    std::cout << recvbuf << std::endl;
+    for (double coord = std::strtod(precvbuf, &end); precvbuf != end; coord = std::strtod(precvbuf, &end)) {
+        precvbuf = end; 
+        std::cout << coord << " ";
+    }
+    std::cout << "\n";
+}
 void AdeptArmAPI::sendStr(std::string input) {
     const char* sendbuf = input.c_str();
                 

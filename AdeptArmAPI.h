@@ -134,6 +134,9 @@ public:
     void setOrigin(PPoint position);
   void setBlocking(bool shouldBlock);
 
+  //current location
+  void wherePP();
+
   // Helper functions
     void sendStr(std::string);
 

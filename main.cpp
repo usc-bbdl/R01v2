@@ -77,6 +77,7 @@ int main()
     defaultEPoint.p = 93;
     defaultEPoint.r = 103;
     adeptRobot.moveE(defaultEPoint);    
+    adeptRobot.wherePP();
     getch();
     return 0;
 }
