@@ -262,15 +262,15 @@ void AdeptArmAPI::sendStr(std::string input) {
     //printf("Bytes Sent: %ld\n", iResult);
   
   if (blockingFlag) {
-    char recvbuf[10];
-    iResult = recv(ConnectSocket, recvbuf, 10, 0);
+    char recvbuf[75];
+    iResult = recv(ConnectSocket, recvbuf, 75, 0);
     if ( iResult > 0 ) {
-      //printf("Bytes received: %d\n", iResult);
-      //std::cout << "Received: " << recvbuf << std::endl;
+      printf("Bytes received: %d\n", iResult);
+      std::cout << "Received: " << recvbuf << std::endl;
     } else if ( iResult == 0) {
-      //printf("No bytes received\n");
+      printf("No bytes received\n");
     } else {
-      //printf("Recv failed with error: %d\n", WSAGetLastError());
+      printf("Recv failed with error: %d\n", WSAGetLastError());
     }
   }
 }
