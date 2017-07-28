@@ -428,7 +428,7 @@ void motorControl::controlLoop(void)
             trialTrigger = 0;
         }
         if (trialTrigger == 2){
-            expProtocoAdvance = 10;
+            expProtocoAdvance = 1;
             trialTrigger = 0;
         }
         if (trialTrigger == 3){

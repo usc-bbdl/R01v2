@@ -137,6 +137,7 @@ int proceedState(int *state)
         //paradigmCDMRPimplant.setPerturbationAngle(40);
         //paradigmCDMRPimplant.startAdeptPerturbations(100);
         paradigmCDMRPimplant.sweepAngleForce(5, 30, 2.5, 5, 50, 5, 10);
+        //sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
         //retVal = paradigmCDMRPimplant.startParadigm(&motors); //this is for sinusoid force control...
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;
