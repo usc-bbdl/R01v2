@@ -16,22 +16,20 @@ float TBIAS = 2;
 
 int dataAcquisitionFlag[12] = {1,0,0,0,0,0,0,0,0,0,0,0}; //force(0), EMG(1), spindleIa(2), spindleII(3),spikeCount(4),raster1(5),raster2(6),raster3(7),raster4(8),raster5(9),raster6(10), real-time control cortex(11)
 
+
 int proceedState(int *state)
 {
     //static double defaultPosition[6] = {169.99,-15.63,80.339,75.465,28.90,11};
     
     int retVal = 0;
     int menu = 0;
-    //static servoControl servo;
     static dataOneSample loadCellOffsets;
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,loadCellOffsets.loadCell3);
-    //static expParadigmMuscleLengthCalibration paradigmMuscleLengthCalibration(&servo);
-    //static expParadigmServoPerturbation paradigmServoPerturbation(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,&servo);
     static expParadigmManualPerturbation paradigmManualPerturbation;
     static expParadigmVoluntaryMovement paradigmVoluntaryMovement(&motors);
-    //static FPGAControl bicepFPGA(BICEP,&motors);
-    //static FPGAControl tricepFPGA(TRICEP,&motors);
+    double defaultPointJoint[6] = {158.4,-62.3, 160.2,-87.7,-80.6,-3.4};
     static expParadigmCDMRPimplant paradigmCDMRPimplant(&motors);
+    paradigmCDMRPimplant.setAdeptDefaultPosition(defaultPointJoint);
 
     switch(*state)
     {
@@ -101,8 +99,6 @@ int proceedState(int *state)
             break;
         default: break;
         }
-//        Sleep(500);
-//        paradigm.startParadigm(&bicepFPGA, &tricepFPGA, &motors);
         break;
     case STATE_PARADIGM_LENGTH_CALIBRATION:
         //retVal = paradigmMuscleLengthCalibration.startParadigm(&motors);
@@ -132,13 +128,9 @@ int proceedState(int *state)
             }
         break;
     case STATE_RUN_PARADIGM_CDMRP_IMPLANT:
-        //paradigmCDMRPimplant.readData();
-        //paradigmCDMRPimplant.setAdeptDefaultPosition(defaultPosition);
-        //paradigmCDMRPimplant.setPerturbationAngle(40);
-        //paradigmCDMRPimplant.startAdeptPerturbations(100);
-        paradigmCDMRPimplant.sweepAngleForce(5, 30, 2.5, 5, 50, 5, 10);
+        //paradigmCDMRPimplant.sweepAngleForce(5, 30, 2.5, 5, 45, 5, 10);
+        paradigmCDMRPimplant.sweepAngleForce(70, 100, 10, 5, 55, 20, 2);
         //sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
-        //retVal = paradigmCDMRPimplant.startParadigm(&motors); //this is for sinusoid force control...
         if(retVal != -1)
             *state = STATE_CLOSED_LOOP;
             else {

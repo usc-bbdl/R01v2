@@ -24,7 +24,7 @@ class expParadigmCDMRPimplant
     int numTrials;
     double amp[100];
     double freq[100];
-    int temp(void);
+    int beginRobotPertThread(void);
 public:
     void sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
     int setPerturbationAngle(double angle);
@@ -32,7 +32,7 @@ public:
     int startAdeptPerturbations(int numberOfPerturbations);
     expParadigmCDMRPimplant(motorControl *);
     void readData(void);
-    int startParadigm(motorControl *motorObj);
+    //int startParadigm(motorControl *motorObj);
     ~expParadigmCDMRPimplant(void);
 };
 #endif
