@@ -91,6 +91,7 @@ int expParadigmCDMRPimplant::perturbAdept()
     adeptRobot.move(defaultPoint);
     for (int i = 0; i<numberOfPerturbations; i++)
     {
+
         printf("perturbation %d / %d\r",i+1,numberOfPerturbations);
         //adeptRobot.move(defaultPoint);
         angle[0] = defaultPoint.x;
@@ -113,6 +114,8 @@ int expParadigmCDMRPimplant::perturbAdept()
         }
         motorObj->trialTrigger = 2;
         newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
+        motorObj->perturbationAngle = angle[5];
+        motorObj->trialTrigger = 1;
         adeptRobot.move(newPoint);
         Sleep(2000);
     }
