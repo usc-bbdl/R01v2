@@ -50,6 +50,10 @@ void expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, 
             beginRobotPertThread();
         }
     }
+    while (robotPerturbationLive == TRUE)
+    {
+    }
+    printf("\nExperiment finished...\n");
 }
 
 int expParadigmCDMRPimplant::beginRobotPertThread(void)
@@ -84,7 +88,7 @@ int expParadigmCDMRPimplant::perturbAdept()
     angle[3] = defaultPoint.a;
     angle[4] = defaultPoint.b;
     angle[5] = defaultPoint.c;
-    double flexAngle = perturbationAngle; 
+    double flexAngle = perturbationAngle;
     double extendAngle = -perturbationAngle;
     bool isFlex = true;
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
@@ -92,7 +96,7 @@ int expParadigmCDMRPimplant::perturbAdept()
     for (int i = 0; i<numberOfPerturbations; i++)
     {
 
-        printf("perturbation %d / %d\r",i+1,numberOfPerturbations);
+        printf("perturbation %d / %d\n",i+1,numberOfPerturbations);
         //adeptRobot.move(defaultPoint);
         angle[0] = defaultPoint.x;
         angle[1] = defaultPoint.y;
@@ -104,17 +108,18 @@ int expParadigmCDMRPimplant::perturbAdept()
         {
             angle[5] = angle[5] + flexAngle;
             isFlex = false;
-            motorObj->perturbationAngle = flexAngle;
+            //motorObj->perturbationAngle = flexAngle;
+            motorObj->setPerturbationAngle(flexAngle);
         }
         else if (isFlex==false)
         {
             angle[5] = angle[5] + extendAngle;
             isFlex = true;
-            motorObj->perturbationAngle = extendAngle;
+            //motorObj->perturbationAngle = extendAngle;
+            motorObj->setPerturbationAngle(extendAngle);
         }
         motorObj->trialTrigger = 2;
         newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
-        motorObj->perturbationAngle = angle[5];
         motorObj->trialTrigger = 1;
         adeptRobot.move(newPoint);
         Sleep(2000);

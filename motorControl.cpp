@@ -541,6 +541,14 @@ Error:
     }
 	return 0;
 }
+
+int motorControl::setPerturbationAngle(double perturbationAngle)
+{
+    this->perturbationAngle = perturbationAngle;
+    return 1;
+}
+
+
 double motorControl::getTime()
 {
     return timeData.getCurrentTime();
