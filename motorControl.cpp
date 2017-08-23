@@ -108,7 +108,7 @@ motorControl::motorControl(double offset1, double offset2)
 
     
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[0]));
-    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[0],"PXI1Slot3/ctr7","Enoder 1",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
+    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[0],"PXI1Slot3/ctr0","Enoder 1",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[0],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[1]));
     DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[1],"PXI1Slot3/ctr3","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
@@ -133,7 +133,7 @@ motorControl::~motorControl()
 
 int motorControl::motorEnable()
 {
-    uInt32      dataEnable=0x00000001;
+    uInt32      dataEnable=0xFFFFFFFF;
     char        errBuff[2048]={'\0'};
     int32       error=0;
     float64 zeroVoltages[3]={0.0,0.0,0.0},zeroVoltage={0.0};
@@ -274,7 +274,7 @@ void motorControl::controlLoop(void)
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderData2,1,NULL,0));
         if (dataAcquisitionFlag[1]){
-            EMG = muscleEMG[0];
+            EMG = 0.45*muscleEMG[1];
             if (EMG > 6)
                 EMG = 6;
             if (EMG < -6)
