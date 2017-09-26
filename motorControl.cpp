@@ -274,7 +274,7 @@ void motorControl::controlLoop(void)
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderData2,1,NULL,0));
         if (dataAcquisitionFlag[1]){
-            EMG = 0.45*muscleEMG[0];
+            EMG = 0.22*muscleEMG[0]; //Speaker Volume
             if (EMG > 6)
                 EMG = 6;
             if (EMG < -6)
