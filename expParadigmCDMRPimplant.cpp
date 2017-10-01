@@ -4,11 +4,19 @@
 #include <ctime>
 #include <math.h>
 const int Trials = 32; //replace numTrials with Trials and vice versa
+
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-    double defaultPos[6] = {158.4,-62.3,160.2,-87.7,-80.6,-3.4};
-    setAdeptDefaultPosition(defaultPos);
+     defaultPos[0] =  154.548; // J1
+     defaultPos[1] =  -61.723; // J2
+     defaultPos[2] =  153.940; // J3
+     defaultPos[3] =  -94.628; // J4
+     defaultPos[4] =  -64.471; // J5
+     defaultPos[5] =   -5.309; // J6
+    //double defaultPos[6] = {154.548,-62.378,158.209,-92.896,-64.234,13.145};
+
+    setAdeptDefaultPosition();
     robotPerturbationLive = false;
     numberOfPerturbations = 0;
     adeptRobot.connectToController();
@@ -22,6 +30,7 @@ int expParadigmCDMRPimplant::setPerturbationAngle(double angle)
     this->perturbationAngle = angle;
     return 1;
 }
+
 expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
 {
     long double angle[6];
@@ -35,16 +44,17 @@ expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
 }
 
 void expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations)
-{
+{   
+    double force, angle;
     this->numberOfPerturbations = numberOfPerturbations;
-    for (double force = forceMin; force<forceMax; force = force + forceResolution)
+    for (force = forceMin; force <= forceMax; force = force + forceResolution)
     {
-        for (double angle = angleMin; angle<angleMax; angle = angle + angleResolution)
+        for (angle = angleMin; angle <= angleMax; angle = angle + angleResolution)
         {
             while (robotPerturbationLive == TRUE)
             {
             }
-            printf("Force = %3.6f, Angle = %3.6f\n",force,angle);
+            printf("Force = %3.2f, Angle = %3.2f\n",force,angle);
             setPerturbationAngle(angle);
             motorObj->motorRef[0] = force;
             beginRobotPertThread();
@@ -64,7 +74,6 @@ int expParadigmCDMRPimplant::beginRobotPertThread(void)
     return 1;
 }
 
-
 int expParadigmCDMRPimplant::startAdeptPerturbations(int numberOfPerturbations)
 {
     this->numberOfPerturbations = numberOfPerturbations;
@@ -73,10 +82,12 @@ int expParadigmCDMRPimplant::startAdeptPerturbations(int numberOfPerturbations)
 	_beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
     return 1;
 }
+
 void expParadigmCDMRPimplant::AdeptPerturbationsLoop(void* a)
 {
 	((expParadigmCDMRPimplant*)a)->perturbAdept();
 }
+
 int expParadigmCDMRPimplant::perturbAdept()
 {
 //    PPoint defaultPoint, newPoint;
@@ -93,10 +104,10 @@ int expParadigmCDMRPimplant::perturbAdept()
     bool isFlex = true;
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
     adeptRobot.move(defaultPoint);
-    for (int i = 0; i<numberOfPerturbations; i++)
+    for (int i = 0; i < this->numberOfPerturbations; i++)
     {
 
-        printf("perturbation %d / %d\n",i+1,numberOfPerturbations);
+        printf("perturbation %d / %d\n", i+1, numberOfPerturbations);
         //adeptRobot.move(defaultPoint);
         angle[0] = defaultPoint.x;
         angle[1] = defaultPoint.y;
@@ -106,14 +117,14 @@ int expParadigmCDMRPimplant::perturbAdept()
         angle[5] = defaultPoint.c;
         if (isFlex==true)
         {
-            angle[5] = angle[5] + flexAngle;
+            angle[5] = defaultPoint.c + flexAngle;
             isFlex = false;
             //motorObj->perturbationAngle = flexAngle;
             motorObj->setPerturbationAngle(flexAngle);
         }
         else if (isFlex==false)
         {
-            angle[5] = angle[5] + extendAngle;
+            angle[5] = defaultPoint.c + extendAngle;
             isFlex = true;
             //motorObj->perturbationAngle = extendAngle;
             motorObj->setPerturbationAngle(extendAngle);
@@ -129,9 +140,6 @@ int expParadigmCDMRPimplant::perturbAdept()
     robotPerturbationLive = FALSE;
     return 1;
 }
-
-
-
 
 void expParadigmCDMRPimplant::readData()
 {
@@ -161,8 +169,21 @@ void expParadigmCDMRPimplant::readData()
     }
     fclose(configFile);
 }
-int expParadigmCDMRPimplant::setAdeptDefaultPosition(double * position)
+
+int expParadigmCDMRPimplant::setAdeptDefaultPosition()
 {
-    defaultPoint = PPoint(position[0],position[1],position[2],position[3],position[4],position[5]);
+    defaultPoint = PPoint(defaultPos[0],
+                          defaultPos[1],
+                          defaultPos[2],
+                          defaultPos[3],
+                          defaultPos[4],
+                          defaultPos[5] );
+    printf("Adept Arm: Default Position Set to:\n\tJ1 = %3.2f\n\tJ2 = %3.2f\n\tJ3 = %3.2f\n\tJ4 = %3.2f\n\tJ5 = %3.2f\n\tJ6 = %3.2f",
+            defaultPoint.x,
+            defaultPoint.y,
+            defaultPoint.z,
+            defaultPoint.a,
+            defaultPoint.b,
+            defaultPoint.c );
     return 1;
 }

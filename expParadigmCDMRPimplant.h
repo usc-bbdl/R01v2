@@ -12,6 +12,7 @@
 class expParadigmCDMRPimplant
 {
     motorControl * motorObj;
+    double defaultPos[6];
     double perturbationAngle;
     HANDLE hIOMutex;
     bool robotPerturbationLive;
@@ -28,7 +29,7 @@ class expParadigmCDMRPimplant
 public:
     void sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
     int setPerturbationAngle(double angle);
-    int setAdeptDefaultPosition(double * position);
+    int setAdeptDefaultPosition();
     int startAdeptPerturbations(int numberOfPerturbations);
     expParadigmCDMRPimplant(motorControl *);
     void readData(void);

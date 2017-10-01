@@ -27,9 +27,9 @@ int proceedState(int *state)
     static motorControl motors(loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,loadCellOffsets.loadCell3);
     static expParadigmManualPerturbation paradigmManualPerturbation;
     static expParadigmVoluntaryMovement paradigmVoluntaryMovement(&motors);
-    double defaultPointJoint[6] = {158.4,-62.3, 160.2,-87.7,-80.6,-3.4};
+    //double defaultPointJoint[6] = {158.4,-62.3, 160.2,-87.7,-80.6,-3.4};
     static expParadigmCDMRPimplant paradigmCDMRPimplant(&motors);
-    paradigmCDMRPimplant.setAdeptDefaultPosition(defaultPointJoint);
+    //paradigmCDMRPimplant.setAdeptDefaultPosition();
 
     switch(*state)
     {
@@ -128,7 +128,7 @@ int proceedState(int *state)
             }
         break;
     case STATE_RUN_PARADIGM_CDMRP_IMPLANT:
-        paradigmCDMRPimplant.sweepAngleForce(5, 30, 2.5, 5, 45, 5, 10);
+        paradigmCDMRPimplant.sweepAngleForce(3, 30, 3, 3, 30, 3, 10);
         //paradigmCDMRPimplant.sweepAngleForce(70, 100, 10, 5, 55, 20, 2);
         //sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
         if(retVal != -1)
