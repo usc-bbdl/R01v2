@@ -14,6 +14,7 @@
 #include "expParadigmServoPerturbation.h"
 #include "expParadigmManualPerturbation.h"
 #include "expParadigmVoluntaryMovement.h"
+#include "DAQ.h"
 
 int main()
 {

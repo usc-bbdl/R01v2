@@ -154,8 +154,10 @@ void Muscles::initMuscles()
     //std::cout<<"\ninitCmd";
     CmdTask->initTask();
     //std::cout<<"\ninitEnc";
-    for(int i=0; i<MAX_NUM_MUSCLES; i++)
+    for(int i=0; i<MAX_NUM_MUSCLES; i++) {
+        loadCellOffset[i] = 0; // added by sarath on loadCellOffset//
         if(activeMuscles[i] != -1) EncTask[i]->initTask();
+    }
 }
 
 void Muscles::startMuscles()
@@ -163,8 +165,10 @@ void Muscles::startMuscles()
     LcTask->startTask();
     EnbTask->startTask();
     CmdTask->startTask();
-    for(int i=0; i<MAX_NUM_MUSCLES; i++)
+    for(int i=0; i<MAX_NUM_MUSCLES; i++){
+        loadCellOffset[i] = MuscleLc(); // added by Sarath//
         if(activeMuscles[i] != -1) EncTask[i]->startTask();
+    }
 }
 
 void Muscles::stopMuscles()
@@ -185,9 +189,14 @@ void Muscles::deleteMuscles()
         if(activeMuscles[i] != -1) EncTask[i]->deleteTask();
 }
 
-double* Muscles::MuscleLc()
-{
-    return LcTask->daqTask();
+double* Muscles::MuscleLc(){
+    for(int i=0; i < MAX_NUM_MUSCLES; i++){
+        std::cout << (double*)(LcTask->daqTask() - loadCellOffset[i]) << " subtracting offset" << std::endl;
+        std::cout << (double*)(LcTask->daqTask()) << " without subtracting offset" << std::endl;
+        std::cout << (double*)(loadCellOffset[i]) << " only offset" << std::endl;
+        return (double*)(LcTask->daqTask() - loadCellOffset[i]); // For Loop Added by Sarath
+    }
+    //return  LcTask->daqTask();
 }
 
 double* Muscles::MuscleEnc()
