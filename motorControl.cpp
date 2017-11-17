@@ -36,7 +36,7 @@ void motorControl::getNumberOfMuscles(int *No_of_musc)
 void motorControl::createVariables()
 {
     motorCommand = new float64[No_of_musc];
-    // loadCellOffset = new float64[No_of_musc]; (changed by Sarath)
+    // loadCellOffset = new float64[No_of_musc]; //CHSR//
     newPdgm_ref = new float64[No_of_musc];
     loadCellData = new float64[No_of_musc];
     muscleLengthPreviousTick = new float64[No_of_musc];
@@ -68,7 +68,7 @@ void motorControl::initializeVariables()
     //Muscle specific parameters
     for (int i=0;i<No_of_musc;i++)
     {
-        // loadCellOffset[i] = 0; (changed by Sarath)
+        // loadCellOffset[i] = 0; //CHSR//
         motorCommand[i] = 0;
         encoderGain[i] = 0;
         encoderBias [i] = 0;
@@ -182,7 +182,7 @@ int motorControl::motorWindUp()
     createWindingUpCommand();
     if (isEnable){
         muscleObj->startMuscles();
-        // loadCellOffset = muscleObj->MuscleLc(); (Changed by Sarath)
+        // loadCellOffset = muscleObj->MuscleLc(); //CHSR//
         muscleObj->MuscleCmd(windingUpCmnd);
         Sleep(500);
         isWindUp = TRUE;
@@ -233,7 +233,7 @@ void motorControl::controlLoop(void)
     fprintf(dataFile,header);
 
     muscleObj->startMuscles();
-    //loadCellOffset = muscleObj->MuscleLc();
+    //loadCellOffset = muscleObj->MuscleLc(); //CHSR//
 
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
@@ -261,7 +261,7 @@ void motorControl::controlLoop(void)
             muscleLength[i] = encoderBias[i] + muscleLength[i] * encoderGain[i];
             muscleVel[i] = (muscleLength[i] -  muscleLengthPreviousTick[i]) / (tock - tick);
             muscleLengthPreviousTick[i] = muscleLength[i];
-            // loadCellData[i] = (loadCellData[i] - loadCellOffset[i]) * loadCellScale[i]; (Changed by Sarath)
+            // loadCellData[i] = (loadCellData[i] - loadCellOffset[i]) * loadCellScale[i]; //CHSR//
             loadCellData[i] = loadCellData[i] * loadCellScale[i];
             errorForce[i] = motorRef[i] - loadCellData[i];
             if(newPdgm_Flag)

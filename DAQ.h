@@ -58,7 +58,7 @@ class Muscles
     int activeMuscles[MAX_NUM_MUSCLES];
     int No_of_musc;
     double* LcData, CmdData, EncData;
-    double* loadCellOffset[MAX_NUM_MUSCLES]; // Added by Sarath
+    float64 *loadCellOffset; // CHSR
     uInt32* EnbData;
 
 public:
