@@ -5,6 +5,10 @@
 #include <algorithm>
 motorControl::motorControl(double offset1, double offset2)
 {
+    mFlag = 0;
+    tick=0.0;tock=0.0;
+    tempTick = 0.0;
+
     encoderBias[0] = encoderBias[1] = 0;
     encoderGain[0] = encoderGain[1] = 0;
     I = 4;
@@ -229,7 +233,8 @@ void motorControl::controlLoop(void)
     float cotexDrive = 0.0;
     bool keepReading=TRUE;
     bool32 isLate = {0};
-    double tick=0.0,tock=0.0;
+   
+
     float64 motorCommand[3]={0.0,0.0,0.0},errorForce[2]= {0.0,0.0},integral[2]={0.0,0.0},EMG={0.0};
     char        errBuff[2048]={'\0'};
     FILE *dataFile;
@@ -371,8 +376,26 @@ void motorControl::controlLoop(void)
             strcat (dataSample, dataTemp);
         }
         if (dataAcquisitionFlag[11]){
-            cortexDrive[0] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick), 0);
-            cortexDrive[1] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick + 3.1416), 0);
+            
+            if(tick>=tempTick)
+            {
+                //printf("\n\n11 print: %+4.0f, %+4.0f, flag=%d\n\n",tick,tempTick,(int)mFlag);
+                mFlag=1; 
+            }
+            if(mFlag == 0)
+            {
+                cortexDrive[0] = max((mCortexA -0) * sin (2 * 3.1416 * mFREQ * tick                    ), 0); //BICEP
+                cortexDrive[1] = max((mCortexA -0) * sin (2 * 3.1416 * mFREQ * tick            + 3.1416), 0); //TRICEP
+            
+                gammaS[0]      = max((mGammaSA -0) * sin (2 * 3.1416 * mFREQ * tick + mGammaSP         ), 0); //BICEP
+                gammaS[1]      = max((mGammaSA -0) * sin (2 * 3.1416 * mFREQ * tick + mGammaSP + 3.1416), 0); //TRICEP
+            
+                gammaD[0]      = max((mGammaDA -0) * sin (2 * 3.1416 * mFREQ * tick + mGammaDP         ), 0); //BICEP
+                gammaD[1]      = max((mGammaDA -0) * sin (2 * 3.1416 * mFREQ * tick + mGammaDP + 3.1416), 0); //TRICEP
+            }
+            sprintf(dataTemp,",%f,%f,%f,%f,%f,%f",cortexDrive[0], cortexDrive[1],gammaS[0], gammaS[1],gammaD[0], gammaD[1]);
+            strcat (dataSample, dataTemp);
+            
         }
         //sprintf(dataTemp,",%d,%d,%d,%d,%.3f,%.3f,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, cortexDrive[0], cortexDrive[1],newTrial);
         sprintf(dataTemp,"\n");

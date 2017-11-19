@@ -1,0 +1,4 @@
+FREQ,CortexA,GammaSA,GammaSP,GammaDA,GammaDP,reps
+2
+1,750,120,0,75,3.14,5
+1,750,120,0,75,3.14,10

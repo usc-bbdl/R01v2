@@ -11,6 +11,19 @@ class expParadigmVoluntaryMovement
     float32 gammaDyn1,gammaSta1,gammaDyn2,gammaSta2;
     double *cortexAmp, *cortexFreq;
     bool vfTemp;
+
+    
+    unsigned long numTrials;
+    const char *configFileName;
+    
+    double *FREQ, *CortexA, *GammaSA, *GammaSP, *GammaDA, *GammaDP;
+    unsigned int *reps;
+
+    double *vFREQ, *vCortexA, *vGammaSA, *vGammaSP, *vGammaDA, *vGammaDP;
+    unsigned int *vreps;
+    bool *vFlag;
+    double *vtick, *vTempTick;
+
 public:
     expParadigmVoluntaryMovement(motorControl *);
     ~expParadigmVoluntaryMovement(void);

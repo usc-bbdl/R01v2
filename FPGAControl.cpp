@@ -158,7 +158,10 @@ int FPGAControl::update() { //This is the function called in the thread
         pMotorControl->raster_MN_6[muscleIndex] = raster_MN_6;
     }
     if (dataAcquisitionFlag[11]){
-        cortexDrive = (int32)pMotorControl->cortexDrive[muscleIndex];
+        cortexDrive =    (int32) pMotorControl->cortexDrive[muscleIndex];
+        gammaStatic =  (float32) pMotorControl->gammaS[muscleIndex];
+        gammaDynamic = (float32) pMotorControl->gammaD[muscleIndex];
+        updateGamma();
         //writeCortexCommand();
         updateCortexDrive();
         if (muscleIndex==0)

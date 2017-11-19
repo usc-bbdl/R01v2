@@ -9,7 +9,60 @@ expParadigmVoluntaryMovement::expParadigmVoluntaryMovement(motorControl *mtr)
     vfTemp = false;
     cortexAmp  = &(mtr->cortexVoluntaryAmp);
     cortexFreq = &(mtr->cortexVoluntaryFreq);
+    vtick = &(mtr->tick);
+    vTempTick = &(mtr->tempTick);
+    vFREQ  = &(mtr->mFREQ);
+    vCortexA = &(mtr->mCortexA);
+    vGammaSA  = &(mtr->mGammaSA);
+    vGammaSP = &(mtr->mGammaSP);
+    vGammaDA  = &(mtr->mGammaDA);
+    vGammaDP = &(mtr->mGammaDP);
+    vreps  = &(mtr->mreps);
+    vFlag = &(mtr->mFlag);
+
+    configFileName = "voluntaryTest.txt";
+    FILE *configFile;
+    char *header[200];
+    configFile = fopen(configFileName,"r");
+    if (configFile == NULL) {
+        printf("Could not open data file");
+    }
+    fscanf(configFile,"%s\n",&header);
+    fscanf(configFile,"%d\n",&numTrials);
+
+    printf("\n\nPrinting paradigm file: %s, %lu\n\n",header,numTrials);
+
+    FREQ        = new double[numTrials]; 
+    CortexA     = new double[numTrials];
+    GammaSA     = new double[numTrials];
+    GammaSP     = new double[numTrials];
+    GammaDA     = new double[numTrials];
+    GammaDP     = new double[numTrials];
+    reps        = new unsigned int[numTrials];
+
+    double tFREQ    = 0.0;
+    double tCortexA = 0.0;
+    double tGammaSA = 0.0;
+    double tGammaSP = 0.0;
+    double tGammaDA = 0.0;
+    double tGammaDP = 0.0;
+    unsigned int treps = 0;
+    for(unsigned long i = 0; i < numTrials; i++){
+        fscanf(configFile,"%lf,%lf,%lf,%lf,%lf,%lf,%d\n",&tFREQ,&tCortexA,&tGammaSA,&tGammaSP,&tGammaDA,&tGammaDP,&treps);
+        //printf("\n%f,%f,%f,%f,%f,%f,%d\n",tFREQ,tCortexA,tGammaSA,tGammaSP,tGammaDA,tGammaDP,treps);
+        FREQ[i] = tFREQ;
+        CortexA[i] = tCortexA;
+        GammaSA[i] = tGammaSA;
+        GammaSP[i] = tGammaSP;
+        GammaDA[i] = tGammaDA;
+        GammaDP[i] = tGammaDP;
+        reps[i] = treps;
+        //printf("\n%f,%f,%f,%f,%f,%f,%d\n",FREQ[i],CortexA[i],GammaSA[i],tGammaSP,tGammaDA,tGammaDP,treps);
+    }
+
 }
+
+
 int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGAControl *tricepFPGA, motorControl *realTimeController)
 {
     int retVal = -1, menu = 0, exitFlag = 0, updateIT = 1;
@@ -40,74 +93,47 @@ int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGACont
     tricepFPGA->updateParametersFlag = '1';
     Sleep(500);
 
+    //*vTempTick = *vtick + ( (1/(*vFREQ)) * (reps[0]) );
     dataAcquisitionFlag[11] = true;
-    do{
-         if (updateIT == 1) {
-            bicepFPGA->gammaDynamic = gammaDyn1;
-            bicepFPGA->gammaStatic = gammaSta1;
-            bicepFPGA->updateGammaFlag = '1';
-            Sleep(500);
-
-            tricepFPGA->gammaDynamic = gammaDyn2;
-            tricepFPGA->gammaStatic = gammaSta2;
-            tricepFPGA->updateGammaFlag = '1';
-            Sleep(500);
-
-            //realTimeController->resetMuscleLength = TRUE;
-            realTimeController->trialTrigger = 1;
-            Sleep(500);       
-            updateIT = 0;
+    
+    unsigned long fileLine = 0;
+    printf("\n\nStarting Voluntary Paradigm with %lu Trials\n",numTrials);
+    while(fileLine<=numTrials)
+    {
+        //std::cout<<"\n\n"<<fileLine<<"\t"<<*vFlag<<"\n";
+         if (*vFlag == 1) {
+             if(fileLine==numTrials)
+             {
+                 printf("\n\nVoluntary Paradigm Complete! \n\t Press Space to continue...\n\n");
+             }
+             else{
+                *vFREQ  = FREQ[fileLine];
+                *vCortexA = CortexA[fileLine];
+                *vGammaSA  = GammaSA[fileLine];
+                *vGammaSP = GammaSP[fileLine];
+                *vGammaDA  = GammaDA[fileLine];
+                *vGammaDP = GammaDP[fileLine];
+                *vreps  = reps[fileLine];
+                *vFlag = 0;
+                *vTempTick = *vtick + ( (1/(*vFREQ)) * (*vreps) );
+            
+                std::cout<<"\n\nVoluntary: Set "<<(fileLine + 1)<<std::endl;
+                printf("\tSignal Frequency :: %+6.2f\n",*vFREQ);
+                printf("\tCortical Drive   :: A: %+6.2f\n",*vCortexA);
+                printf("\tGamma Static     :: A: %+6.2f  P: %+6.2f\n",*vGammaSA,*vGammaSP);
+                printf("\tGamma Dynamic    :: A: %+6.2f  P: %+6.2f\n\n",*vGammaDA,*vGammaDP);
+            }
+            fileLine++;
         }//end update if block
-
-        printf("\n\nVOluntary Movement Options\n");
-        printf("\t[0] Exit Voluntary Movement Paradigm\n"); 
-        printf("\t[1] Change Muscle 1 Parameters\n");
-        printf("\t[2] Change Muscle 2 Parameters\n");
-        printf("\t[3] Change Voluntary Drive\n");
-        do{
-            scanf("%d", &menu);
-            if (!((menu <= 3) || (menu >= 0)))
-                printf("\n\nWrong input! try Again.\n\n");
-        }while (!((menu <= 3) || (menu >= 0)));
-        switch(menu)
-        {
-        case 1:
-            printf("\tMuscle 1 - Gamma Static:\n");
-            std::cin>>gammaSta1;
-            printf("\tMuscle 1 - Gamma Dynamic:\n");
-            std::cin>>gammaDyn1;
-            updateIT = 1;
-            printf("\tMuscle 1 -Gamma Static: %f -Gamma Dynamic: %f\n", gammaSta1, gammaDyn1);
-            break;
-        case 2:
-            printf("\tMuscle 2 - Gamma Static:\n");
-            std::cin>>gammaSta2;
-            printf("\tMuscle 2 - Gamma Dynamic:\n");
-            std::cin>>gammaDyn2;
-            updateIT = 1;
-            printf("\tMuscle 2 -Gamma Static: %f -Gamma Dynamic: %f\n", gammaSta2, gammaDyn2);
-            break;
-        case 3:
-            printf("\tVoluntary Drive - Cortex Amplitude:\n");
-            std::cin>>temp;
-            *cortexAmp = temp;
-            printf("\tVoluntary Drive - Cortex Frequency:\n");
-            std::cin>>temp;
-            *cortexFreq = temp;
-            printf("\tVoluntary Drive -Cortex Amplitude: %f -Cortex Frequency: %f\n", *cortexAmp, *cortexFreq);
-            break;
-        case 0:   
-            exitFlag = 1;
-            break;
-        default: break;
-        }//end input switch       
-    }while(exitFlag == 0);
+    }  
 
     dataAcquisitionFlag[11] = vfTemp;
+    
     return 1;
 }
 
 
 expParadigmVoluntaryMovement::~expParadigmVoluntaryMovement()
 {
+    delete FREQ, CortexA, GammaSA, GammaSP, GammaDA, GammaDP, reps;
 }
