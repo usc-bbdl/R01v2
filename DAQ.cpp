@@ -142,7 +142,15 @@ Muscles::Muscles(int* musc,int M)
     //std::cout<<"\n"<<temp<<"~~~\n";
     EnbTask->assignTask(EnbHandle,temp,0,Enb);
 
+    //tempLCReturn = new double[MAX_NUM_MUSCLES]; // CHSR
+    //tempLC = new double[MAX_NUM_MUSCLES]; // CHSR
     initMuscles();
+}
+
+Muscles::~Muscles(void)
+{
+    //delete tempLCReturn;
+    //delete tempLC;
 }
 
 void Muscles::initMuscles()
@@ -154,9 +162,9 @@ void Muscles::initMuscles()
     //std::cout<<"\ninitCmd";
     CmdTask->initTask();
     //std::cout<<"\ninitEnc";
-    loadCellOffset = new float64[MAX_NUM_MUSCLES]; // CHSR
+    LcOffset = new double[MAX_NUM_MUSCLES]; // CHSR
     for(int i=0; i<MAX_NUM_MUSCLES; i++) {
-        loadCellOffset[i] = 0; // CHSR
+        LcOffset[i] = (double)0.0; // CHSR
         if(activeMuscles[i] != -1) EncTask[i]->initTask();
     }
 }
@@ -166,10 +174,12 @@ void Muscles::startMuscles()
     LcTask->startTask();
     EnbTask->startTask();
     CmdTask->startTask();
-    loadCellOffset = MuscleLc(); // CHSR
+    this->zeroMuscles();
+    LcOffset = this->MuscleLc(); // CHSR
     for(int i=0; i<MAX_NUM_MUSCLES; i++){
         if(activeMuscles[i] != -1) EncTask[i]->startTask();
     }
+    
 }
 
 void Muscles::stopMuscles()
@@ -191,11 +201,11 @@ void Muscles::deleteMuscles()
 }
 
 double* Muscles::MuscleLc(){
-    float64 *temp = LcTask->daqTask(); // CHSR
-    for(int i=0; i < MAX_NUM_MUSCLES; i++){ // CHSR
-        temp[i] = (temp[i]- loadCellOffset[i]); // CHSR
-    }
-    return temp; // CHSR
+    double *tempLCReturn = new double[MAX_NUM_MUSCLES]; // CHSR
+    double *tempLC = LcTask->daqTask();
+    for(int i=0; i < MAX_NUM_MUSCLES; i++)
+        tempLCReturn[i] = tempLC[i]- LcOffset[i];
+    return tempLCReturn;
 }
 
 double* Muscles::MuscleEnc()
@@ -247,6 +257,7 @@ void Muscles::MuscleEnb(int b)
     }
 
 }
+
 void Muscles::MuscleEnb_(uInt32* dataArg)
 {
     std::cout<<"Enb: MuscleEnb"<<dataArg[0]<<"\n\n";
@@ -301,6 +312,10 @@ Task::Task(void* &taskArg,string handleNameArg, string slotArg, int typeArg)
     slot = slotArg;
     type = typeArg;
     temp = new char[20];
+    if(type==Lc && data==NULL)
+        data = new double[slotNo];
+    if(type==Enc && data==NULL)
+        data = new double[2];
 }
 
 void Task::assignTask(void* &taskArg,string handleNameArg, string slotArg, int typeArg,int enc)
@@ -317,6 +332,12 @@ void Task::assignTask(void* &taskArg,string handleNameArg, string slotArg, int t
     if(typeArg == Enc) slotNo = enc; //to assign slotNo without a global variable
     slot = assignSlot(slotNo);
     //if(typeArg == Enc) std::cout<<"\nEnc slot: "<<slot<<"\n\n";
+    
+    if(type==Lc && data==NULL)
+        data = new double[slotNo];
+    if(type==Enc && data==NULL)
+        data = new double[2];
+        
     createChan();
 }
 
@@ -328,13 +349,17 @@ void Task::assignTask(void* &taskArg,string handleNameArg, int slotNo, int typeA
 
     createTask(taskArg,handleName);
     task = taskArg;
-
+    if(type==Lc && data==NULL)
+        data = new double[slotNo];
+    if(type==Enc && data==NULL)
+        data = new double[2];
     //std::cout<<"\nIn task.assignTask() "<<assignSlot(slotNo)<<" SlotNo:"<<slotNo<<std::endl;
     //strcpy((char*) slot,assignSlot(slotNo));
     //if(typeArg == Enc) slotNo = enc; //to assign slotNo without a global variable
     //if(typeArg == Enb) slot = ;
     slot = assignSlot(slotNo);
     //if(typeArg == Enc) std::cout<<"\nEnc slot: "<<slot<<"\n\n";
+
     createChan();
 }
 
@@ -403,12 +428,12 @@ void Task::startTask()
 
 double* Task::daqTask(void)
 {
-    if(type==Lc)
+    /*
+    if(type==Lc && data==NULL)
         data = new double[slotNo];
     if(type==Enc && data==NULL)
         data = new double[2];
-    //data = 0;
-
+    */
     if(type!=Lc && type!=Enc)
         return 0;
     
@@ -429,6 +454,7 @@ template <typename T> void Task::daqTask(T& dataArg)
 void Task::daqTask(double* dataArg)
 {daqObj->writeDAQ(task,dataArg);
 }
+
 void Task::daqTask(uInt32* dataArg)
 {
     std::cout<<"Enb task: "<<dataArg[0]<<"\n\n";

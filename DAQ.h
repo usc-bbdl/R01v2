@@ -57,10 +57,9 @@ class Muscles
     Task *EncTask[MAX_NUM_MUSCLES];
     int activeMuscles[MAX_NUM_MUSCLES];
     int No_of_musc;
-    double* LcData, CmdData, EncData;
-    float64 *loadCellOffset; // CHSR
+    double *LcData, CmdData, EncData, *LcOffset; // CHSR
+    //double *tempLC, *tempLCReturn;
     uInt32* EnbData;
-
 public:
     Muscles();
     Muscles(int*,int);

@@ -182,7 +182,7 @@ int motorControl::motorWindUp()
     createWindingUpCommand();
     if (isEnable){
         muscleObj->startMuscles();
-        // loadCellOffset = muscleObj->MuscleLc(); //CHSR//
+        //loadCellOffset = muscleObj->MuscleLc(); //CHSR//
         muscleObj->MuscleCmd(windingUpCmnd);
         Sleep(500);
         isWindUp = TRUE;
@@ -234,7 +234,7 @@ void motorControl::controlLoop(void)
 
     muscleObj->startMuscles();
     //loadCellOffset = muscleObj->MuscleLc(); //CHSR//
-
+    printf("\nend of startMuscles\n");
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
     double* encData = new double[No_of_musc];
@@ -242,8 +242,9 @@ void motorControl::controlLoop(void)
     {
         WaitForSingleObject(hIOMutex, INFINITE);        
 
-
+        // printf("\nbefore getting LcData");
         loadCellData = muscleObj->MuscleLc();// needs a better name than LC
+        // printf("\nafter getting LcData");
         muscleObj->MuscleCmd(motorCommand);
         
         encData = muscleObj->MuscleEnc();
@@ -261,7 +262,7 @@ void motorControl::controlLoop(void)
             muscleLength[i] = encoderBias[i] + muscleLength[i] * encoderGain[i];
             muscleVel[i] = (muscleLength[i] -  muscleLengthPreviousTick[i]) / (tock - tick);
             muscleLengthPreviousTick[i] = muscleLength[i];
-            // loadCellData[i] = (loadCellData[i] - loadCellOffset[i]) * loadCellScale[i]; //CHSR//
+            //loadCellData[i] = (loadCellData[i] - loadCellOffset[i]) * loadCellScale[i]; //CHSR//
             loadCellData[i] = loadCellData[i] * loadCellScale[i];
             errorForce[i] = motorRef[i] - loadCellData[i];
             if(newPdgm_Flag)
@@ -289,6 +290,7 @@ void motorControl::controlLoop(void)
         tick = timeData.getCurrentTime();
     }
     isControlling = FALSE;
+    printf("\nBefore stopMuscles()\n");
     muscleObj->stopMuscles();   
     fclose(dataFile);
 }
@@ -517,9 +519,8 @@ int motorControl::motorControllerEnd()
     live = FALSE;
     motorControl::motorDisable();
     isControlling = FALSE;
-    muscleObj->stopMuscles();
-    muscleObj->deleteMuscles();
-
+    //muscleObj->stopMuscles();
+    //muscleObj->deleteMuscles();
     return 0;
 }
 
