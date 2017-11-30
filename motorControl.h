@@ -22,6 +22,7 @@ public:
 
 class motorControl
 {
+    uInt32 dataEnable;
     TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
     TaskHandle  encodertaskHandle[2];
     double loadCellOffset1, loadCellOffset2,I;

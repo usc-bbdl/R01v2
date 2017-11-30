@@ -9,6 +9,7 @@ motorControl::motorControl(double offset1, double offset2)
     tick=0.0;tock=0.0;
     tempTick = 0.0;
 
+    dataEnable = 7;//0x8111111F;//0x1111111;
     encoderBias[0] = encoderBias[1] = 0;
     encoderGain[0] = encoderGain[1] = 0;
     I = 4;
@@ -46,7 +47,7 @@ motorControl::motorControl(double offset1, double offset2)
     muscleLengthPreviousTick[1] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
-    strcpy(header,"Time, Exp Prot, Len1, Len2, ForcMeas1, ForcMeas2,");
+    strcpy(header,"Time, Clock, Exp Prot, Len1, Len2, ForcMeas1, ForcMeas2,");
     if (dataAcquisitionFlag[0]){
         strcat (header, ", ForceDes1, ForceDes2");
     }
@@ -268,8 +269,34 @@ void motorControl::controlLoop(void)
     float64 goffsetLoadCell[2]={0};
     int expProtocol = 0;
     int expProtocoAdvance = 0;
+
+    uInt32 clockBit = 0x00000080;
+    uInt32 clockBitXOR;
+    clockBitXOR = ((clockBit>>7) | (dataEnable>>31));
+    bool flg = true;
+
     while(live)
     {
+        if(flg)
+        {
+        clockBitXOR = 0xff;
+        flg = false;
+        }
+        else
+        {
+            clockBitXOR = 0x01111111;
+            flg = true;
+        }
+        if (dataEnable == 0x07)
+            dataEnable = 0x87;
+        else
+            dataEnable = 0x07;
+        //else if (dataEnable == 71)
+        //    dataEnable = 7;
+
+        //DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&clockBitXOR,NULL,NULL));
+        DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&dataEnable,NULL,NULL));
+
         WaitForSingleObject(hIOMutex, INFINITE);
         //desire Forced, muscle Length, muscle Velocity PIPES should be read here
         
@@ -330,7 +357,7 @@ void motorControl::controlLoop(void)
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock, muscleLength[0], muscleLength[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
-        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f",tock,expProtocol,muscleLength[0], muscleLength[1], loadCellData[0],loadCellData[1]);
+        sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f",tock,(int)flg,expProtocol,muscleLength[0], muscleLength[1], loadCellData[0],loadCellData[1]);
         if (dataAcquisitionFlag[0]){
             sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorRef[1]);
             strcat (dataSample, dataTemp);
