@@ -1,0 +1,224 @@
+1>------ Build started: Project: VC_Acq_ExtClk1, Configuration: Debug Win32 ------
+1>Build started 11/29/2017 10:39:38 PM.
+1>InitializeBuildStatus:
+1>  Creating ".\Debug\VC_Acq_ExtClk1.unsuccessfulbuild" because "AlwaysCreate" was specified.
+1>ClCompile:
+1>  utilities.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(8): warning C4005: 'TRUE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(103) : see previous definition of 'TRUE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(9): warning C4005: 'FALSE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(106) : see previous definition of 'FALSE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.cpp(13): warning C4305: 'initializing' : truncation from 'double' to 'float'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.cpp(61): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(304) : see declaration of 'scanf'
+1>  servoControl.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\servocontrol.cpp(144): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\servocontrol.cpp(145): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\servocontrol.cpp(171): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\servocontrol.cpp(172): warning C4244: '=' : conversion from 'float' to 'int', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\servocontrol.cpp(196): warning C4101: 'temp' : unreferenced local variable
+1>  motorControl.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(8): warning C4005: 'TRUE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(103) : see previous definition of 'TRUE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(9): warning C4005: 'FALSE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(106) : see previous definition of 'FALSE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(50): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(105) : see declaration of 'strcpy'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(52): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(55): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(58): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(61): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(64): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(67): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(70): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(73): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(76): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(79): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(82): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(85): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(86): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(87): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(88): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(89): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(90): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(91): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(172): warning C4101: 'written' : unreferenced local variable
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(243): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\time.inl(112) : see declaration of 'localtime'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(257): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(360): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(362): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(363): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(366): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(367): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(370): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(371): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(374): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(375): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(378): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(379): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(382): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(383): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(386): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(387): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(390): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(391): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(394): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(395): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(398): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(399): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(402): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(403): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(423): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(424): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(428): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(456): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(468): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(472): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(476): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\motorcontrol.cpp(488): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\string.h(110) : see declaration of 'strcat'
+1>  expParadigmVoluntaryMovement.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmvoluntarymovement.cpp(26): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmvoluntarymovement.cpp(30): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmvoluntarymovement.cpp(31): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmvoluntarymovement.cpp(51): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmvoluntarymovement.cpp(72): warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmvoluntarymovement.cpp(74): warning C4305: '=' : truncation from 'double' to 'float32'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmvoluntarymovement.cpp(86): warning C4305: '=' : truncation from 'double' to 'float32'
+1>  expParadigmMuscleLengthCalibration.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmusclelengthcalibration.cpp(54): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmusclelengthcalibration.cpp(55): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmusclelengthcalibration.cpp(56): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmusclelengthcalibration.cpp(57): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+1>  dataOneSample.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(8): warning C4005: 'TRUE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(103) : see previous definition of 'TRUE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(9): warning C4005: 'FALSE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(106) : see previous definition of 'FALSE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\dataonesample.cpp(8): warning C4101: 'encoderHandle' : unreferenced local variable
+1>  FPGAControl.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(8): warning C4005: 'TRUE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(103) : see previous definition of 'TRUE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(9): warning C4005: 'FALSE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(106) : see previous definition of 'FALSE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\fpgacontrol.cpp(23): warning C4305: '=' : truncation from 'double' to 'float'
+1>c:\users\pxi_bbdl\documents\github\r01v2\fpgacontrol.cpp(24): warning C4305: '=' : truncation from 'double' to 'float'
+1>c:\users\pxi_bbdl\documents\github\r01v2\fpgacontrol.cpp(299): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+1>  Generating Code...
+1>  Compiling...
+1>  experimentUserInterface.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\experimentuserinterface.cpp(26): warning C4996: 'kbhit': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _kbhit. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(130) : see declaration of 'kbhit'
+1>c:\users\pxi_bbdl\documents\github\r01v2\experimentuserinterface.cpp(27): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(128) : see declaration of 'getch'
+1>  experimentUserInterface.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\experimentuserinterface.cpp(26): warning C4996: 'kbhit': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _kbhit. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(130) : see declaration of 'kbhit'
+1>c:\users\pxi_bbdl\documents\github\r01v2\experimentuserinterface.cpp(27): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(128) : see declaration of 'getch'
+1>  expParadigmServoPerturbation.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(16): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(20): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(21): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(23): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(253) : see declaration of 'fscanf'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(24): warning C4244: '=' : conversion from 'int' to 'float32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(25): warning C4244: '=' : conversion from 'int' to 'float32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(26): warning C4244: '=' : conversion from 'int' to 'float32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(27): warning C4244: '=' : conversion from 'int' to 'float32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(28): warning C4244: '=' : conversion from 'int' to 'float32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(29): warning C4244: '=' : conversion from 'int' to 'float32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(141): warning C4996: 'localtime': This function or variable may be unsafe. Consider using localtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\time.inl(112) : see declaration of 'localtime'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(173): warning C4996: 'kbhit': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _kbhit. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(130) : see declaration of 'kbhit'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(174): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(128) : see declaration of 'getch'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmservoperturbation.cpp(202): warning C4101: 'i' : unreferenced local variable
+1>  expParadigmManualPerturbation.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmanualperturbation.cpp(15): warning C4305: '=' : truncation from 'double' to 'float32'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmanualperturbation.cpp(27): warning C4305: '=' : truncation from 'double' to 'float32'
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmanualperturbation.cpp(45): warning C4244: '=' : conversion from 'float32' to 'int32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmanualperturbation.cpp(54): warning C4244: '=' : conversion from 'float32' to 'int32', possible loss of data
+1>c:\users\pxi_bbdl\documents\github\r01v2\expparadigmmanualperturbation.cpp(68): warning C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(304) : see declaration of 'scanf'
+1>  dataLogger.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(8): warning C4005: 'TRUE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(103) : see previous definition of 'TRUE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(9): warning C4005: 'FALSE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(106) : see previous definition of 'FALSE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\datalogger.cpp(75): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
+1>c:\users\pxi_bbdl\documents\github\r01v2\datalogger.cpp(79): warning C4101: 'readEncoder1' : unreferenced local variable
+1>  SomeFpga.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(8): warning C4005: 'TRUE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(103) : see previous definition of 'TRUE'
+1>c:\users\pxi_bbdl\documents\github\r01v2\utilities.h(9): warning C4005: 'FALSE' : macro redefinition
+1>          c:\users\pxi_bbdl\documents\github\r01v2\nidaqmx.h(106) : see previous definition of 'FALSE'
+1>  FPGATest.cpp
+1>c:\users\pxi_bbdl\documents\github\r01v2\fpgatest.cpp(47): warning C4996: 'kbhit': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _kbhit. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(130) : see declaration of 'kbhit'
+1>c:\users\pxi_bbdl\documents\github\r01v2\fpgatest.cpp(48): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getch. See online help for details.
+1>          c:\program files\microsoft visual studio 10.0\vc\include\conio.h(128) : see declaration of 'getch'
+1>  Generating Code...
+1>ManifestResourceCompile:
+1>  All outputs are up-to-date.
+1>LINK : fatal error LNK1104: cannot open file 'C:\Program Files\Intel\Composer XE 2011 SP1\ipp\lib\ia32\ipps.lib'
+1>
+1>Build FAILED.
+1>
+1>Time Elapsed 00:00:15.25
+========== Build: 0 succeeded, 1 failed, 0 up-to-date, 0 skipped ==========
