@@ -54,7 +54,7 @@ motorControl::motorControl(double offset1, double offset2, double offset3)
     muscleLengthPreviousTick[1] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
-    strcpy(header,"Time, Exp Prot, Len1, ForcMeas, ForcRef, Digit Force 1, Digit Force2, Digit Contact 1, Digit Contact 2");
+    strcpy(header,"Time, Clock, Exp Prot, Len1, ForcMeas, ForcRef, Digit Force 1, Digit Force2, Digit Contact 1, Digit Contact 2");
     if (dataAcquisitionFlag[0]){
         //strcat (header, "");
     }
@@ -359,7 +359,7 @@ void motorControl::controlLoop(void)
             motorCommand[1] = motorMinVoltage;
         //printf("LC1: %+4.2f; LC2: %+4.2f; LC31: %+4.2f; MR1: %+4.2f; MR2: %+4.2f, MR3: %+4.2f, \r",loadCellData[0],loadCellData[1],loadCellData[2],motorRef[0], motorRef[1], motorRef[2]);
         ReleaseMutex( hIOMutex);
-        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
+        sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
         strcat (dataSample, dataTemp);
         if (dataAcquisitionFlag[0]){
             //sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorCommand[0]);

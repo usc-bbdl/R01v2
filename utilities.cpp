@@ -128,7 +128,7 @@ int proceedState(int *state)
             }
         break;
     case STATE_RUN_PARADIGM_CDMRP_IMPLANT:
-        paradigmCDMRPimplant.sweepAngleForce(3, 30, 3, 3, 30, 3, 10);
+        paradigmCDMRPimplant.sweepAngleForce(3, 30, 3, 3, 30, 3, 10); //forceMin, forceMax, forceRes, angleMin, angleMax, angleRes, numberOfPert
         //paradigmCDMRPimplant.sweepAngleForce(70, 100, 10, 5, 55, 20, 2);
         //sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
         if(retVal != -1)
