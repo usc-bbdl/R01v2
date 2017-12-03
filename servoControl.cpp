@@ -136,7 +136,7 @@ int servoControl::setPosition(int position) {
     int checkVal = 3443, bitPosition = 0;
     float temp;
     waitMoving();
-    if (position < -150 || position > 150) {
+    if (position < -150 || position > 270) {
         printf("Invalid Position %d. Value of Position must be between [-150, 150] degrees\n",position);
         return 0;
     }
@@ -315,7 +315,7 @@ void servoControl::goDefault() {
     Sleep(CONTROL_PERIOD);
     //printf("goDefault: setting position\n");
     //setPosition(defPos);
-    setPosition(-45);
+    setPosition(-6);
     //printf("goDefault: Motor in Default position\n");
 }
 
