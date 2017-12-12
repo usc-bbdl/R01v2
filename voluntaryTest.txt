@@ -1,4 +1,5 @@
 FREQ,CortexA,GammaSA,GammaSP,GammaDA,GammaDP,reps
+<<<<<<< HEAD
 400
 1,1000,0,-1.5708,0,-1.5708,5
 1,1000,0,-1.5708,0,-1.1781,5
@@ -784,3 +785,4 @@ FREQ,CortexA,GammaSA,GammaSP,GammaDA,GammaDP,reps
 1,1000,150,0.7854,150,0,5
 1,1000,150,0.7854,150,0.3927,5
 1,1000,150,0.7854,150,0.7854,5
+
