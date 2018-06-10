@@ -315,7 +315,7 @@ void servoControl::goDefault() {
     Sleep(CONTROL_PERIOD);
     //printf("goDefault: setting position\n");
     //setPosition(defPos);
-    setPosition(-24);
+    setPosition(-49);
     //printf("goDefault: Motor in Default position\n");
 }
 
