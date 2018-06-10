@@ -32,7 +32,7 @@ class motorControl
     HANDLE hIOMutex;
     bool live;
     float64 encoderData1[1],encoderData2[1],muscleLengthPreviousTick[2], muscleLengthOffset[2];
-    char header[200];
+    char header[500];
 public:
     bool resetMuscleLength;
     float64 loadCellData[2],motorRef[2],muscleLength[2],muscleVel[2];

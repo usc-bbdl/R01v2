@@ -81,6 +81,9 @@ motorControl::motorControl(double offset1, double offset2)
     if (dataAcquisitionFlag[10]){
         strcat (header, ", Raster 1-6,  Raster 2-6");
     }
+
+    strcat (header, ", mFlag, mFREQ, mCortexA, mGammaSA, mGammaSP, mGammaDA, mGammaDP, cortexDrive[0], cortexDrive[1], gammaS[0], gammaS[1], gammaD[0], gammaD[1]");
+
     char dataTemp[100]="";
     strcat(header,"\n");
     sprintf(dataTemp,"%d,%d,%d,%d,",dataAcquisitionFlag[0],dataAcquisitionFlag[1],dataAcquisitionFlag[2],dataAcquisitionFlag[3]);
@@ -243,7 +246,7 @@ void motorControl::controlLoop(void)
     tm* timePtr = localtime(&t);
     char fileName[200];
     char dataSample[600]="";
-    char dataTemp[100]="";
+    char dataTemp[300]="";
     sprintf_s(
             fileName,
             "C:\\data\\realTimeData%4d_%02d_%02d_%02d_%02d_%02d.txt",
@@ -420,10 +423,12 @@ void motorControl::controlLoop(void)
                 gammaD[0]      = max((mGammaDA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaDP         ), 0); //BICEP
                 gammaD[1]      = max((mGammaDA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaDP + 3.1416), 0); //TRICEP
             }
-            sprintf(dataTemp,",%f,%f,%f,%f,%f,%f",cortexDrive[0], cortexDrive[1],gammaS[0], gammaS[1],gammaD[0], gammaD[1]);
-            strcat (dataSample, dataTemp);
+            //sprintf(dataTemp,",%f,%f,%f,%f,%f,%f",cortexDrive[0], cortexDrive[1],gammaS[0], gammaS[1],gammaD[0], gammaD[1]);
+            //strcat (dataSample, dataTemp);
             
         }
+        sprintf(dataTemp,",%u,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f", (unsigned int)mFlag, mFREQ, mCortexA, mGammaSA, mGammaSP, mGammaDA, mGammaDP, cortexDrive[0], cortexDrive[1],gammaS[0], gammaS[1],gammaD[0], gammaD[1]);
+        strcat (dataSample, dataTemp);
         //sprintf(dataTemp,",%d,%d,%d,%d,%.3f,%.3f,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, cortexDrive[0], cortexDrive[1],newTrial);
         sprintf(dataTemp,"\n");
         if (trialTrigger == 1){
