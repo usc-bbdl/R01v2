@@ -41,14 +41,20 @@ FPGAControl::FPGAControl(int param, motorControl *param2)
     pMotorControl = param2;
     switch (param) {
     case 0:
+        printf("BICEP : Spindle FPGA: ");
         spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "113700021E"); // "113700021E or 000000053X
+        printf("BICEP :  Muscle FPGA: ");
         muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000542"); // "0000000542 or 000000054K
+        printf("BICEP :  Cortex FPGA: ");
         cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "0000000547"); // "0000000547 or 0000000550
         break;
     case 1:
+        printf("TRICEP: Spindle FPGA: ");
         spindleFPGA = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "11160001CG"); // 11160001CG or 11160001CJ
-        muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "000000054B"); // 000000054B or 12320003RN
-        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "1137000222"); // 1137000222 or 12430003T2
+        printf("TRICEP:  Muscle FPGA: ");
+        muscleFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "1137000222"); // 000000054B or 12320003RN
+        printf("TRICEP:  Cortex FPGA: ");
+        cortexFPGA  = new SomeFpga(NUM_NEURON, SAMPLING_RATE, "000000054B"); // 1137000222 or 12430003T2
         break;
     default:
         std::cout<<"\nFATAL: Logical error in FPGAControl Params\n";

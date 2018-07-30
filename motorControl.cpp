@@ -414,8 +414,8 @@ void motorControl::controlLoop(void)
             }
             if(mFlag == 0)
             {
-                cortexDrive[0] = max((mCortexA -0) * sin (2 * 3.1416 * (mFREQ) * tick                    ), 0); //BICEP
-                cortexDrive[1] = max((mCortexA -0) * sin (2 * 3.1416 * (mFREQ) * tick            + 3.1416), 0); //TRICEP
+                cortexDrive[0] = max(1*(mCortexA -0) * sin (2 * 3.1416 * (mFREQ) * tick                    ), 0); //BICEP
+                cortexDrive[1] = max(1*(mCortexA -0) * sin (2 * 3.1416 * (mFREQ) * tick            + 3.1416), 0); //TRICEP
             
                 gammaS[0]      = max((mGammaSA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaSP         ), 0); //BICEP
                 gammaS[1]      = max((mGammaSA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaSP + 3.1416), 0); //TRICEP
