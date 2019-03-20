@@ -9,6 +9,8 @@
 #include <process.h>
 #include "motorControl.h"
 
+#define buffSize 1000
+
 class expParadigmCDMRPimplant
 {
     motorControl * motorObj;
@@ -21,10 +23,10 @@ class expParadigmCDMRPimplant
     AdeptArmAPI adeptRobot;
     int perturbAdept();
     static void AdeptPerturbationsLoop(void* a);
-    int rep[100];
-    int numTrials;
-    double amp[100];
-    double freq[100];
+    
+    long numTrials, numPerts;
+    double dispX[buffSize], dispY[buffSize], dispZ[buffSize];
+    
     int beginRobotPertThread(void);
 public:
     void sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);

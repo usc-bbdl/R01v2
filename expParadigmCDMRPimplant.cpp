@@ -150,23 +150,35 @@ void expParadigmCDMRPimplant::readData()
     char header[200];
     configFile = fopen("C:\\Users\\PXI_BBDL\\Documents\\GitHub\\R01v2\\CDMRPtest.txt","r");
     if (configFile == NULL) {
-        printf("\n\nCould not open data file\n\n");
+        printf("\n\nCould not open data file.\n\n");
+        return;
     }
-    fscanf(configFile,"%s\n",&header);
-    std::cout<<"\n\n NumTrials:"<<header<<"\n\n";
-    fscanf(configFile,"%d\n",&numTrials);
-    //numTrials = 32;
-    std::cout<<"\n\n NumTrials:"<<numTrials<<"\n\n";
-    double tempA=0, tempF=0;
-    int tempR=0;
 
-    for(int i = 0; i < numTrials; i++){
-        fscanf(configFile,"%lf,%lf,%d\n", &tempA, &tempF, &tempR);
-        amp[i] = tempA;
-        freq[i] = tempF;
-        rep[i] = tempR;
-        //printf("\n%lf,%lf,%d\n", tempA, tempF, tempR);
+    std::cout<<"\n\nCDMRP Paradigm: Reading File:";
+    // extract header
+    fscanf(configFile,"%s\n",&header);
+    std::cout << "\n\tHeader: " << header << std::endl;
+    
+    // extract number of trials
+    numTrials = 0;
+    fscanf(configFile,"%ld\n",&numTrials);
+    if(numTrials > buffSize) {
+        numTrials = buffSize;
     }
+    std::cout<<"\tNumber of Trials: "<<numTrials<<"\n\n";
+
+    // extract number of perturbations per trial
+    numPerts = 0;
+    fscanf(configFile,"%ld\n",&numPerts);
+    std::cout<<"\tNumber of Perturbations: "<<numPerts<<"\n\n";    
+    
+    // extract trials
+    double tempX = 0, tempY = 0, tempZ = 0;
+    for(long i = 0; i < numTrials; i++){
+        fscanf(configFile, "%lf,%lf,%lf\n", &(dispX[i]), &(dispY[i]), &(dispZ[i]) );
+        //printf("\n\tDisp(X,Y,Z | %ld) = (%lf, %lf, %lf).\n",i, dispX[i], dispY[i], dispZ[i]);
+    }
+
     fclose(configFile);
 }
 
@@ -178,7 +190,7 @@ int expParadigmCDMRPimplant::setAdeptDefaultPosition()
                           defaultPos[3],
                           defaultPos[4],
                           defaultPos[5] );
-    printf("Adept Arm: Default Position Set to:\n\tJ1 = %3.2f\n\tJ2 = %3.2f\n\tJ3 = %3.2f\n\tJ4 = %3.2f\n\tJ5 = %3.2f\n\tJ6 = %3.2f",
+    printf("\n\nAdept Arm: Default Position Set to:\n\tJ1 = %3.2f\n\tJ2 = %3.2f\n\tJ3 = %3.2f\n\tJ4 = %3.2f\n\tJ5 = %3.2f\n\tJ6 = %3.2f\n",
             defaultPoint.x,
             defaultPoint.y,
             defaultPoint.z,
