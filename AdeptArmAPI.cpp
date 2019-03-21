@@ -148,6 +148,7 @@ void AdeptArmAPI::movetrans (PPoint displacement) {
     sendStr(move_command_string);
     current.x = current.x + displacement.x;
     current.y = current.y + displacement.y;
+    current.z = current.z + displacement.z;
 }
 
 void AdeptArmAPI::moveInCircle(double startAngle, double endAngle, double radius, int numberOfPoints) {	
