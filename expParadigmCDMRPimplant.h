@@ -14,7 +14,7 @@
 class expParadigmCDMRPimplant
 {
     motorControl * motorObj;
-    double defaultPos[6];
+    double defaultEP[6], defaultPos[6];
     double perturbationAngle;
     HANDLE hIOMutex;
     bool robotPerturbationLive;
@@ -27,7 +27,7 @@ class expParadigmCDMRPimplant
     // SHELL ----------------------------------
     long thisTrial, Perts;
     double X, Y, Z, flexForce;
-    PPoint dispPoint;
+    PPoint dispPoint, backPoint;
     int beginRobotShellThread(void);    
     static void perturbShellAdeptLoop(void* a);
     int perturbShellAdept();

@@ -3,27 +3,29 @@
 #include <stdio.h>
 #include <ctime>
 #include <math.h>
-#define shellSleep 2000
-
+#define shellSleep 1000
+#define scaleDisp  20 //in file - if units are mm, set 1
+                      //        - if units are cm, set 10
 const int Trials = 32; //replace numTrials with Trials and vice versa
+
 
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-     defaultPos[0] =  157.202; // x
-     defaultPos[1] =  -61.430; // y
-     defaultPos[2] =  155.096; // z
-     defaultPos[3] =  -3.946; // a
-     defaultPos[4] =  -11.830; // b
-     defaultPos[5] =   -180.029; // c
-     /*
-     defaultPos[0] =  157.202; // J1
-     defaultPos[1] =  -61.430; // J2
-     defaultPos[2] =  155.096; // J3
-     defaultPos[3] =  -3.946; // J4
-     defaultPos[4] =  -11.830; // J5
-     defaultPos[5] =   -180.029; // J6
-     */
+     defaultEP[0] =  -177.625; // x
+     defaultEP[1] =  -152.083; // y
+     defaultEP[2] =  367.383; // z
+     defaultEP[3] =  -81.054; // a
+     defaultEP[4] =  80.855; // b
+     defaultEP[5] =   143.407; // c
+     
+     defaultPos[0] =  -161.432; // J1
+     defaultPos[1] =  -129.800; // J2
+     defaultPos[2] =  197.722; // J3
+     defaultPos[3] =  95.005; // J4
+     defaultPos[4] =  77.721; // J5
+     defaultPos[5] =   74.175; // J6
+     
 
     //double defaultPos[6] = {154.548,-62.378,158.209,-92.896,-64.234,13.145};
 
@@ -36,22 +38,25 @@ expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
     perturbationAngle = 0;
 }
 
-int expParadigmCDMRPimplant::setPerturbationAngle(double angle)
-{
-    this->perturbationAngle = angle;
-    return 1;
-}
-
 expParadigmCDMRPimplant::~expParadigmCDMRPimplant(void)
 {
     long double angle[6];
-    adeptRobot.movetrans(defaultPoint);
+    adeptRobot.move(defaultPoint);
     angle[0] = defaultPoint.x;
     angle[1] = defaultPoint.y;
     angle[2] = defaultPoint.z;
     angle[3] = defaultPoint.a;
     angle[4] = defaultPoint.b;
     angle[5] = defaultPoint.c;
+}
+
+int expParadigmCDMRPimplant::startAdeptPerturbations(int numberOfPerturbations)
+{
+    this->numberOfPerturbations = numberOfPerturbations;
+    robotPerturbationLive = TRUE;
+    hIOMutex = CreateMutex(NULL, FALSE, NULL);
+	_beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
+    return 1;
 }
 
 void expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations)
@@ -77,9 +82,14 @@ void expParadigmCDMRPimplant::sweepAngleForce(double forceMin, double forceMax, 
     printf("\nExperiment finished...\n");
 }
 
-int expParadigmCDMRPimplant::startAdeptPerturbations(int numberOfPerturbations)
+int expParadigmCDMRPimplant::setPerturbationAngle(double angle)
 {
-    this->numberOfPerturbations = numberOfPerturbations;
+    this->perturbationAngle = angle;
+    return 1;
+}
+
+int expParadigmCDMRPimplant::beginRobotPertThread(void)
+{
     robotPerturbationLive = TRUE;
     hIOMutex = CreateMutex(NULL, FALSE, NULL);
 	_beginthread(expParadigmCDMRPimplant::AdeptPerturbationsLoop,0,this);
@@ -106,12 +116,12 @@ int expParadigmCDMRPimplant::perturbAdept()
     double extendAngle = -perturbationAngle;
     bool isFlex = true;
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
-    adeptRobot.movetrans(defaultPoint);
+    adeptRobot.move(defaultPoint);
     for (int i = 0; i < this->numberOfPerturbations; i++)
     {
 
         printf("perturbation %d / %d\n", i+1, numberOfPerturbations);
-        //adeptRobot.movetrans(defaultPoint);
+        //adeptRobot.move(defaultPoint);
         angle[0] = defaultPoint.x;
         angle[1] = defaultPoint.y;
         angle[2] = defaultPoint.z;
@@ -135,10 +145,10 @@ int expParadigmCDMRPimplant::perturbAdept()
         motorObj->trialTrigger = 2;
         newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
         motorObj->trialTrigger = 1;
-        adeptRobot.movetrans(newPoint);
+        adeptRobot.move(newPoint);
         Sleep(2000);
     }
-    adeptRobot.movetrans(defaultPoint);
+    adeptRobot.move(defaultPoint);
     Sleep(2000);
     robotPerturbationLive = FALSE;
     return 1;
@@ -156,6 +166,8 @@ void expParadigmCDMRPimplant::sweepShell3D() {
                             i+1, numPerts,   dispX[i], dispY[i], dispZ[i], flexorForce[i]);
         setPerturbationShell(i,numPerts, dispX[i], dispY[i], dispZ[i], flexorForce[i]);
         //motorObj->motorRef[0] = force;
+        //getch();
+
         beginRobotShellThread();
     }
 
@@ -205,7 +217,7 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
 
     // Go to default point
-    adeptRobot.movetrans(defaultPoint);
+    adeptRobot.move(defaultPoint);
 
     // Set new position
     dispPoint   = defaultPoint;
@@ -213,23 +225,28 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     dispPoint.y = Y;
     dispPoint.z = Z;
 
+    backPoint   = defaultPoint;
+    backPoint.x = -X;
+    backPoint.y = -Y;
+    backPoint.z = -Z;
+    
+    // Move back to default position
+    adeptRobot.move(defaultPoint);
+    Sleep(shellSleep);
+
     for (int i = 0; i < Perts; i++)
     {
-        printf("\n\nTrial %ld, Pert %ld/%ld, Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force>\n",
-                    thisTrial,     i+1, Perts,         X,      Y,      Z ,     flexForce);
-        
-        // Move back to default position
-        adeptRobot.movetrans(defaultPoint);
-        Sleep(shellSleep);
-        
+        printf("\n\n\t---> Pert %ld/%ld, Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force>\n",
+                             i+1, Perts,           X,      Y,      Z ,     flexForce);
+                     
         // Close hand - activate flexors (no need to sleep)
 
         // Move to new position
         adeptRobot.movetrans(dispPoint);
         Sleep(shellSleep);
 
-        // Move back to default position
-        adeptRobot.movetrans(defaultPoint);
+        // MOVE BACK to default position
+        adeptRobot.movetrans(backPoint);
         Sleep(shellSleep);
 
         // Open hand - activate extensors (no need to sleep)
@@ -237,7 +254,7 @@ int expParadigmCDMRPimplant::perturbShellAdept()
         
         
         /*
-        //adeptRobot.movetrans(defaultPoint);
+        //adeptRobot.move(defaultPoint);
         angle[0] = defaultPoint.x;
         angle[1] = defaultPoint.y;
         angle[2] = defaultPoint.z;
@@ -265,14 +282,13 @@ int expParadigmCDMRPimplant::perturbShellAdept()
         /*
         newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
         motorObj->trialTrigger = 1;
-        adeptRobot.movetrans(newPoint);
+        adeptRobot.move(newPoint);
         */
 
-        //
-        Sleep(2000);
+        //        
     }
-    adeptRobot.movetrans(defaultPoint);
-    Sleep(2000);
+    adeptRobot.move(defaultPoint);
+    Sleep(shellSleep);
     robotPerturbationLive = FALSE;
     return 1;
 }
@@ -311,10 +327,17 @@ void expParadigmCDMRPimplant::readData()
     
     // extract trials
     double tempX = 0, tempY = 0, tempZ = 0, tempF = 0;
-    flexorForce = 0;
+    
     for(long i = 0; i < numTrials; i++){
-        fscanf(configFile, "%lf,%lf,%lf,%lf\n", &(flexorForce), &(dispX[i]), &(dispY[i]), &(dispZ[i]) );
-        //printf("\n\tDisp(X,Y,Z | %ld) = (%lf, %lf, %lf).\n",i, dispX[i], dispY[i], dispZ[i]);
+        flexorForce[i] = 0;
+        dispX[i] = 0; dispY[i] = 0; dispZ[i] = 0;
+        fscanf(configFile, "%lf,%lf,%lf,%lf\n", &(dispX[i]), &(dispY[i]), &(dispZ[i]), &(flexorForce[i]) );
+        //printf("\n\tDisp(X,Y,Z | %ld) = (%lf, %lf, %lf) : Tendon Force %2.2lfN.\n",i+1, dispX[i], dispY[i], dispZ[i], flexorForce[i]);
+        
+        // Scale displacements
+        dispX[i] *= scaleDisp;
+        dispY[i] *= scaleDisp;
+        dispZ[i] *= scaleDisp;        
     }
 
     fclose(configFile);

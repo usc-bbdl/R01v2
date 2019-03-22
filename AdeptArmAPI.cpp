@@ -20,7 +20,12 @@
 #define DEFAULT_BUFLEN 512
 #define PI 3.14159265
 
-std::string adeptIP = "172.16.184.121";
+// Adept stored IP
+//std::string adeptIP = "172.16.184.121";
+
+//Adept default IP
+std::string adeptIP = "172.16.100.200";
+
 int adeptPort = 1234;
 
 // Error printing helper function
