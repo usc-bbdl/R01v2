@@ -351,7 +351,7 @@ int expParadigmCDMRPimplant::setAdeptDefaultPosition()
                           defaultPos[3],
                           defaultPos[4],
                           defaultPos[5] );
-    printf("\n\nAdept Arm: Default Position Set to:\n\tJ1 = %3.2f\n\tJ2 = %3.2f\n\tJ3 = %3.2f\n\tJ4 = %3.2f\n\tJ5 = %3.2f\n\tJ6 = %3.2f\n",
+    printf("\n\nAdept Arm: Default Position Set to:\n\tJ1 = %3.2f\n\tJ2 = %3.2f\n\tJ3 = %3.2f\n\tJ4 = %3.2f\n\tJ5 = %3.2f\n\tJ6 = %3.2f\n\n",
             defaultPoint.x,
             defaultPoint.y,
             defaultPoint.z,

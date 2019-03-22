@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
-motorControl::motorControl(double offset1, double offset2, double offset3)
+motorControl::motorControl(double offset0, double offset1, double offset2, double offset3, double offset4, double offset5, double offset6)
 {
     //
     newPdgm_Flag = false;
-    newPdgm_ref[0]=newPdgm_ref[1]=0;
+    newPdgm_ref[0] = newPdgm_ref[1] = newPdgm_ref[2] = newPdgm_ref[3] = newPdgm_ref[4] = newPdgm_ref[5] = newPdgm_ref[6] = 0;
     //
-    dataEnable = 7;//0x8111111F;//0x1111111;
+    dataEnable = 0x7F;//0x8111111F;//0x1111111;
     encoderBias[0] = encoderBias[1] = encoderBias[2] = 0;
     encoderGain[0] = encoderGain[1] = encoderGain[2] = 1;
     perturbationAngle = 0;
@@ -35,9 +35,15 @@ motorControl::motorControl(double offset1, double offset2, double offset3)
     isWindUp = FALSE;
     isControlling = FALSE;
     live = FALSE;
+
+    loadCellOffset0 = offset0;
     loadCellOffset1 = offset1;
     loadCellOffset2 = offset2;
     loadCellOffset3 = offset3;
+    loadCellOffset4 = offset4;
+    loadCellOffset5 = offset5;
+    loadCellOffset6 = offset6;
+
     std::cout<<"\n_______________________\nLoad cell offset1: "<<loadCellOffset1<<"\n_______________________\nLoad cell offset2: "<<loadCellOffset2<<std::endl;
     loadCellData[0] = 0;
     loadCellData[1] = 0;
@@ -96,46 +102,68 @@ motorControl::motorControl(double offset1, double offset2, double offset3)
     strcat(header,dataTemp);
     sprintf(dataTemp,"%d,%d,%d,%d\n",dataAcquisitionFlag[8],dataAcquisitionFlag[9],dataAcquisitionFlag[10],dataAcquisitionFlag[11]);
     strcat(header,dataTemp);
-    DAQmxErrChk (DAQmxCreateTask("",&loadCelltaskHandle));
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai0","loadCell0",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
-//<<<<<<< HEAD
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai8","loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai1","loadCell2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai22","directRecordingFromDigiOut",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
 
+
+    //----------
+    // LOAD CELL
+    //----------
+    DAQmxErrChk (DAQmxCreateTask("",&loadCelltaskHandle));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai0" ,"loadCell0",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai8" ,"loadCell1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai1" ,"loadCell2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai9" ,"loadCell3",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai2" ,"loadCell4",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai10","loadCell5",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai11","loadCell6",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));    
+    /*
+    DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai22","directRecordingFromDigiOut",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai24","digit force 1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai25","digit force 2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
-
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai26","digit contact 1",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCelltaskHandle,"PXI1Slot5/ai27","digit contact 2",DAQmx_Val_RSE,loadCellMinVoltage,loadCellMaxVoltage,DAQmx_Val_Volts,NULL));
-
+    */
     DAQmxErrChk (DAQmxCfgSampClkTiming(loadCelltaskHandle,"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,NULL));
     DAQmxErrChk (DAQmxSetRealTimeConvLateErrorsToWarnings(loadCelltaskHandle,1));
 
-    
+
+    //-------------
+    // MOTOR ANALOG
+    //-------------
     DAQmxErrChk (DAQmxCreateTask("",&motorTaskHandle));
-    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao8","motor0",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
-    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao9","motor1",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));//old: ao11
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao8" ,"motor0",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao9" ,"motor1",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));//old: ao11
     DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao10","motor2",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));//old: ao11
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao11","motor3",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));//old: ao11
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao12","motor4",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));//old: ao11
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao13","motor5",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));//old: ao11
+    DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao14","motor6",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));//old: ao11
+    /*
     DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao31","speaker",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAOVoltageChan(motorTaskHandle,"PXI1Slot2/ao30","clock",motorMinVoltage,motorMaxVoltage,DAQmx_Val_Volts,NULL));
+    */
     DAQmxErrChk (DAQmxCfgSampClkTiming(motorTaskHandle,"",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
     
 
+    //-------------
+    // MOTOR ENABLE
+    //-------------
     DAQmxErrChk (DAQmxCreateTask("",&motorEnableHandle));
     DAQmxErrChk (DAQmxCreateDOChan(motorEnableHandle,"PXI1Slot2/port0","motorEnable",DAQmx_Val_ChanForAllLines));
 
-    
+
+    //--------
+    // ENCODER
+    //--------
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[0]));
     DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[0],"PXI1Slot3/ctr0","Enoder 0",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[0],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[1]));
     DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[1],"PXI1Slot3/ctr1","Enoder 1",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));//old: ctr3
-    DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[1],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
-    
+    DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[1],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));    
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[2]));
     DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[2],"PXI1Slot3/ctr2","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));//old: ctr3
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[2],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
+
 
 Error:
 	if( DAQmxFailed(error) ) {
@@ -147,6 +175,7 @@ Error:
         printf("Motor, load cell or encoder initialization error\n");
 	}
 }
+
 motorControl::~motorControl()
 {
     DAQmxClearTask(motorEnableHandle);
@@ -160,7 +189,7 @@ int motorControl::motorEnable()
     
     char        errBuff[2048]={'\0'};
     int32       error=0;
-    float64 zeroVoltages[5]={0.0,0.0,0.0,0.0,0.0},zeroVoltage={0.0};
+    float64 zeroVoltages[7]={0.0,0.0,0.0,0.0,0.0,0.0,0.0}, zeroVoltage={0.0};
     DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
     DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
     DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&dataEnable,NULL,NULL));
@@ -187,7 +216,7 @@ int motorControl::motorWindUp()
 {
     char        errBuff[2048]={'\0'};
     int32       error=0;
-    float64 windingUpCmnd[5]={0.5,0.5,0.5,0,0};
+    float64 windingUpCmnd[7]={0.5,0.5,0.5,0.5,0.5,0.5,0.5};
     if (isEnable){
         DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
         DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,windingUpCmnd,NULL,NULL));
@@ -198,6 +227,7 @@ int motorControl::motorWindUp()
         
         printf("Windup Pass.\n");
     }else  printf("Motors must be first enabled prior to winding up.\n");
+
 Error:
 	if( DAQmxFailed(error) ) {
 		DAQmxGetExtendedErrorInfo(errBuff,2048);
@@ -221,7 +251,10 @@ void motorControl::controlLoop(void)
     bool keepReading=TRUE;
     bool32 isLate = {0};
     double tick=0.0,tock=0.0;
-    float64 motorCommand[5]={0.0,0.0,0.0,0.0,0.0},errorForce[3]= {0.0,0.0,0.0},integral[3]={0.0,0.0,0.0},EMG={0.0};
+    float64 motorCommand[7] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+              errorForce[7] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                integral[7] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                     EMG    = {0.0};
     char        errBuff[2048]={'\0'};
     FILE *dataFile;
     time_t t = time(NULL);
@@ -274,9 +307,9 @@ void motorControl::controlLoop(void)
             flg = true;
         }
         if (dataEnable == 0x07)
-            dataEnable = 0x87;
+            dataEnable = 0xFF;
         else
-            dataEnable = 0x07;
+            dataEnable = 0x7F;
         //else if (dataEnable == 71)
         //    dataEnable = 7;
 
@@ -322,41 +355,88 @@ void motorControl::controlLoop(void)
         muscleLengthPreviousTick[0] = muscleLength[0];
         muscleLengthPreviousTick[1] = muscleLength[1];
         
-        loadCellData[0] = (loadCellData[0] * loadCellScale1) - loadCellOffset1;
-        loadCellData[1] = (loadCellData[1] * loadCellScale2) - loadCellOffset2;
-        loadCellData[2] = (loadCellData[2] * loadCellScale3) - loadCellOffset3;
-
+        loadCellData[0] = (loadCellData[0] * loadCellScale0) - loadCellOffset0;
+        loadCellData[1] = (loadCellData[1] * loadCellScale1) - loadCellOffset1;
+        loadCellData[2] = (loadCellData[2] * loadCellScale2) - loadCellOffset2;
+        loadCellData[3] = (loadCellData[3] * loadCellScale3) - loadCellOffset3;
+        loadCellData[4] = (loadCellData[4] * loadCellScale4) - loadCellOffset4;
+        loadCellData[5] = (loadCellData[5] * loadCellScale5) - loadCellOffset5;
+        loadCellData[6] = (loadCellData[6] * loadCellScale6) - loadCellOffset6;
         
         if(newPdgm_Flag)
         {
             //errorForce[0] = newPdgm_ref[1] - loadCellData[0];
             //errorForce[1] = newPdgm_ref[0] - loadCellData[1];
             //errorForce[2] = newPdgm_ref[0] - loadCellData[2];
-            motorRef[0] = newPdgm_ref[1];
-            motorRef[1] = newPdgm_ref[0];
-            motorRef[2] = newPdgm_ref[0];
+            motorRef[0] = newPdgm_ref[0];
+            motorRef[1] = newPdgm_ref[1];
+            motorRef[2] = newPdgm_ref[2];
+            motorRef[3] = newPdgm_ref[3];
+            motorRef[4] = newPdgm_ref[4];
+            motorRef[5] = newPdgm_ref[5];
+            motorRef[6] = newPdgm_ref[6];
         }
         errorForce[0] = motorRef[0] - loadCellData[0];
         errorForce[1] = motorRef[1] - loadCellData[1];
         errorForce[2] = motorRef[2] - loadCellData[2];
+        errorForce[3] = motorRef[3] - loadCellData[3];
+        errorForce[4] = motorRef[4] - loadCellData[4];
+        errorForce[5] = motorRef[5] - loadCellData[5];
+        errorForce[6] = motorRef[6] - loadCellData[6];
 
         integral[0] = integral[0] + errorForce[0] * (tock - tick);
         integral[1] = integral[1] + errorForce[1] * (tock - tick);
         integral[2] = integral[2] + errorForce[2] * (tock - tick);
+        integral[3] = integral[3] + errorForce[3] * (tock - tick);
+        integral[4] = integral[4] + errorForce[4] * (tock - tick);
+        integral[5] = integral[5] + errorForce[5] * (tock - tick);
+        integral[6] = integral[6] + errorForce[6] * (tock - tick);
 
         motorCommand[0] = integral[0] * I;
         motorCommand[1] = integral[1] * 0;
         motorCommand[2] = integral[2] * 0;
+        motorCommand[3] = integral[3] * 0;
+        motorCommand[4] = integral[4] * 0;
+        motorCommand[5] = integral[5] * 0;
+        motorCommand[6] = integral[6] * 0;
 
-        motorCommand[3] = EMG;
+        //motorCommand[3] = EMG;
+
         if (motorCommand[0] > motorMaxVoltage)
             motorCommand[0] = motorMaxVoltage;
         if (motorCommand[0] < motorMinVoltage)
             motorCommand[0] = motorMinVoltage;
+
         if (motorCommand[1] > motorMaxVoltage)
             motorCommand[1] = motorMaxVoltage;
         if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
+
+        if (motorCommand[2] > motorMaxVoltage)
+            motorCommand[2] = motorMaxVoltage;
+        if (motorCommand[2] < motorMinVoltage)
+            motorCommand[2] = motorMinVoltage;
+
+        if (motorCommand[3] > motorMaxVoltage)
+            motorCommand[3] = motorMaxVoltage;
+        if (motorCommand[3] < motorMinVoltage)
+            motorCommand[3] = motorMinVoltage;
+
+        if (motorCommand[4] > motorMaxVoltage)
+            motorCommand[4] = motorMaxVoltage;
+        if (motorCommand[4] < motorMinVoltage)
+            motorCommand[4] = motorMinVoltage;
+
+        if (motorCommand[5] > motorMaxVoltage)
+            motorCommand[5] = motorMaxVoltage;
+        if (motorCommand[5] < motorMinVoltage)
+            motorCommand[5] = motorMinVoltage;
+
+        if (motorCommand[6] > motorMaxVoltage)
+            motorCommand[6] = motorMaxVoltage;
+        if (motorCommand[6] < motorMinVoltage)
+            motorCommand[6] = motorMinVoltage;
+        
         //printf("LC1: %+4.2f; LC2: %+4.2f; LC31: %+4.2f; MR1: %+4.2f; MR2: %+4.2f, MR3: %+4.2f, \r",loadCellData[0],loadCellData[1],loadCellData[2],motorRef[0], motorRef[1], motorRef[2]);
         ReleaseMutex( hIOMutex);
         sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
@@ -458,16 +538,20 @@ Error:
 		/*********************************************/
 		DAQmxStopTask(loadCelltaskHandle);
 		DAQmxClearTask(loadCelltaskHandle);
+
         DAQmxStopTask(encodertaskHandle[0]);
         DAQmxStopTask(encodertaskHandle[1]);
         DAQmxStopTask(encodertaskHandle[2]);
 		DAQmxClearTask(encodertaskHandle[0]);
         DAQmxClearTask(encodertaskHandle[1]);
         DAQmxClearTask(encodertaskHandle[2]);
+
         DAQmxStopTask(motorTaskHandle);
 		DAQmxClearTask(motorTaskHandle);
+
         DAQmxStopTask(motorEnableHandle);
 		DAQmxClearTask(motorEnableHandle);
+
 		printf("DAQmx Error: %s\n",errBuff);
         printf("Motor control Error\n");
 	}
@@ -497,8 +581,10 @@ int motorControl::motorControllerEnd()
     isControlling = FALSE;
     DAQmxStopTask(motorTaskHandle);
 	DAQmxClearTask(motorTaskHandle);
+
     DAQmxStopTask(loadCelltaskHandle);
 	DAQmxClearTask(loadCelltaskHandle);
+
     DAQmxStopTask(encodertaskHandle[0]);
     DAQmxStopTask(encodertaskHandle[1]);
     DAQmxStopTask(encodertaskHandle[2]);
@@ -514,7 +600,7 @@ int motorControl::motorDisable()
 	char        errBuff[2048] = {'\0'};
     uInt32      dataDisable=0x00000000;
     int32		written;
-    float64 zeroVoltages[5]={0.0,0.0,0.0,0.0,0.0};
+    float64 zeroVoltages[7]={0.0,0.0,0.0,0.0,0.0,0.0,0.0};
     while(isControlling){
     }
     DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
