@@ -312,6 +312,20 @@ void motorControl::controlLoop(void)
     clockBitXOR = ((clockBit>>7) | (dataEnable>>31));
     bool flg = true;
     
+    DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate));
+    DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,8,NULL,NULL));
+    printf("\n\nLOOP: Raw LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
+            loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
+    loadCellOffset0 = loadCellData[0] * loadCellScale0;
+    loadCellOffset1 = loadCellData[1] * loadCellScale1;
+    loadCellOffset2 = loadCellData[2] * loadCellScale2;
+    loadCellOffset3 = loadCellData[3] * loadCellScale3;
+    loadCellOffset4 = loadCellData[4] * loadCellScale4;
+    loadCellOffset5 = loadCellData[5] * loadCellScale5;
+    loadCellOffset6 = loadCellData[6] * loadCellScale6;
+    printf("\n\nScaled LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
+            loadCellOffset0,loadCellOffset1,loadCellOffset2,loadCellOffset3,loadCellOffset4,loadCellOffset5,loadCellOffset6);
+
     while(live)
     {
         if(flg)
@@ -466,7 +480,7 @@ void motorControl::controlLoop(void)
         if (motorCommand[6] < motorMinVoltage)
             motorCommand[6] = motorMinVoltage;
         
-        printf("LC1: %+4.2f; LC2: %+4.2f; LC31: %+4.2f; MR1: %+4.2f; MR2: %+4.2f, MR3: %+4.2f, \r",loadCellData[0],loadCellData[1],loadCellData[2],motorRef[0], motorRef[1], motorRef[2]);
+        printf("L0: %+3.2f; L1: %+3.2f; L2: %+3.2f; L3: %+3.2f; L4: %+3.2f; L5: %+3.2f; L6: %+3.2f\r",loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
         ReleaseMutex( hIOMutex);
         sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
         strcat (dataSample, dataTemp);
