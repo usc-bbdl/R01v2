@@ -4,7 +4,7 @@ dataOneSample::dataOneSample()
 {
     char        errBuff[2048]={'\0'};
     int32       error=0;
-    double loadCellData[7]= {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+    double loadCellData[8]= {0.0,0.0,0.0,0.0,0.0,0.0,0.0};
     TaskHandle loadCellHandle, encoderHandle[2];
 
     DAQmxErrChk (DAQmxCreateTask("",&loadCellHandle));
@@ -15,7 +15,7 @@ dataOneSample::dataOneSample()
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle,"PXI1Slot5/ai2" ,"loadCell4",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle,"PXI1Slot5/ai10","loadCell5",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));
     DAQmxErrChk (DAQmxCreateAIVoltageChan(loadCellHandle,"PXI1Slot5/ai11","loadCell6",DAQmx_Val_RSE,-10.0,10.0,DAQmx_Val_Volts,NULL));    
-    DAQmxErrChk (DAQmxCfgSampClkTiming(loadCellHandle,"",500000.0,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,3));
+    DAQmxErrChk (DAQmxCfgSampClkTiming(loadCellHandle,"",500000.0,DAQmx_Val_Rising,DAQmx_Val_FiniteSamps,8));
 
     DAQmxErrChk (DAQmxStartTask(loadCellHandle));
     DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,8,NULL,NULL));
