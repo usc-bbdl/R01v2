@@ -44,17 +44,34 @@ motorControl::motorControl(double offset0, double offset1, double offset2, doubl
     loadCellOffset5 = offset5;
     loadCellOffset6 = offset6;
 
-    std::cout<<"\n_______________________\nLoad cell offset1: "<<loadCellOffset1<<"\n_______________________\nLoad cell offset2: "<<loadCellOffset2<<std::endl;
+    std::cout<<"\n\nLC offsets:\n\t0: "<<loadCellOffset0
+                            <<"\n\t1: "<<loadCellOffset1
+                            <<"\n\t2: "<<loadCellOffset2
+                            <<"\n\t3: "<<loadCellOffset3
+                            <<"\n\t4: "<<loadCellOffset4
+                            <<"\n\t5: "<<loadCellOffset5
+                            <<"\n\t6: "<<loadCellOffset6<<std::endl;
     loadCellData[0] = 0;
     loadCellData[1] = 0;
     loadCellData[2] = 0;
     loadCellData[3] = 0;
-    motorRef[0] = 11;
-    motorRef[1] = 0;
-    motorRef[2] = 0;
+    loadCellData[4] = 0;
+    loadCellData[5] = 0;
+    loadCellData[6] = 0;
+    loadCellData[7] = 0;
+
+    motorRef[0] = 5;
+    motorRef[1] = 5;
+    motorRef[2] = 5;
+    motorRef[3] = 5;
+    motorRef[4] = 5;
+    motorRef[5] = 5;
+    motorRef[6] = 5;
+
     encoderData1[0] = 0;
     encoderData2[0] = 0;
     encoderData3[0] = 0;
+
     resetMuscleLength = TRUE;
     muscleLengthPreviousTick[0] = 1;
     muscleLengthPreviousTick[1] = 1;
@@ -294,6 +311,7 @@ void motorControl::controlLoop(void)
     uInt32 clockBitXOR;
     clockBitXOR = ((clockBit>>7) | (dataEnable>>31));
     bool flg = true;
+    
     while(live)
     {
         if(flg)
@@ -313,6 +331,10 @@ void motorControl::controlLoop(void)
         //else if (dataEnable == 71)
         //    dataEnable = 7;
 
+
+        //printf("\n\n\n\n%lf\n\n\n",(double)loadCellData[0]);
+
+
         //DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&clockBitXOR,NULL,NULL));
         DAQmxErrChk (DAQmxWriteDigitalU32(motorEnableHandle,1,1,10.0,DAQmx_Val_GroupByChannel,&dataEnable,NULL,NULL));
         WaitForSingleObject(hIOMutex, INFINITE);
@@ -324,6 +346,7 @@ void motorControl::controlLoop(void)
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderData2,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[2],1,10.0,encoderData3,1,NULL,0));
+        /*
         if (dataAcquisitionFlag[1]){
             EMG = muscleEMG[0];
             if (EMG > 6)
@@ -333,6 +356,12 @@ void motorControl::controlLoop(void)
         }
         else
             EMG = 0;
+        */
+
+
+        //printf("\n\n\n\n%lf\n\n\n",(double)loadCellData[0]);
+
+
         tock = timeData.getCurrentTime();
         if (resetMuscleLength)
         {
@@ -437,7 +466,7 @@ void motorControl::controlLoop(void)
         if (motorCommand[6] < motorMinVoltage)
             motorCommand[6] = motorMinVoltage;
         
-        //printf("LC1: %+4.2f; LC2: %+4.2f; LC31: %+4.2f; MR1: %+4.2f; MR2: %+4.2f, MR3: %+4.2f, \r",loadCellData[0],loadCellData[1],loadCellData[2],motorRef[0], motorRef[1], motorRef[2]);
+        printf("LC1: %+4.2f; LC2: %+4.2f; LC31: %+4.2f; MR1: %+4.2f; MR2: %+4.2f, MR3: %+4.2f, \r",loadCellData[0],loadCellData[1],loadCellData[2],motorRef[0], motorRef[1], motorRef[2]);
         ReleaseMutex( hIOMutex);
         sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
         strcat (dataSample, dataTemp);

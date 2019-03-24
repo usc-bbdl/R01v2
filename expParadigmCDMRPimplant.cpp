@@ -4,7 +4,7 @@
 #include <ctime>
 #include <math.h>
 #define shellSleep 1000
-#define scaleDisp  20 //in file - if units are mm, set 1
+#define scaleDisp  5 //in file - if units are mm, set 1
                       //        - if units are cm, set 10
 const int Trials = 32; //replace numTrials with Trials and vice versa
 
@@ -12,19 +12,19 @@ const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-     defaultEP[0] =  -177.625; // x
-     defaultEP[1] =  -152.083; // y
-     defaultEP[2] =  367.383; // z
-     defaultEP[3] =  -81.054; // a
-     defaultEP[4] =  80.855; // b
-     defaultEP[5] =   143.407; // c
+     defaultEP[0] = -427.120; // x
+     defaultEP[1] = -209.105; // y
+     defaultEP[2] =  237.516; // z
+     defaultEP[3] = - 89.495; // a
+     defaultEP[4] =   86.322; // b
+     defaultEP[5] =  137.232; // c
      
-     defaultPos[0] =  -161.432; // J1
-     defaultPos[1] =  -129.800; // J2
-     defaultPos[2] =  197.722; // J3
-     defaultPos[3] =  95.005; // J4
-     defaultPos[4] =  77.721; // J5
-     defaultPos[5] =   74.175; // J6
+     defaultPos[0] = -164.422; // J1
+     defaultPos[1] = - 83.656; // J2
+     defaultPos[2] =  192.386; // J3
+     defaultPos[3] =   98.504; // J4
+     defaultPos[4] =   76.987; // J5
+     defaultPos[5] =   27.044; // J6
      
 
     //double defaultPos[6] = {154.548,-62.378,158.209,-92.896,-64.234,13.145};
