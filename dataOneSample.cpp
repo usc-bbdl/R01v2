@@ -16,9 +16,13 @@ dataOneSample::dataOneSample()
     DAQmxErrChk (DAQmxStartTask(loadCellHandle));
     DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,3,NULL,NULL));
 
+    printf("\n\nRaw LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f .\n\n", loadCellData[0],loadCellData[1],loadCellData[2]);
+
     loadCell1 = loadCellData[0] * loadCellScale1;
     loadCell2 = loadCellData[1] * loadCellScale2;
     loadCell3 = loadCellData[2] * loadCellScale3;
+
+    printf("\n\nScaled LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f .\n\n", loadCell1,loadCell2,loadCell3);
 
 Error:
 	if( DAQmxFailed(error) ) {
