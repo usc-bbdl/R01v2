@@ -55,6 +55,8 @@ public:
     int setPerturbationAngle(double);
     double getTime();
     void dummy();
+
+    void calibrateLC();
 };
 
 #endif

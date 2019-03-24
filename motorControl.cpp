@@ -181,6 +181,8 @@ motorControl::motorControl(double offset0, double offset1, double offset2, doubl
     DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[2],"PXI1Slot3/ctr2","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));//old: ctr3
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[2],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
 
+    // Calibrate loadcells
+    calibrateLC();
 
 Error:
 	if( DAQmxFailed(error) ) {
@@ -191,6 +193,65 @@ Error:
 		printf("DAQmx Error: %s\n",errBuff);
         printf("Motor, load cell or encoder initialization error\n");
 	}
+}
+
+void motorControl::calibrateLC()
+{
+    char        errBuff[2048]   = {'\0'};
+    int32       error           = 0;
+    bool32      isLate          = {0};
+
+    // Start all tasks
+    DAQmxErrChk (DAQmxStartTask(loadCelltaskHandle));
+    /*
+    DAQmxErrChk (DAQmxStartTask(motorTaskHandle));
+    DAQmxErrChk (DAQmxStartTask(encodertaskHandle[0]));
+    DAQmxErrChk (DAQmxStartTask(encodertaskHandle[1]));
+    DAQmxErrChk (DAQmxStartTask(encodertaskHandle[2]));
+    DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
+    */
+
+    // Sample load cells
+    DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate));
+    DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,8,NULL,NULL));
+    printf("\n\nMC Calibration: Raw LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
+            loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
+    loadCellOffset0 = loadCellData[0] * loadCellScale0;
+    loadCellOffset1 = loadCellData[1] * loadCellScale1;
+    loadCellOffset2 = loadCellData[2] * loadCellScale2;
+    loadCellOffset3 = loadCellData[3] * loadCellScale3;
+    loadCellOffset4 = loadCellData[4] * loadCellScale4;
+    loadCellOffset5 = loadCellData[5] * loadCellScale5;
+    loadCellOffset6 = loadCellData[6] * loadCellScale6;
+    printf("\n\nMC Calibration: Scaled LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
+            loadCellOffset0,loadCellOffset1,loadCellOffset2,loadCellOffset3,loadCellOffset4,loadCellOffset5,loadCellOffset6);
+
+    // Stop and clear all tasks, also handle errors
+Error:
+	if( DAQmxFailed(error) ) {
+		DAQmxGetExtendedErrorInfo(errBuff,2048);
+		/*********************************************/
+		// DAQmx Stop Code
+		/*********************************************/
+				printf("DAQmx Error: %s\n",errBuff);
+        printf("Motor control Error\n");
+	}
+    DAQmxStopTask(loadCelltaskHandle);
+	//DAQmxClearTask(loadCelltaskHandle);
+    /*
+    DAQmxStopTask(encodertaskHandle[0]);
+    DAQmxStopTask(encodertaskHandle[1]);
+    DAQmxStopTask(encodertaskHandle[2]);
+	DAQmxClearTask(encodertaskHandle[0]);
+    DAQmxClearTask(encodertaskHandle[1]);
+    DAQmxClearTask(encodertaskHandle[2]);
+
+    DAQmxStopTask(motorTaskHandle);
+	DAQmxClearTask(motorTaskHandle);
+
+    DAQmxStopTask(motorEnableHandle);
+	DAQmxClearTask(motorEnableHandle);
+    */
 }
 
 motorControl::~motorControl()
@@ -311,20 +372,6 @@ void motorControl::controlLoop(void)
     uInt32 clockBitXOR;
     clockBitXOR = ((clockBit>>7) | (dataEnable>>31));
     bool flg = true;
-    
-    DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate));
-    DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,8,NULL,NULL));
-    printf("\n\nLOOP: Raw LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
-            loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
-    loadCellOffset0 = loadCellData[0] * loadCellScale0;
-    loadCellOffset1 = loadCellData[1] * loadCellScale1;
-    loadCellOffset2 = loadCellData[2] * loadCellScale2;
-    loadCellOffset3 = loadCellData[3] * loadCellScale3;
-    loadCellOffset4 = loadCellData[4] * loadCellScale4;
-    loadCellOffset5 = loadCellData[5] * loadCellScale5;
-    loadCellOffset6 = loadCellData[6] * loadCellScale6;
-    printf("\n\nScaled LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
-            loadCellOffset0,loadCellOffset1,loadCellOffset2,loadCellOffset3,loadCellOffset4,loadCellOffset5,loadCellOffset6);
 
     while(live)
     {
