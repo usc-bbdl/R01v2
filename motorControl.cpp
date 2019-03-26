@@ -483,12 +483,12 @@ void motorControl::controlLoop(void)
         integral[6] = integral[6] + errorForce[6] * (tock - tick);
 
         motorCommand[0] = integral[0] * I;
-        motorCommand[1] = integral[1] * 0;
-        motorCommand[2] = integral[2] * 0;
-        motorCommand[3] = integral[3] * 0;
-        motorCommand[4] = integral[4] * 0;
-        motorCommand[5] = integral[5] * 0;
-        motorCommand[6] = integral[6] * 0;
+        motorCommand[1] = integral[1] * I;
+        motorCommand[2] = integral[2] * I;
+        motorCommand[3] = integral[3] * I;
+        motorCommand[4] = integral[4] * I;
+        motorCommand[5] = integral[5] * I;
+        motorCommand[6] = integral[6] * I;
 
         //motorCommand[3] = EMG;
 
