@@ -11,11 +11,25 @@
 
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
+// Muscle motor ID
+#define SMARTA 0
+#define SMARTB 1
+#define FDS 2
+#define PIP 3
+#define DIP 4
+#define LBR 5
+#define EIP 6
+
+// MUSCLE COUNT
+#define MUSCLE_NUM 7
+#define NUM_JR3_CHANNELS 6
+
 const int controlFreq = 1000;
 const double PI = 3.14159265358979323846;
 
 const double shaftRadius = 0.003;// motor shaft radius in cm
 
+// Motor Load cell calibration
 const double loadCellScale0 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
 const double loadCellScale1 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
 const double loadCellScale2 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
@@ -24,14 +38,37 @@ const double loadCellScale4 = (1/sqrt(2.0)) * 50.53; //From calibration test wit
 const double loadCellScale5 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
 const double loadCellScale6 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
 
-const int sampleFreq = 50000;
-const double motorMinVoltage = -7;
-const double motorMaxVoltage = 7;
-const int messageMinVoltage = 0;
-const double messageMaxVoltage = 0.03;
-const double loadCellMinVoltage = -10;
-const double loadCellMaxVoltage = +10;
-const int encoderPulsesPerRev = 500;
+const int       sampleFreq          = 50000;
+const double    motorMinVoltage     = -7;
+const double    motorMaxVoltage     = 7;
+const int       messageMinVoltage   = 0;
+const double    messageMaxVoltage   = 0.03;
+const double    loadCellMinVoltage  = -10;
+const double    loadCellMaxVoltage  = +10;
+const int       encoderPulsesPerRev = 500;
+
+// JR3 Calibration Matrix
+const double calibrationMatrixJR3[6][6] =
+{
+    {13.669,0.229,0.105,-0.272,0.060,0.865},
+    {0.160,13.237,-0.387,-0.027,-0.396,-0.477},
+    {1.084,0.605,27.092,-2.88,-0.106,1.165},
+    {-.007,-.003,-0.001,0.676,-0.002,-0.038},
+    {0.004,-0.004,0.001,0.000,0.688,-0.012},
+    {0.004,0.003,0.003,-0.006,0.013,0.665}
+};
+
+const double identityMatrixJR3[6][6] =
+{
+    {1.0,0.0,0.0,0.0,0.0,0.0},
+    {0.0,1.0,0.0,0.0,0.0,0.0},
+    {0.0,0.0,1.0,0.0,0.0,0.0},
+    {0.0,0.0,0.0,1.0,0.0,0.0},
+    {0.0,0.0,0.0,0.0,1.0,0.0},
+    {0.0,0.0,0.0,0.0,0.0,1.0}
+};
+
+
 
 /*
 const uInt32     MESSAGE_NO_CONNECTION = 0x00000000;
