@@ -25,7 +25,7 @@ class motorControl
     uInt32      dataEnable;
     TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
     TaskHandle  encodertaskHandle[3];
-    double loadCellOffset0, loadCellOffset1, loadCellOffset2, loadCellOffset3, loadCellOffset4, loadCellOffset5, loadCellOffset6;
+
     double I, perturbationAngle;
     TimeData timeData;
     static void motorControlLoop(void*);
@@ -34,13 +34,18 @@ class motorControl
     bool live;
     float64 encoderData1[1],encoderData2[1],encoderData3[1],muscleLengthPreviousTick[2], muscleLengthOffset[3];
     char header[200];
+
 public:    
+    
+    double  loadCellOffset[MUSCLE_NUM], JR3V_offset[NUM_JR3_CHANNELS];
+    float64 loadCellData[NUM_ANALOG_IN];
+    float64 motorRef[MUSCLE_NUM], muscleLength[MUSCLE_NUM], muscleVel[MUSCLE_NUM];
+
     bool resetMuscleLength;
-    float64 loadCellData[8],motorRef[7],muscleLength[7],muscleVel[7];
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
     unsigned int muscleSpikeCount[2],raster_MN_1[2],raster_MN_2[2],raster_MN_3[2],raster_MN_4[2],raster_MN_5[2],raster_MN_6[2];
     float muscleEMG[2],spindleIa[2], spindleII[2],encoderBias[3],encoderGain[3];
-    motorControl(double,double,double,double,double,double,double);
+    motorControl(double *, double *);
     ~motorControl(void);
     bool isEnable, isWindUp, isControlling;
     int motorEnable();

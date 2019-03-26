@@ -23,20 +23,20 @@
 // MUSCLE COUNT
 #define MUSCLE_NUM 7
 #define NUM_JR3_CHANNELS 6
-
+#define NUM_ANALOG_IN (MUSCLE_NUM + NUM_JR3_CHANNELS)
 const int controlFreq = 1000;
 const double PI = 3.14159265358979323846;
 
 const double shaftRadius = 0.003;// motor shaft radius in cm
 
 // Motor Load cell calibration
-const double loadCellScale0 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
-const double loadCellScale1 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
-const double loadCellScale2 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
-const double loadCellScale3 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
-const double loadCellScale4 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
-const double loadCellScale5 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
-const double loadCellScale6 = (1/sqrt(2.0)) * 50.53; //From calibration test with weights
+const double loadCellScale[7] = {   (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
+                                    (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
+                                    (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
+                                    (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
+                                    (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
+                                    (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
+                                    (1/sqrt(2.0)) * 50.53}; //From calibration test with weights
 
 const int       sampleFreq          = 50000;
 const double    motorMinVoltage     = -7;

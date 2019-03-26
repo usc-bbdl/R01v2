@@ -12,6 +12,7 @@ class dataOneSample
 public:
     dataOneSample();
     ~dataOneSample(void);
-    double loadCell0, loadCell1, loadCell2, loadCell3, loadCell4, loadCell5, loadCell6;
+    double loadCell[MUSCLE_NUM];
+    double JR3_V[NUM_JR3_CHANNELS];
 };
 #endif

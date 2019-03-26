@@ -105,8 +105,8 @@ int dataLogger::startRecording()
             totalSampleRead+=readLoadCell;
             for(int i = 0; i<readLoadCell*2; i+=2)
             {
-                loadCellData[i] = (loadCellData[i] *loadCellScale1) - loadCellOffset1;
-                loadCellData[i+1] = (loadCellData[i+1] *loadCellScale2) - loadCellOffset2;
+                loadCellData[i] = (loadCellData[i] *loadCellScale[0]) - loadCellOffset1;
+                loadCellData[i+1] = (loadCellData[i+1] *loadCellScale[1]) - loadCellOffset2;
                 encoderData1[i/2] = 2 * PI * shaftRadius * encoderData1[i/2] / 365 + 1;
                 encoderData2[i/2] = 2 * PI * shaftRadius * encoderData2[i/2] / 365 + 1;
                 //fprintf(dataFile,"%.6f,%.6f,%.6f,%.6f\n",loadCellData[i],loadCellData[i+1],encoderData1[i/2],encoderData2[i/2]);

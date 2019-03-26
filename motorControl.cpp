@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
-motorControl::motorControl(double offset0, double offset1, double offset2, double offset3, double offset4, double offset5, double offset6)
+motorControl::motorControl(double *offset, double *JR3_V)
 {
     //
     newPdgm_Flag = false;
@@ -36,37 +36,19 @@ motorControl::motorControl(double offset0, double offset1, double offset2, doubl
     isControlling = FALSE;
     live = FALSE;
 
-    loadCellOffset0 = offset0;
-    loadCellOffset1 = offset1;
-    loadCellOffset2 = offset2;
-    loadCellOffset3 = offset3;
-    loadCellOffset4 = offset4;
-    loadCellOffset5 = offset5;
-    loadCellOffset6 = offset6;
+    std::cout<<"\n\nLC offsets:";
+    for(int LCO_i = 0; LCO_i < MUSCLE_NUM; LCO_i++) {
+        loadCellOffset[LCO_i] = offset[LCO_i];
+        JR3V_offset[LCO_i] = JR3_V[LCO_i];
+        std::cout<<"\n\t"<<LCO_i<<": "<<loadCellOffset[LCO_i];
+        loadCellData[LCO_i] = 0;
+            motorRef[LCO_i] = 5;
+    }
+    std::cout<<std::endl;
 
-    std::cout<<"\n\nLC offsets:\n\t0: "<<loadCellOffset0
-                            <<"\n\t1: "<<loadCellOffset1
-                            <<"\n\t2: "<<loadCellOffset2
-                            <<"\n\t3: "<<loadCellOffset3
-                            <<"\n\t4: "<<loadCellOffset4
-                            <<"\n\t5: "<<loadCellOffset5
-                            <<"\n\t6: "<<loadCellOffset6<<std::endl;
-    loadCellData[0] = 0;
-    loadCellData[1] = 0;
-    loadCellData[2] = 0;
-    loadCellData[3] = 0;
-    loadCellData[4] = 0;
-    loadCellData[5] = 0;
-    loadCellData[6] = 0;
-    loadCellData[7] = 0;
-
-    motorRef[0] = 5;
-    motorRef[1] = 5;
-    motorRef[2] = 5;
-    motorRef[3] = 5;
-    motorRef[4] = 5;
-    motorRef[5] = 5;
-    motorRef[6] = 5;
+    for(int LCO_i = MUSCLE_NUM; LCO_i < MUSCLE_NUM + NUM_JR3_CHANNELS; LCO_i++) {
+        loadCellData[LCO_i] = 0;
+    }
 
     encoderData1[0] = 0;
     encoderData2[0] = 0;
@@ -185,7 +167,7 @@ motorControl::motorControl(double offset0, double offset1, double offset2, doubl
     DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[2],"PXI1Slot3/ctr2","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));//old: ctr3
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[2],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
 
-    // Calibrate loadcells
+    // Calibrate loadcells + JR3
     calibrateLC();
 
 Error:
@@ -217,18 +199,19 @@ void motorControl::calibrateLC()
 
     // Sample load cells
     DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate));
-    DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,8,NULL,NULL));
+    DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData, NUM_ANALOG_IN ,NULL,NULL));
+    
     printf("\n\nMC Calibration: Raw LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
-            loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
-    loadCellOffset0 = loadCellData[0] * loadCellScale0;
-    loadCellOffset1 = loadCellData[1] * loadCellScale1;
-    loadCellOffset2 = loadCellData[2] * loadCellScale2;
-    loadCellOffset3 = loadCellData[3] * loadCellScale3;
-    loadCellOffset4 = loadCellData[4] * loadCellScale4;
-    loadCellOffset5 = loadCellData[5] * loadCellScale5;
-    loadCellOffset6 = loadCellData[6] * loadCellScale6;
+            loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);    
+    for(int LCO_i = 0; LCO_i < MUSCLE_NUM; LCO_i++) {
+        loadCellOffset[LCO_i] = loadCellData[LCO_i] * loadCellScale[LCO_i];
+    }
     printf("\n\nMC Calibration: Scaled LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
-            loadCellOffset0,loadCellOffset1,loadCellOffset2,loadCellOffset3,loadCellOffset4,loadCellOffset5,loadCellOffset6);
+            loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
+
+    for(int LCO_i = MUSCLE_NUM; LCO_i < NUM_ANALOG_IN; LCO_i++) {
+        JR3V_offset[LCO_i - MUSCLE_NUM] = loadCellData[LCO_i];
+    }
 
     // Stop and clear all tasks, also handle errors
 Error:
@@ -406,7 +389,7 @@ void motorControl::controlLoop(void)
         //desire Forced, muscle Length, muscle Velocity PIPES should be read here
         
         DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate));
-        DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData,8,NULL,NULL));
+        DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData, NUM_ANALOG_IN ,NULL,NULL));
         DAQmxErrChk (DAQmxWriteAnalogF64(motorTaskHandle,1,FALSE,10,DAQmx_Val_GroupByChannel,motorCommand,NULL,NULL));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderData2,1,NULL,0));
@@ -449,88 +432,22 @@ void motorControl::controlLoop(void)
         muscleLengthPreviousTick[0] = muscleLength[0];
         muscleLengthPreviousTick[1] = muscleLength[1];
         
-        loadCellData[0] = (loadCellData[0] * loadCellScale0) - loadCellOffset0;
-        loadCellData[1] = (loadCellData[1] * loadCellScale1) - loadCellOffset1;
-        loadCellData[2] = (loadCellData[2] * loadCellScale2) - loadCellOffset2;
-        loadCellData[3] = (loadCellData[3] * loadCellScale3) - loadCellOffset3;
-        loadCellData[4] = (loadCellData[4] * loadCellScale4) - loadCellOffset4;
-        loadCellData[5] = (loadCellData[5] * loadCellScale5) - loadCellOffset5;
-        loadCellData[6] = (loadCellData[6] * loadCellScale6) - loadCellOffset6;
+        for(int LCO_j = 0; LCO_j < MUSCLE_NUM; LCO_j++) {
+            loadCellData[LCO_j] = (loadCellData[LCO_j] * loadCellScale[LCO_j]) - loadCellOffset[LCO_j];
         
-        if(newPdgm_Flag)
-        {
-            //errorForce[0] = newPdgm_ref[1] - loadCellData[0];
-            //errorForce[1] = newPdgm_ref[0] - loadCellData[1];
-            //errorForce[2] = newPdgm_ref[0] - loadCellData[2];
-            motorRef[0] = newPdgm_ref[0];
-            motorRef[1] = newPdgm_ref[1];
-            motorRef[2] = newPdgm_ref[2];
-            motorRef[3] = newPdgm_ref[3];
-            motorRef[4] = newPdgm_ref[4];
-            motorRef[5] = newPdgm_ref[5];
-            motorRef[6] = newPdgm_ref[6];
-        }
-        errorForce[0] = motorRef[0] - loadCellData[0];
-        errorForce[1] = motorRef[1] - loadCellData[1];
-        errorForce[2] = motorRef[2] - loadCellData[2];
-        errorForce[3] = motorRef[3] - loadCellData[3];
-        errorForce[4] = motorRef[4] - loadCellData[4];
-        errorForce[5] = motorRef[5] - loadCellData[5];
-        errorForce[6] = motorRef[6] - loadCellData[6];
+            if(newPdgm_Flag)
+                motorRef[LCO_j] = newPdgm_ref[LCO_j];
+            errorForce[LCO_j] = motorRef[LCO_j] - loadCellData[LCO_j];
+            
+            integral[LCO_j] = integral[LCO_j] + errorForce[LCO_j] * (tock - tick);
+            motorCommand[LCO_j] = integral[LCO_j] * I;
 
-        integral[0] = integral[0] + errorForce[0] * (tock - tick);
-        integral[1] = integral[1] + errorForce[1] * (tock - tick);
-        integral[2] = integral[2] + errorForce[2] * (tock - tick);
-        integral[3] = integral[3] + errorForce[3] * (tock - tick);
-        integral[4] = integral[4] + errorForce[4] * (tock - tick);
-        integral[5] = integral[5] + errorForce[5] * (tock - tick);
-        integral[6] = integral[6] + errorForce[6] * (tock - tick);
+            if (motorCommand[LCO_j] > motorMaxVoltage)
+                motorCommand[LCO_j] = motorMaxVoltage;
+            if (motorCommand[LCO_j] < motorMinVoltage)
+                motorCommand[LCO_j] = motorMinVoltage;
+        } // end LCO_j loop
 
-        motorCommand[0] = integral[0] * I;
-        motorCommand[1] = integral[1] * I;
-        motorCommand[2] = integral[2] * I;
-        motorCommand[3] = integral[3] * I;
-        motorCommand[4] = integral[4] * I;
-        motorCommand[5] = integral[5] * I;
-        motorCommand[6] = integral[6] * I;
-
-        //motorCommand[3] = EMG;
-
-        if (motorCommand[0] > motorMaxVoltage)
-            motorCommand[0] = motorMaxVoltage;
-        if (motorCommand[0] < motorMinVoltage)
-            motorCommand[0] = motorMinVoltage;
-
-        if (motorCommand[1] > motorMaxVoltage)
-            motorCommand[1] = motorMaxVoltage;
-        if (motorCommand[1] < motorMinVoltage)
-            motorCommand[1] = motorMinVoltage;
-
-        if (motorCommand[2] > motorMaxVoltage)
-            motorCommand[2] = motorMaxVoltage;
-        if (motorCommand[2] < motorMinVoltage)
-            motorCommand[2] = motorMinVoltage;
-
-        if (motorCommand[3] > motorMaxVoltage)
-            motorCommand[3] = motorMaxVoltage;
-        if (motorCommand[3] < motorMinVoltage)
-            motorCommand[3] = motorMinVoltage;
-
-        if (motorCommand[4] > motorMaxVoltage)
-            motorCommand[4] = motorMaxVoltage;
-        if (motorCommand[4] < motorMinVoltage)
-            motorCommand[4] = motorMinVoltage;
-
-        if (motorCommand[5] > motorMaxVoltage)
-            motorCommand[5] = motorMaxVoltage;
-        if (motorCommand[5] < motorMinVoltage)
-            motorCommand[5] = motorMinVoltage;
-
-        if (motorCommand[6] > motorMaxVoltage)
-            motorCommand[6] = motorMaxVoltage;
-        if (motorCommand[6] < motorMinVoltage)
-            motorCommand[6] = motorMinVoltage;
-        
         printf("L0: %+3.2f; L1: %+3.2f; L2: %+3.2f; L3: %+3.2f; L4: %+3.2f; L5: %+3.2f; L6: %+3.2f\r",loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
         ReleaseMutex( hIOMutex);
         sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);

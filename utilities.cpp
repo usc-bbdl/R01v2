@@ -24,7 +24,7 @@ int proceedState(int *state)
     int retVal = 0;
     int menu = 0;
     static dataOneSample loadCellOffsets;
-    static motorControl motors(loadCellOffsets.loadCell0,loadCellOffsets.loadCell1,loadCellOffsets.loadCell2,loadCellOffsets.loadCell3,loadCellOffsets.loadCell4,loadCellOffsets.loadCell5,loadCellOffsets.loadCell6);
+    static motorControl motors(loadCellOffsets.loadCell, loadCellOffsets.JR3_V);
     static expParadigmManualPerturbation paradigmManualPerturbation;
     static expParadigmVoluntaryMovement paradigmVoluntaryMovement(&motors);
     //double defaultPointJoint[6] = {158.4,-62.3, 160.2,-87.7,-80.6,-3.4};
