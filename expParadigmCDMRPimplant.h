@@ -46,6 +46,14 @@ public:
     int setPerturbationShell(long trial, long perts, double x, double y, double z, double flexF);
     //--------------------------------
 
+    // BALL PULL ----------------------
+    void sweepBallPull(double minForce, double maxForce, double forceRes);
+    //--------------------------------
+
+    // SUB MENU ----------------------
+    void CDMRPmenu();
+    //--------------------------------
+
     int setPerturbationAngle(double angle);
     int setAdeptDefaultPosition();
     int startAdeptPerturbations(int numberOfPerturbations);

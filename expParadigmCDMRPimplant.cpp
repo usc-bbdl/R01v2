@@ -360,3 +360,39 @@ int expParadigmCDMRPimplant::setAdeptDefaultPosition()
             defaultPoint.c );
     return 1;
 }
+
+// BALL PULL -----------------------------------------------------------------------------------------------------------
+void sweepBallPull(double minForce, double maxForce, double forceRes)
+{
+    printf("\n\nCDMRP Ball Pulling paradigm started...\n\n");
+    for(int f = minForce; f <= maxForce; f += forceRes) {
+        printf("\n\n
+    }
+
+    printf("\n\nCDMRP Ball Pulling paradigm finished!!\n\n");
+}
+//----------------------------------------------------------------------------------------------------------------------
+
+// SUB MENU ------------------------------------------------------------------------------------------------------------
+void expParadigmCDMRPimplant::CDMRPmenu()
+{
+    int menu = 0;
+    printf("\n\nCMDRP submenu:\n\t0. Exit.\n\t1. 3D shell movement.\n\t2. Ball pulling.\n\t Select option...\n\n");
+    do{
+            scanf("%d", &menu);
+            if (!((menu <= 2) || (menu >= 0)))
+                printf("Wrong input! try Again.\n");
+    } while    (!((menu <= 2) || (menu >= 0)));
+
+    switch(menu) {
+    case 1:
+        sweepShell3D();
+        break;
+    case 2:
+        sweepBallPull(3.0, 30.0, 3.0);
+        break;
+    default:
+        break;
+    }// end menu switch
+}
+//-------------------------------------------------------------------------------------------------------------------
