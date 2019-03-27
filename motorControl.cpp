@@ -3,7 +3,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <algorithm>
-motorControl::motorControl(double *offset, double *JR3_V)
+#include "matrixFunctions.h"
+
+motorControl::motorControl(double *offset, double *JR3_F)
 {
     //
     newPdgm_Flag = false;
@@ -36,15 +38,15 @@ motorControl::motorControl(double *offset, double *JR3_V)
     isControlling = FALSE;
     live = FALSE;
 
-    std::cout<<"\n\nLC offsets:";
+    // std::cout<<"\n\nLC offsets:";
     for(int LCO_i = 0; LCO_i < MUSCLE_NUM; LCO_i++) {
         loadCellOffset[LCO_i] = offset[LCO_i];
-        JR3V_offset[LCO_i] = JR3_V[LCO_i];
-        std::cout<<"\n\t"<<LCO_i<<": "<<loadCellOffset[LCO_i];
+        JR3F_offset   [LCO_i] = JR3_F [LCO_i];
+        // std::cout<<"\n\t"<<LCO_i<<": "<<loadCellOffset[LCO_i];
         loadCellData[LCO_i] = 0;
             motorRef[LCO_i] = 5;
     }
-    std::cout<<std::endl;
+    // std::cout<<std::endl;
 
     for(int LCO_i = MUSCLE_NUM; LCO_i < MUSCLE_NUM + NUM_JR3_CHANNELS; LCO_i++) {
         loadCellData[LCO_i] = 0;
@@ -168,7 +170,7 @@ motorControl::motorControl(double *offset, double *JR3_V)
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[2],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
 
     // Calibrate loadcells + JR3
-    calibrateLC();
+    // calibrateLC();
 
 Error:
 	if( DAQmxFailed(error) ) {
@@ -197,21 +199,35 @@ void motorControl::calibrateLC()
     DAQmxErrChk (DAQmxStartTask(motorEnableHandle));
     */
 
-    // Sample load cells
+    // Sample load cells and JR3
     DAQmxErrChk(DAQmxWaitForNextSampleClock(loadCelltaskHandle,10, &isLate));
     DAQmxErrChk (DAQmxReadAnalogF64(loadCelltaskHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData, NUM_ANALOG_IN ,NULL,NULL));
     
-    printf("\n\nMC Calibration: Raw LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
-            loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);    
+    // Calibrate Load cells
     for(int LCO_i = 0; LCO_i < MUSCLE_NUM; LCO_i++) {
         loadCellOffset[LCO_i] = loadCellData[LCO_i] * loadCellScale[LCO_i];
     }
-    printf("\n\nMC Calibration: Scaled LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
+    printf("\n\n------------------------------------------------------\n");
+    printf("MotorControl Load Cell Calibrations\n");
+        printf("-----------------------------------\n");
+    printf("Voltage Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
             loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
+    printf("Force Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
+            loadCellOffset[0],loadCellOffset[1],loadCellOffset[2],loadCellOffset[3],loadCellOffset[4],loadCellOffset[5],loadCellOffset[6]);
 
+    // JR3 calibration
     for(int LCO_i = MUSCLE_NUM; LCO_i < NUM_ANALOG_IN; LCO_i++) {
         JR3V_offset[LCO_i - MUSCLE_NUM] = loadCellData[LCO_i];
     }
+    JR3map.matrixMultiply(calibrationMatrixJR3, JR3V_offset, JR3F_offset);
+    printf("\n\nMotorControl Force Transducer Calibrations\n");
+        printf("------------------------------------------\n");
+    printf("Voltage Offsets:\n\tFx: %2.4f, Fy: %2.4f, Fz: %2.4f,\n\tMx: %2.4f, My: %2.4f, Mz: %2.4f .\n\n",
+            JR3V_offset[0], JR3V_offset[1], JR3V_offset[2], JR3V_offset[3], JR3V_offset[4], JR3V_offset[5]);
+    printf("Force Offsets:\n\tFx: %2.4f, Fy: %2.4f, Fz: %2.4f,\n\tMx: %2.4f, My: %2.4f, Mz: %2.4f .\n",
+            JR3F_offset[0], JR3F_offset[1], JR3F_offset[2], JR3F_offset[3], JR3F_offset[4], JR3F_offset[5]);
+
+    printf("----------------------------------------------------\n\n");
 
     // Stop and clear all tasks, also handle errors
 Error:
@@ -432,6 +448,7 @@ void motorControl::controlLoop(void)
         muscleLengthPreviousTick[0] = muscleLength[0];
         muscleLengthPreviousTick[1] = muscleLength[1];
         
+        // Scale loadcell data, compute error and obtain a motor command for all muscles
         for(int LCO_j = 0; LCO_j < MUSCLE_NUM; LCO_j++) {
             loadCellData[LCO_j] = (loadCellData[LCO_j] * loadCellScale[LCO_j]) - loadCellOffset[LCO_j];
         
@@ -448,7 +465,21 @@ void motorControl::controlLoop(void)
                 motorCommand[LCO_j] = motorMinVoltage;
         } // end LCO_j loop
 
-        printf("L0: %+3.2f; L1: %+3.2f; L2: %+3.2f; L3: %+3.2f; L4: %+3.2f; L5: %+3.2f; L6: %+3.2f\r",loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
+        // Scale JR3 data from V to F
+        for(int JR3_j = MUSCLE_NUM; JR3_j < NUM_ANALOG_IN; JR3_j++) {
+            JR3V[JR3_j-MUSCLE_NUM] = loadCellData[JR3_j];
+        }
+        JR3map.matrixMultiply(calibrationMatrixJR3, JR3V, JR3F);
+        for(int JR3_j = 0; JR3_j < NUM_JR3_CHANNELS; JR3_j++) {
+            JR3F[JR3_j] = JR3F[JR3_j] - JR3F_offset[JR3_j];
+        }
+
+        // Print Loadcell data
+        //printf("L0: %+3.2f; L1: %+3.2f; L2: %+3.2f; L3: %+3.2f; L4: %+3.2f; L5: %+3.2f; L6: %+3.2f\r",loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
+
+        // Print JR3 data
+        printf("Fx: %+2.4f, Fy: %+2.4f, Fz: %+2.4f; Mx: %+2.4f; My: %+2.4f; Mz: %+2.4f\r", JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+
         ReleaseMutex( hIOMutex);
         sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
         strcat (dataSample, dataTemp);

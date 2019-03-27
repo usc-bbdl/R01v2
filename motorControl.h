@@ -7,6 +7,7 @@
 #include <windows.h>
 #include <process.h>
 #include <ctime>
+#include "matrixFunctions.h"
 
 class TimeData
 {
@@ -26,6 +27,8 @@ class motorControl
     TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
     TaskHandle  encodertaskHandle[3];
 
+    matrixFunctions JR3map;
+
     double I, perturbationAngle;
     TimeData timeData;
     static void motorControlLoop(void*);
@@ -37,8 +40,8 @@ class motorControl
 
 public:    
     
-    double  loadCellOffset[MUSCLE_NUM], JR3V_offset[NUM_JR3_CHANNELS];
-    float64 loadCellData[NUM_ANALOG_IN];
+    double  loadCellOffset[MUSCLE_NUM] , JR3V_offset[NUM_JR3_CHANNELS], JR3F_offset[NUM_JR3_CHANNELS];
+    float64 loadCellData[NUM_ANALOG_IN], JR3V       [NUM_JR3_CHANNELS], JR3F       [NUM_JR3_CHANNELS];
     float64 motorRef[MUSCLE_NUM], muscleLength[MUSCLE_NUM], muscleVel[MUSCLE_NUM];
 
     bool resetMuscleLength;

@@ -31,6 +31,7 @@
     <ClCompile Include="FPGAControl.cpp" />
     <ClCompile Include="FPGATest.cpp" />
     <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="matrixFunctions.cpp" />
     <ClCompile Include="motorControl.cpp" />
     <ClCompile Include="okFrontPanelDLL.cpp" />
     <ClCompile Include="servoControl.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="expParadigmServoPerturbation.h" />
     <ClInclude Include="expParadigmVoluntaryMovement.h" />
     <ClInclude Include="FPGAControl.h" />
+    <ClInclude Include="matrixFunctions.h" />
     <ClInclude Include="motorControl.h" />
     <ClInclude Include="NIDAQmx.h" />
     <ClInclude Include="okFrontPanelDLL.h" />

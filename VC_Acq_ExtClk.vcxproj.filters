@@ -57,6 +57,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="experimentUserInterface.cpp" />
+    <ClCompile Include="matrixFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataLogger.h">
@@ -102,6 +106,9 @@
       <Filter>Head Files</Filter>
     </ClInclude>
     <ClInclude Include="AdeptArmAPI.h">
+      <Filter>Head Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrixFunctions.h">
       <Filter>Head Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,5 +14,6 @@ public:
     ~dataOneSample(void);
     double loadCell[MUSCLE_NUM];
     double JR3_V[NUM_JR3_CHANNELS];
+    double JR3_F[NUM_JR3_CHANNELS];
 };
 #endif

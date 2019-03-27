@@ -1,4 +1,5 @@
 #include "dataOneSample.h"
+#include "matrixFunctions.h"
 
 dataOneSample::dataOneSample()
 {
@@ -6,6 +7,8 @@ dataOneSample::dataOneSample()
     int32       error=0;
     double loadCellData[NUM_ANALOG_IN];
     TaskHandle loadCellHandle, encoderHandle[2];
+
+    matrixFunctions JR3map;
 
     unsigned int i = 0;
 
@@ -35,17 +38,31 @@ dataOneSample::dataOneSample()
     DAQmxErrChk (DAQmxStartTask(loadCellHandle));
     DAQmxErrChk (DAQmxReadAnalogF64(loadCellHandle,-1,10.0,DAQmx_Val_GroupByScanNumber,loadCellData, NUM_ANALOG_IN ,NULL,NULL));
 
-    printf("\n\nRaw LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
-        loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
+    // load cell calibration
     for(i = 0; i < MUSCLE_NUM; i++) {
         loadCell[i] = loadCellData[i] * loadCellScale[i];
     }
-    printf("\n\nScaled LC Offsets:\n\t0: %2.4f, 1: %2.4f, 2: %2.4f, 3: %2.4f,\n\t4: %2.4f, 5: %2.4f, 6: %2.4f .\n\n",
+    printf("\n\n------------------------------------------------------\n");
+    printf("MotorControl Load Cell Calibrations\n");
+        printf("-----------------------------------\n");
+    printf("Voltage Offsets:\n\t0: %+02.4f, 1: %+02.4f, 2: %+02.4f, 3: %+02.4f,\n\t4: %+02.4f, 5: %+02.4f, 6: %+02.4f .\n\n",
+        loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);    
+    printf("Force Offsets  :\n\t0: %+02.4f, 1: %+02.4f, 2: %+02.4f, 3: %+02.4f,\n\t4: %+02.4f, 5: %+02.4f, 6: %+02.4f .\n\n",
         loadCell[0], loadCell[1], loadCell[2], loadCell[3], loadCell[4], loadCell[5], loadCell[6] );
 
+    // JR3 calibration
     for(i = MUSCLE_NUM; i < NUM_ANALOG_IN; i++) {
         JR3_V[i-MUSCLE_NUM] = loadCellData[i];
     }
+    JR3map.matrixMultiply(calibrationMatrixJR3, JR3_V, JR3_F);
+    printf("\n\nMotorControl Force Transducer Calibrations\n");
+        printf("------------------------------------------\n");
+    printf("Voltage Offsets:\n\tFx: %+02.4f, Fy: %+02.4f, Fz: %+02.4f,\n\tMx: %+02.4f, My: %+02.4f, Mz: %+02.4f .\n\n",
+        JR3_V[0], JR3_V[1], JR3_V[2], JR3_V[3], JR3_V[4], JR3_V[5]);
+    printf("Force Offsets  :\n\tFx: %+02.4f, Fy: %+02.4f, Fz: %+02.4f,\n\tMx: %+02.4f, My: %+02.4f, Mz: %+02.4f .\n\n",
+        JR3_F[0], JR3_F[1], JR3_F[2], JR3_F[3], JR3_F[4], JR3_F[5]);
+
+    printf("------------------------------------------------------\n\n");
 
 Error:
 	if( DAQmxFailed(error) ) {
