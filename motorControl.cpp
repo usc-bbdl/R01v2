@@ -478,7 +478,10 @@ void motorControl::controlLoop(void)
         //printf("L0: %+3.2f; L1: %+3.2f; L2: %+3.2f; L3: %+3.2f; L4: %+3.2f; L5: %+3.2f; L6: %+3.2f\r",loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
 
         // Print JR3 data
-        printf("Fx: %+2.4f, Fy: %+2.4f, Fz: %+2.4f; Mx: %+2.4f; My: %+2.4f; Mz: %+2.4f\r", JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+        //printf("Fx: %+2.4f, Fy: %+2.4f, Fz: %+2.4f; Mx: %+2.4f; My: %+2.4f; Mz: %+2.4f\r", JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+
+        //Print actual & target flexor force , JR3 data (low precision)
+        printf("%+02.1f/%02.1fN - Fx: %+2.2f, Fy: %+2.2f, Fz: %+2.2f; Mx: %+2.2f; My: %+2.2f; Mz: %+2.2f\r", loadCellData[0], motorRef[0], JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
         ReleaseMutex( hIOMutex);
         sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
