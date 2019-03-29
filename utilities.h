@@ -20,6 +20,8 @@
 #define LBR 5
 #define EIP 6
 
+#define toneForce   1 // force needed to maintain tone on muscle
+
 // MUSCLE COUNT
 #define MUSCLE_NUM 7
 #define NUM_JR3_CHANNELS 6

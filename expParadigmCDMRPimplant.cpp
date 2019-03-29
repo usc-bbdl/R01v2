@@ -7,7 +7,8 @@
 #define ballSleep   shellSleep
 #define scaleDisp   5 //in file - if units are mm, set 1
                       //        - if units are cm, set 10
-#define nBallTrials 10
+
+#define nBallTrials 1
 
 const int Trials = 32; //replace numTrials with Trials and vice versa
 
@@ -169,9 +170,7 @@ void expParadigmCDMRPimplant::sweepShell3D() {
                             i+1, numTrials,   dispX[i], dispY[i], dispZ[i], flexorForce[i]);
         printf("---------------------------------------------------------------\n");
         setPerturbationShell(i,numPerts, dispX[i], dispY[i], dispZ[i], flexorForce[i]);
-        //motorObj->motorRef[0] = force;
-        //getch();
-
+        
         beginRobotShellThread();
     }
 
@@ -215,8 +214,9 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     angle[3] = defaultPoint.a;
     angle[4] = defaultPoint.b;
     angle[5] = defaultPoint.c;
-    double flexAngle = perturbationAngle;
-    double extendAngle = -perturbationAngle;
+
+    double extForce = flexForce;
+
     bool isFlex = true;
     //adeptRobot.setVelocity (10, 10, MONITOR, true);
 
@@ -234,16 +234,34 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     backPoint.y = -Y;
     backPoint.z = -Z;
     
+    // open hand
+    // activate extensors
+    motorObj->motorRef[2] = extForce; // finger extensors
+    motorObj->motorRef[3] = extForce; // thumb  extensors        
+        // tone our flexors
+    motorObj->motorRef[0] = toneForce; // finger flexors
+    motorObj->motorRef[1] = toneForce; // thumb  flexors
+
     // Move back to default position
     adeptRobot.move(defaultPoint);
     Sleep(shellSleep);
+
+    // close hand
+        // activate flexors
+    motorObj->motorRef[0] = flexForce; // finger flexors
+    motorObj->motorRef[1] = flexForce; // thumb  flexors
+        // tone out extensors
+    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[3] = toneForce; // thumb  extensors
+    
+    //exp paradigm trial tick
+
 
     for (long i = 0; i < Perts; i++)
     {
         printf("\n\n\t3D Shell Pert %ld/%ld: Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force (Trial %ld)\n",
                                  i+1, Perts,           X,      Y,      Z ,     flexForce, thisTrial);
-                     
-        // Close hand - activate flexors (no need to sleep)
+        // perturb tick
 
         // Move to new position
         adeptRobot.movetrans(dispPoint);
@@ -253,46 +271,14 @@ int expParadigmCDMRPimplant::perturbShellAdept()
         adeptRobot.movetrans(backPoint);
         Sleep(shellSleep);
 
-        // Open hand - activate extensors (no need to sleep)
-
-        
-        
-        /*
-        //adeptRobot.move(defaultPoint);
-        angle[0] = defaultPoint.x;
-        angle[1] = defaultPoint.y;
-        angle[2] = defaultPoint.z;
-        angle[3] = defaultPoint.a;
-        angle[4] = defaultPoint.b;
-        angle[5] = defaultPoint.c;
-        if (isFlex==true)
-        {
-            angle[5] = defaultPoint.c + flexAngle;
-            isFlex = false;
-            //motorObj->perturbationAngle = flexAngle;
-            motorObj->setPerturbationAngle(flexAngle);
-        }
-        else if (isFlex==false)
-        {
-            angle[5] = defaultPoint.c + extendAngle;
-            isFlex = true;
-            //motorObj->perturbationAngle = extendAngle;
-            motorObj->setPerturbationAngle(extendAngle);
-        }
-        */
-
-        motorObj->trialTrigger = 2;
-        
-        /*
-        newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
-        motorObj->trialTrigger = 1;
-        adeptRobot.move(newPoint);
-        */
-
-        //        
+        motorObj->trialTrigger = 2;        
     }
+
     adeptRobot.move(defaultPoint);
     Sleep(shellSleep);
+
+    motorObj->motorRef[0] = toneForce;
+
     robotPerturbationLive = FALSE;
     return 1;
 }
@@ -375,7 +361,7 @@ void expParadigmCDMRPimplant::sweepBallPull(double minForce, double maxForce, do
         printf("\n\n\nBall Pull %02u/%02u: %05.2fN target flexor tension, %02u perturbations.\n", trialNum, NumBallTrials, f, numPerturbs);
         printf("----------------------------------------------------------------\n");
         oneBallPull(f, trialNum, numPerturbs);
-        Sleep(1000);
+        //Sleep(ballSleep);
     }
 
     printf("\n\nCDMRP Ball Pulling paradigm finished!!\n\n");
@@ -383,17 +369,35 @@ void expParadigmCDMRPimplant::sweepBallPull(double minForce, double maxForce, do
 
 void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int trialNum, unsigned int numPerturbations)
 {
+    // trial tick
+
+    double extForce = flexForce;
     for (unsigned int pert = 0; pert < numPerturbations; pert++) {
         printf("\n\n\tBall Pull Pert %u/%u: %2.2fN target flexor tension (Trial %u).\n", pert+1, numPerturbations, flexorTension, trialNum);
-
         // open hand
+            // activate extensors
+        motorObj->motorRef[2] = extForce; // finger extensors
+        motorObj->motorRef[3] = extForce; // thumb  extensors        
+            // tone our flexors
+        motorObj->motorRef[0] = toneForce; // finger flexors
+        motorObj->motorRef[1] = toneForce; // thumb  flexors
 
+        // perturbation tick
 
-        // put hand in right spot
-
+        // put ball in position and set movement velocity, then sleep
+        
+        Sleep(ballSleep);
 
         // close hand
+            // activate flexors
+        motorObj->motorRef[0] = flexForce; // finger flexors
+        motorObj->motorRef[1] = flexForce; // thumb  flexors
+            // tone out extensors
+        motorObj->motorRef[2] = toneForce; // finger extensors
+        motorObj->motorRef[3] = toneForce; // thumb  extensors
 
+        // sleep for hand to get into position?
+        Sleep(ballSleep);
 
         // pull hand out slowly
 
@@ -401,6 +405,12 @@ void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int tri
         // repeat?
         Sleep(ballSleep);
     }
+
+    // tone out all muscles
+    motorObj->motorRef[0] = toneForce; // finger flexors
+    motorObj->motorRef[1] = toneForce; // thumb  flexors
+    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[3] = toneForce; // thumb  extensors
 
     std::cout<<std::endl<<std::endl;
 }
@@ -410,6 +420,16 @@ void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int tri
 void expParadigmCDMRPimplant::CDMRPmenu()
 {
     int menu = 0;
+
+    // Put motor force activations here
+    motorObj->motorRef[0] = toneForce; // finger flexors
+    motorObj->motorRef[1] = toneForce; // thumb  flexors
+    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[3] = toneForce; // thumb  extensors
+    motorObj->motorRef[4] = toneForce;
+    motorObj->motorRef[5] = toneForce;
+    motorObj->motorRef[6] = toneForce;
+
     printf("\n\nCMDRP submenu:\n\t0. Exit.\n\t1. 3D shell movement.\n\t2. Ball pulling.\n\t Select option...\n\n");
     do{
             scanf("%d", &menu);
@@ -427,5 +447,13 @@ void expParadigmCDMRPimplant::CDMRPmenu()
     default:
         break;
     }// end menu switch
+
+    motorObj->motorRef[0] = toneForce;
+    motorObj->motorRef[1] = toneForce;
+    motorObj->motorRef[2] = toneForce;
+    motorObj->motorRef[3] = toneForce;
+    motorObj->motorRef[4] = toneForce;
+    motorObj->motorRef[5] = toneForce;
+    motorObj->motorRef[6] = toneForce;
 }
 //-------------------------------------------------------------------------------------------------------------------

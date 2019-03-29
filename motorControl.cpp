@@ -44,7 +44,7 @@ motorControl::motorControl(double *offset, double *JR3_F)
         JR3F_offset   [LCO_i] = JR3_F [LCO_i];
         // std::cout<<"\n\t"<<LCO_i<<": "<<loadCellOffset[LCO_i];
         loadCellData[LCO_i] = 0;
-            motorRef[LCO_i] = 5;
+            motorRef[LCO_i] = toneForce;
     }
     // std::cout<<std::endl;
 
