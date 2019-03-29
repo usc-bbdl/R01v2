@@ -201,6 +201,7 @@ void AdeptArmAPI::moveToRandomPointOnCircle(double radius) {
 
 // Function set velocity
 void AdeptArmAPI::setVelocity (long double velocity, long double rotationVelocity, VelocityType type, bool always) {
+    std::cout<<"\n\nstart of velocity\n\n";
     this->velocity = velocity;
 	this->rotationalVelocity = rotationVelocity;
 	std::string set_velocity_command_string = "2," + std::to_string(velocity) + "," + std::to_string(rotationVelocity) + ",";
@@ -225,8 +226,9 @@ void AdeptArmAPI::setVelocity (long double velocity, long double rotationVelocit
 	else {
 		set_velocity_command_string.append("1!");
 	}
-
+    std::cout<<"\n\nSending velocity command\n\n";
 	sendStr(set_velocity_command_string);
+    std::cout<<"\n\nend of velocity\n\n";
 }
 
 
@@ -264,12 +266,12 @@ void AdeptArmAPI::sendStr(std::string input) {
 		char recvbuf[10];
 		iResult = recv(ConnectSocket, recvbuf, 10, 0);
 		if ( iResult > 0 ) {
-			//printf("Bytes received: %d\n", iResult);
-			//std::cout << "Received: " << recvbuf << std::endl;
+			//printf("\nAdept Arm API: Bytes received: %d\n", iResult);
+			//std::cout << "\nAdept Arm API: Received: " << recvbuf << std::endl;
 		} else if ( iResult == 0) {
-			//printf("No bytes received\n");
+			printf("\nAdept Arm API: No bytes received\n");
 		} else {
-			//printf("Recv failed with error: %d\n", WSAGetLastError());
+			printf("\nAdept Arm API: Recv failed with error: %d\n", WSAGetLastError());
 		}
 	}
 }
