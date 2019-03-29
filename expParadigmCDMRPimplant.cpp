@@ -3,9 +3,12 @@
 #include <stdio.h>
 #include <ctime>
 #include <math.h>
-#define shellSleep 1000
-#define scaleDisp  5 //in file - if units are mm, set 1
+#define shellSleep  1000
+#define ballSleep   shellSleep
+#define scaleDisp   5 //in file - if units are mm, set 1
                       //        - if units are cm, set 10
+#define nBallTrials 10
+
 const int Trials = 32; //replace numTrials with Trials and vice versa
 
 
@@ -162,8 +165,9 @@ void expParadigmCDMRPimplant::sweepShell3D() {
     for (; i < numTrials; i++)
     {
         while (robotPerturbationLive == TRUE) {}
-        printf("\n\nTrial %ld <%ld Perts, Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force>\n",
-                            i+1, numPerts,   dispX[i], dispY[i], dispZ[i], flexorForce[i]);
+        printf("\n\n\n3D Shell Trial %3ld/%3ld: Disp(%5.2lf, %5.2lf, %5.2lf), %5.2lfN Force\n",
+                            i+1, numTrials,   dispX[i], dispY[i], dispZ[i], flexorForce[i]);
+        printf("---------------------------------------------------------------\n");
         setPerturbationShell(i,numPerts, dispX[i], dispY[i], dispZ[i], flexorForce[i]);
         //motorObj->motorRef[0] = force;
         //getch();
@@ -234,10 +238,10 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     adeptRobot.move(defaultPoint);
     Sleep(shellSleep);
 
-    for (int i = 0; i < Perts; i++)
+    for (long i = 0; i < Perts; i++)
     {
-        printf("\n\n\t---> Pert %ld/%ld, Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force>\n",
-                             i+1, Perts,           X,      Y,      Z ,     flexForce);
+        printf("\n\n\t3D Shell Pert %ld/%ld: Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force (Trial %ld)\n",
+                                 i+1, Perts,           X,      Y,      Z ,     flexForce, thisTrial);
                      
         // Close hand - activate flexors (no need to sleep)
 
@@ -362,14 +366,43 @@ int expParadigmCDMRPimplant::setAdeptDefaultPosition()
 }
 
 // BALL PULL -----------------------------------------------------------------------------------------------------------
-void sweepBallPull(double minForce, double maxForce, double forceRes)
+void expParadigmCDMRPimplant::sweepBallPull(double minForce, double maxForce, double forceRes, unsigned int numPerturbs)
 {
     printf("\n\nCDMRP Ball Pulling paradigm started...\n\n");
-    for(int f = minForce; f <= maxForce; f += forceRes) {
-        printf("\n\n
+    unsigned int NumBallTrials = (unsigned int)((maxForce-minForce)/forceRes + 1);
+    unsigned int    trialNum = 1;
+    for(double f = minForce; f <= maxForce; f += forceRes, trialNum++) {
+        printf("\n\n\nBall Pull %02u/%02u: %05.2fN target flexor tension, %02u perturbations.\n", trialNum, NumBallTrials, f, numPerturbs);
+        printf("----------------------------------------------------------------\n");
+        oneBallPull(f, trialNum, numPerturbs);
+        Sleep(1000);
     }
 
     printf("\n\nCDMRP Ball Pulling paradigm finished!!\n\n");
+}
+
+void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int trialNum, unsigned int numPerturbations)
+{
+    for (unsigned int pert = 0; pert < numPerturbations; pert++) {
+        printf("\n\n\tBall Pull Pert %u/%u: %2.2fN target flexor tension (Trial %u).\n", pert+1, numPerturbations, flexorTension, trialNum);
+
+        // open hand
+
+
+        // put hand in right spot
+
+
+        // close hand
+
+
+        // pull hand out slowly
+
+
+        // repeat?
+        Sleep(ballSleep);
+    }
+
+    std::cout<<std::endl<<std::endl;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -389,7 +422,7 @@ void expParadigmCDMRPimplant::CDMRPmenu()
         sweepShell3D();
         break;
     case 2:
-        sweepBallPull(3.0, 30.0, 3.0);
+        sweepBallPull(3.0, 30.0, 3.0, nBallTrials);
         break;
     default:
         break;

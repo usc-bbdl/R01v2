@@ -47,7 +47,12 @@ public:
     //--------------------------------
 
     // BALL PULL ----------------------
-    void sweepBallPull(double minForce, double maxForce, double forceRes);
+    void sweepBallPull(double minForce, double maxForce, double forceRes, unsigned int numPerturbs);
+    void oneBallPull(double flexorTension, unsigned int trialNum, unsigned int numPerturbations);
+
+    int  beginRobotBallThread(void);
+    void perturbBallAdeptLoop(void* a);
+    int  perturbBallAdept();
     //--------------------------------
 
     // SUB MENU ----------------------
