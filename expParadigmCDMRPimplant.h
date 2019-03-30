@@ -47,11 +47,13 @@ public:
     //--------------------------------
 
     // BALL PULL ----------------------
+    double ball_f;
+    unsigned int ball_trial, ball_pertCount;
     void sweepBallPull(double minForce, double maxForce, double forceRes, unsigned int numPerturbs);
-    void oneBallPull(double flexorTension, unsigned int trialNum, unsigned int numPerturbations);
+    void oneBallPull(/*double flexorTension, unsigned int trialNum, unsigned int numPerturbations*/);
 
-    int  beginRobotBallThread(void);
-    void perturbBallAdeptLoop(void* a);
+    int  beginRobotBallThread(double f, unsigned int trialNum, unsigned int numPerturbs);
+    static void perturbBallLoop(void* a);
     int  perturbBallAdept();
     //--------------------------------
 

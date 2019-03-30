@@ -452,8 +452,9 @@ void motorControl::controlLoop(void)
         for(int LCO_j = 0; LCO_j < MUSCLE_NUM; LCO_j++) {
             loadCellData[LCO_j] = (loadCellData[LCO_j] * loadCellScale[LCO_j]) - loadCellOffset[LCO_j];
         
-            if(newPdgm_Flag)
+            if(newPdgm_Flag) {
                 motorRef[LCO_j] = newPdgm_ref[LCO_j];
+            }
             errorForce[LCO_j] = motorRef[LCO_j] - loadCellData[LCO_j];
             
             integral[LCO_j] = integral[LCO_j] + errorForce[LCO_j] * (tock - tick);
@@ -481,7 +482,7 @@ void motorControl::controlLoop(void)
         //printf("Fx: %+2.4f, Fy: %+2.4f, Fz: %+2.4f; Mx: %+2.4f; My: %+2.4f; Mz: %+2.4f\r", JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
         //Print actual & target flexor force , JR3 data (low precision)
-        printf("%+02.1f/%02.1fN - Fx: %+2.2f, Fy: %+2.2f, Fz: %+2.2f; Mx: %+2.2f; My: %+2.2f; Mz: %+2.2f\r", loadCellData[0], motorRef[0], JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+        printf("%+5.1f/%4.1fN - Fx:%+6.2f, Fy:%+6.2f, Fz:%+6.2f; Mx:%+6.2f; My:%+6.2f; Mz:%+6.2f\r", loadCellData[0], motorRef[0], JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
         ReleaseMutex( hIOMutex);
         sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);

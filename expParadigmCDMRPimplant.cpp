@@ -8,8 +8,14 @@
 #define scaleDisp   5 //in file - if units are mm, set 1
                       //        - if units are cm, set 10
 
-#define nBallTrials 1
-#define ballDisp 5
+#define ballMinForce        3.0
+#define ballMaxForce        3.0
+#define ballForceRes        3.0
+#define nBallPerts          10
+#define ballDisp            50
+#define interpolateBallPts  10
+#define InterpoBallSlpTime  5000
+#define ballGoSlowFlag      1
 
 const int Trials = 32; //replace numTrials with Trials and vice versa
 
@@ -17,19 +23,19 @@ const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-     defaultEP[0] = -427.125; // x
-     defaultEP[1] = -209.099; // y
-     defaultEP[2] =  237.497; // z
-     defaultEP[3] = - 89.497; // a
-     defaultEP[4] =   86.326; // b
-     defaultEP[5] =  137.233; // c
+     defaultEP[0] =   52.304; // x
+     defaultEP[1] = -472.677; // y
+     defaultEP[2] =  237.486; // z
+     defaultEP[3] = - 19.018; // a
+     defaultEP[4] =   85.054; // b
+     defaultEP[5] =  133.571; // c
      
-     defaultPos[0] = -164.423; // J1
-     defaultPos[1] = - 83.655; // J2
-     defaultPos[2] =  192.388; // J3
-     defaultPos[3] =   98.501; // J4
-     defaultPos[4] =   76.986; // J5
-     defaultPos[5] =   27.043; // J6
+     defaultPos[0] = - 94.187; // J1
+     defaultPos[1] = - 83.518; // J2
+     defaultPos[2] =  192.668; // J3
+     defaultPos[3] =   99.728; // J4
+     defaultPos[4] =   77.724; // J5
+     defaultPos[5] =   22.728; // J6
      
 
     //double defaultPos[6] = {154.548,-62.378,158.209,-92.896,-64.234,13.145};
@@ -236,10 +242,10 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     backPoint.z = -Z;
     
     // open hand
-    // activate extensors
+        // activate extensors
     motorObj->motorRef[2] = extForce; // finger extensors
     motorObj->motorRef[3] = extForce; // thumb  extensors        
-        // tone our flexors
+        // tone out flexors
     motorObj->motorRef[0] = toneForce; // finger flexors
     motorObj->motorRef[1] = toneForce; // thumb  flexors
 
@@ -359,36 +365,52 @@ void expParadigmCDMRPimplant::sweepBallPull(double minForce, double maxForce, do
     unsigned int NumBallTrials = (unsigned int)((maxForce-minForce)/forceRes + 1);
     unsigned int    trialNum = 1;
     for(double f = minForce; f <= maxForce; f += forceRes, trialNum++) {
+        while (robotPerturbationLive == TRUE) {}
         printf("\n\n\nBall Pull %02u/%02u: %05.2fN target flexor tension, %02u perturbations.\n", trialNum, NumBallTrials, f, numPerturbs);
         printf("----------------------------------------------------------------\n");
-        oneBallPull(f, trialNum, numPerturbs);
+        //oneBallPull(/*f, trialNum, numPerturbs*/);
+        beginRobotBallThread(f, trialNum, numPerturbs);
         //Sleep(ballSleep);
     }
 
     printf("\n\nCDMRP Ball Pulling paradigm finished!!\n\n");
 }
 
-void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int trialNum, unsigned int numPerturbations)
+int expParadigmCDMRPimplant::beginRobotBallThread(double f, unsigned int trialNum, unsigned int numPerturbs)
 {
+    robotPerturbationLive = TRUE;
+    ball_f          = f;
+    ball_trial      = trialNum;
+    ball_pertCount  = numPerturbs;
+    hIOMutex = CreateMutex(NULL, FALSE, NULL);
+	_beginthread(expParadigmCDMRPimplant::perturbBallLoop,0,this);
+    return 1;
+}
+
+void expParadigmCDMRPimplant::perturbBallLoop(void* a)
+{
+	((expParadigmCDMRPimplant*)a)->oneBallPull();
+}
+
+void expParadigmCDMRPimplant::oneBallPull()
+{
+    double          flexorTension   = ball_f;
+    unsigned int    trialNum        = ball_trial;
+    unsigned int    numPerturbations= ball_pertCount;
+    
     // Setup disp position
     dispPoint   = defaultPoint;
-    dispPoint.x = 0;
-    dispPoint.y = ballDisp;
+    dispPoint.x = -ballDisp;
+    dispPoint.y = 0;
     dispPoint.z = 0;
 
     // setup back position
     backPoint   = defaultPoint;
-    backPoint.x = 0;
-    backPoint.y = -ballDisp;
-    backPoint.z = 0;
+    backPoint.x = ballDisp;
+    backPoint.y = 0;
+    backPoint.z = 0;   
     
-    // Go to default point
-    adeptRobot.move(defaultPoint);
-    Sleep(ballSleep);
-    adeptRobot.movetrans(dispPoint);
-    std::cout<<"Press a key:\n";
-    getch();
-    adeptRobot.move(defaultPoint);
+    flexForce       = flexorTension;
 
     // trial tick
 
@@ -397,21 +419,24 @@ void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int tri
         printf("\n\n\tBall Pull Pert %u/%u: %5.2fN target flexor tension (Trial %u).\n", pert+1, numPerturbations, flexorTension, trialNum);
         printf("\n\n\t\t\tOpening hand.\n");
         // open hand
+
             // activate extensors
         motorObj->motorRef[2] = extForce; // finger extensors
         motorObj->motorRef[3] = extForce; // thumb  extensors        
             // tone our flexors
         motorObj->motorRef[0] = toneForce; // finger flexors
         motorObj->motorRef[1] = toneForce; // thumb  flexors
+        //newPdgm_ref
+        Sleep(ballSleep/2);
 
         // perturbation tick
 
         // put ball in position and set movement velocity, then sleep
         printf("\n\n\t\t\tmoving adept to default.\n");
         adeptRobot.move(defaultPoint);
-        Sleep(ballSleep);
-        printf("\n\n\t\t\tSetting adept speed.\n");
-        //adeptRobot.setVelocity(50, 50, VelocityType::MILLIMETERS_PER_SECOND, 0);
+        Sleep(ballSleep/2);
+        //printf("\n\n\t\t\tSetting adept speed.\n");
+        //adeptRobot.setVelocity(2, 2, VelocityType::MILLIMETERS_PER_SECOND, 0);
         //Sleep(ballSleep);
 
         // close hand
@@ -424,14 +449,36 @@ void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int tri
         motorObj->motorRef[3] = toneForce; // thumb  extensors
 
         // sleep for specimen to get into position?
-        Sleep(ballSleep);
+        Sleep(ballSleep/2);
 
-        // pull hand out slowly
-        adeptRobot.movetrans(dispPoint);
+        // pull hand out
+        if (ballGoSlowFlag == 1) {
+            dispPoint.x = dispPoint.x / interpolateBallPts;
+            for(unsigned int j = 0; j < interpolateBallPts; j++) {
+                adeptRobot.movetrans(dispPoint);
+                Sleep(InterpoBallSlpTime/interpolateBallPts);
+            }
+        } else {
+            adeptRobot.movetrans(dispPoint);
+            Sleep(ballSleep);
+        }
 
-        // repeat?
-        Sleep(ballSleep);
+        // anything else?
+
     }
+
+    // open hand
+        // activate extensors
+    motorObj->motorRef[2] = extForce; // finger extensors
+    motorObj->motorRef[3] = extForce; // thumb  extensors        
+        // tone our flexors
+    motorObj->motorRef[0] = toneForce; // finger flexors
+    motorObj->motorRef[1] = toneForce; // thumb  flexors
+    Sleep(ballSleep/2);
+
+    // Go to default point
+    adeptRobot.move(defaultPoint);
+    Sleep(ballSleep/2);
 
     // tone out all muscles
     motorObj->motorRef[0] = toneForce; // finger flexors
@@ -440,6 +487,7 @@ void expParadigmCDMRPimplant::oneBallPull(double flexorTension, unsigned int tri
     motorObj->motorRef[3] = toneForce; // thumb  extensors
 
     std::cout<<std::endl<<std::endl;
+    robotPerturbationLive = FALSE;
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -469,7 +517,7 @@ void expParadigmCDMRPimplant::CDMRPmenu()
         sweepShell3D();
         break;
     case 2:
-        sweepBallPull(3.0, 30.0, 3.0, nBallTrials);
+        sweepBallPull(ballMinForce, ballMaxForce, ballForceRes, nBallPerts);
         break;
     default:
         break;
