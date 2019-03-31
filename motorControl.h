@@ -25,7 +25,7 @@ class motorControl
 {
     uInt32      dataEnable;
     TaskHandle  motorTaskHandle, motorEnableHandle,loadCelltaskHandle;
-    TaskHandle  encodertaskHandle[3];
+    TaskHandle  encodertaskHandle[4];
 
     matrixFunctions JR3map;
 
@@ -35,20 +35,25 @@ class motorControl
     void controlLoop(void);
     HANDLE hIOMutex;
     bool live;
-    float64 encoderData1[1],encoderData2[1],encoderData3[1],muscleLengthPreviousTick[2], muscleLengthOffset[3];
-    char header[200];
+    float64 encoderData1[1],encoderData2[1],encoderData3[1], encoderData4[1];
+    float64 muscleLengthPreviousTick[4], muscleLengthOffset[4];
+    char header[300];
 
 public:    
     
     double  loadCellOffset[MUSCLE_NUM] , JR3V_offset[NUM_JR3_CHANNELS], JR3F_offset[NUM_JR3_CHANNELS];
     float64 loadCellData[NUM_ANALOG_IN], JR3V       [NUM_JR3_CHANNELS], JR3F       [NUM_JR3_CHANNELS];
     float64 motorRef[MUSCLE_NUM], muscleLength[MUSCLE_NUM], muscleVel[MUSCLE_NUM];
-    double CDMRPprotocolTick;
+    
+    int     CDMRPprotoFlag;
+    int     CDMRPtrialFlag;
+    int     CDMRPpertuFlag;
+    int     CDMRPwatchFlag;
 
     bool resetMuscleLength;
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
     unsigned int muscleSpikeCount[2],raster_MN_1[2],raster_MN_2[2],raster_MN_3[2],raster_MN_4[2],raster_MN_5[2],raster_MN_6[2];
-    float muscleEMG[2],spindleIa[2], spindleII[2],encoderBias[3],encoderGain[3];
+    float muscleEMG[2],spindleIa[2], spindleII[2],encoderBias[4],encoderGain[4];
     motorControl(double *, double *);
     ~motorControl(void);
     bool isEnable, isWindUp, isControlling;

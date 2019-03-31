@@ -22,6 +22,7 @@
 
 #define toneForce   1 // force needed to maintain tone on muscle
 
+#define ENCODER_COUNT 4
 // MUSCLE COUNT
 #define MUSCLE_NUM 7
 #define NUM_JR3_CHANNELS 6

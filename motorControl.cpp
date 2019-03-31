@@ -7,13 +7,18 @@
 
 motorControl::motorControl(double *offset, double *JR3_F)
 {
+    CDMRPprotoFlag = -1;
+    CDMRPtrialFlag = -1;
+    CDMRPpertuFlag = -1;
+    CDMRPwatchFlag = -1;
+    
     //
     newPdgm_Flag = false;
     newPdgm_ref[0] = newPdgm_ref[1] = newPdgm_ref[2] = newPdgm_ref[3] = newPdgm_ref[4] = newPdgm_ref[5] = newPdgm_ref[6] = 0;
     //
     dataEnable = 0x7F;//0x8111111F;//0x1111111;
-    encoderBias[0] = encoderBias[1] = encoderBias[2] = 0;
-    encoderGain[0] = encoderGain[1] = encoderGain[2] = 1;
+    encoderBias[0] = encoderBias[1] = encoderBias[2] = encoderBias[3] = 0;
+    encoderGain[0] = encoderGain[1] = encoderGain[2] = encoderGain[3] =  1;
     perturbationAngle = 0;
     I = 3;
     cortexVoluntaryAmp = 10000;
@@ -59,10 +64,15 @@ motorControl::motorControl(double *offset, double *JR3_F)
     resetMuscleLength = TRUE;
     muscleLengthPreviousTick[0] = 1;
     muscleLengthPreviousTick[1] = 1;
+    muscleLengthPreviousTick[2] = 1;
+    muscleLengthPreviousTick[3] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
+    muscleLengthOffset [2] = 0;
+    muscleLengthOffset [3] = 0;
     //strcpy(header,"Time, Clock, Exp Prot, Len1, ForcMeas, ForcRef, Digit Force 1, Digit Force2, Digit Contact 1, Digit Contact 2");
-    strcpy(header,"Time, Trigger, CDMRP protocol Tick, M0 actual, M0 target, M1 actual, M1 target, M2 actual, M2 target, M3 actual, M3 target");
+    strcpy(header,"Time, Trigger, CDMRP protocol flag, CDMRP trial flag, CDMRP perturbation flag, CDMRP watch wrench flag, M0 actual, M0 target, M1 actual, M1 target, M2 actual, M2 target, M3 actual, M3 target, Fx, Fy, Fz, Mx, My, Mz");
+    
     if (dataAcquisitionFlag[0]){
         //strcat (header, "");
     }
@@ -164,11 +174,14 @@ motorControl::motorControl(double *offset, double *JR3_F)
     DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[0],"PXI1Slot3/ctr0","Enoder 0",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[0],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[1]));
-    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[1],"PXI1Slot3/ctr1","Enoder 1",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));//old: ctr3
+    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[1],"PXI1Slot3/ctr1","Enoder 1",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[1],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));    
     DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[2]));
-    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[2],"PXI1Slot3/ctr2","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));//old: ctr3
+    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[2],"PXI1Slot3/ctr2","Enoder 2",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
     DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[2],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
+    DAQmxErrChk (DAQmxCreateTask("",&encodertaskHandle[3]));
+    DAQmxErrChk (DAQmxCreateCIAngEncoderChan(encodertaskHandle[3],"PXI1Slot3/ctr3","Enoder 3",DAQmx_Val_X4,0,0.0,DAQmx_Val_AHighBHigh,DAQmx_Val_Degrees,encoderPulsesPerRev,0.0,""));
+    DAQmxErrChk (DAQmxCfgSampClkTiming(encodertaskHandle[3],"/PXI1Slot5/ai/SampleClock",controlFreq,DAQmx_Val_Rising,DAQmx_Val_HWTimedSinglePoint,1));
 
     // Calibrate loadcells + JR3
     // calibrateLC();
@@ -413,6 +426,8 @@ void motorControl::controlLoop(void)
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[0],1,10.0,encoderData1,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[1],1,10.0,encoderData2,1,NULL,0));
         DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[2],1,10.0,encoderData3,1,NULL,0));
+        DAQmxErrChk (DAQmxReadCounterF64(encodertaskHandle[3],1,10.0,encoderData4,1,NULL,0));
+
         /*
         if (dataAcquisitionFlag[1]){
             EMG = muscleEMG[0];
@@ -435,21 +450,30 @@ void motorControl::controlLoop(void)
             muscleLengthOffset[0] = 2 * PI * shaftRadius * encoderData1[0] / 365;
             muscleLengthOffset[1] = 2 * PI * shaftRadius * encoderData2[0] / 365;
             muscleLengthOffset[2] = 2 * PI * shaftRadius * encoderData3[0] / 365;
+            muscleLengthOffset[3] = 2 * PI * shaftRadius * encoderData4[0] / 365;
             resetMuscleLength = FALSE;
         }
         muscleLength[0] = ((2 * PI * shaftRadius * encoderData1[0] / 365) - muscleLengthOffset[0]);
         muscleLength[0] = encoderBias[0] + muscleLength[0] *encoderGain[0];
+
         muscleLength[1] = ((2 * PI * shaftRadius * encoderData2[0] / 365) - muscleLengthOffset[1]);
         muscleLength[1] = encoderBias[1] + muscleLength[1] *encoderGain[1];
 
         muscleLength[2] = ((2 * PI * shaftRadius * encoderData3[0] / 365) - muscleLengthOffset[2]);
         muscleLength[2] = encoderBias[2] + muscleLength[2] *encoderGain[2];
 
+        muscleLength[3] = ((2 * PI * shaftRadius * encoderData4[0] / 365) - muscleLengthOffset[3]);
+        muscleLength[3] = encoderBias[3] + muscleLength[3] *encoderGain[3];
+
         muscleVel[0] = (muscleLength[0] -  muscleLengthPreviousTick[0]) / (tock - tick);
         muscleVel[1] = (muscleLength[1] -  muscleLengthPreviousTick[1]) / (tock - tick);
+        muscleVel[2] = (muscleLength[2] -  muscleLengthPreviousTick[2]) / (tock - tick);
+        muscleVel[3] = (muscleLength[3] -  muscleLengthPreviousTick[3]) / (tock - tick);
 
         muscleLengthPreviousTick[0] = muscleLength[0];
         muscleLengthPreviousTick[1] = muscleLength[1];
+        muscleLengthPreviousTick[2] = muscleLength[2];
+        muscleLengthPreviousTick[3] = muscleLength[3];
         
         // Scale loadcell data, compute error and obtain a motor command for all muscles
         for(int LCO_j = 0; LCO_j < MUSCLE_NUM; LCO_j++) {
@@ -478,22 +502,35 @@ void motorControl::controlLoop(void)
             JR3F[JR3_j] = JR3F[JR3_j] - JR3F_offset[JR3_j];
         }
 
+        //------------------
+        //PRINTING ON SCREEN
+        //------------------
+
         // Print Loadcell data
         //printf("L0: %+3.2f; L1: %+3.2f; L2: %+3.2f; L3: %+3.2f; L4: %+3.2f; L5: %+3.2f; L6: %+3.2f\r",loadCellData[0],loadCellData[1],loadCellData[2],loadCellData[3],loadCellData[4],loadCellData[5],loadCellData[6]);
 
         // Print JR3 data
         //printf("Fx: %+2.4f, Fy: %+2.4f, Fz: %+2.4f; Mx: %+2.4f; My: %+2.4f; Mz: %+2.4f\r", JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
-        //Print actual & target flexor force , JR3 data (low precision)
+        // Print Encoder data
+        printf("0: %+7.4f/%+6.3f | 1: %+7.4f/%+6.3f | 2: %+7.4f/%+6.3f | 3: %+7.4f/%+6.3f\r",  muscleLength[0],muscleVel[0], muscleLength[1],muscleVel[1], muscleLength[2],muscleVel[2], muscleLength[3],muscleVel[3]);
+        // Print actual & target flexor force , JR3 data (low precision)
         //printf("%+5.1f/%4.1fN - Fx:%+6.2f, Fy:%+6.2f, Fz:%+6.2f; Mx:%+6.2f; My:%+6.2f; Mz:%+6.2f\r", loadCellData[0], motorRef[0], JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
         //Print actual & target flexor force for 4 muscles
-        printf("M0: %+5.1f/%4.1fN || M1: %+5.1f/%4.1fN || M2: %+5.1f/%4.1fN || M3: %+5.1f/%4.1fN\r", loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
+        //printf("M0: %+5.1f/%4.1fN || M1: %+5.1f/%4.1fN || M2: %+5.1f/%4.1fN || M3: %+5.1f/%4.1fN\r", loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
 
         ReleaseMutex( hIOMutex);
-        //sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol, muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
         
-        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, CDMRPprotocolTick, loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
+        //sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol, muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
+        sprintf(dataSample,"%.3f,%d,%d,%d,%d,%d,%.4f,%.4f,%.6f,%.4f,%.4f,%.6f,%.4f,%.4f,%.6f,%.4f,%.4f,%.6f,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f",
+                            tock,flg, CDMRPprotoFlag,CDMRPtrialFlag,CDMRPpertuFlag,CDMRPwatchFlag,
+                            loadCellData[0],motorRef[0],muscleLength[0],
+                            loadCellData[1],motorRef[1],muscleLength[1],
+                            loadCellData[2],motorRef[2],muscleLength[2],
+                            loadCellData[3],motorRef[3],muscleLength[3],
+                            JR3F[0], JR3F[1], JR3F[2],
+                            JR3F[3], JR3F[4], JR3F[5]);
         
         strcat (dataSample, dataTemp);
         /*
