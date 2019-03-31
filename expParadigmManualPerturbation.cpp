@@ -55,7 +55,7 @@ int expParadigmManualPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACon
             tricepFPGA->updateCortexFlag = '1';
             Sleep(500);
             //realTimeController->resetMuscleLength = TRUE;
-            realTimeController->trialTrigger = 1;
+            //realTimeController->trialTrigger = 1;
             Sleep(500);       
             updateIT = 0;
         }//end update if block

@@ -128,7 +128,7 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
         servo->waitMoving();
         Sleep(100);
         realTimeController->resetMuscleLength = TRUE;
-        realTimeController->trialTrigger = 1;
+        //realTimeController->trialTrigger = 1;
         realTimeController->angle = (initPos[i] + finalPos[i]) /2;
         realTimeController->velocity = rampVelocity[i];
         Sleep(100);
@@ -155,7 +155,7 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             );
             log.fileName = fileName;
             log.trialLength = trialLength[i];
-            realTimeController->trialTrigger = 2;//prints -1
+            //realTimeController->trialTrigger = 2;//prints -1
             servo->setPerturbationParameters(initPos[i], finalPos[i], rampVelocity[i], holdPeriod);
             //servo->rampHold();
 
@@ -164,7 +164,7 @@ int expParadigmServoPerturbation::startParadigm(FPGAControl *bicepFPGA, FPGACont
             servo->waitMoving();
             Sleep(holdPeriod);
 
-            realTimeController->trialTrigger = 3;//prints -2
+            //realTimeController->trialTrigger = 3;//prints -2
             servo->setPosition(finalPos[i]);
             servo->waitMoving();
             Sleep(holdPeriod);    

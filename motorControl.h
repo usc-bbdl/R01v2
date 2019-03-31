@@ -43,6 +43,7 @@ public:
     double  loadCellOffset[MUSCLE_NUM] , JR3V_offset[NUM_JR3_CHANNELS], JR3F_offset[NUM_JR3_CHANNELS];
     float64 loadCellData[NUM_ANALOG_IN], JR3V       [NUM_JR3_CHANNELS], JR3F       [NUM_JR3_CHANNELS];
     float64 motorRef[MUSCLE_NUM], muscleLength[MUSCLE_NUM], muscleVel[MUSCLE_NUM];
+    double CDMRPprotocolTick;
 
     bool resetMuscleLength;
     double cortexVoluntaryAmp, cortexVoluntaryFreq;
@@ -56,7 +57,7 @@ public:
     int motorDisable();
     int motorControllerStart();
     int motorControllerEnd();
-    int gammaDynamic1, gammaStatic1,gammaDynamic2, gammaStatic2,trialTrigger;
+    int gammaDynamic1, gammaStatic1,gammaDynamic2, gammaStatic2/*,trialTrigger*/;
     double cortexDrive[2], angle, velocity;
     bool newPdgm_Flag;
     double newPdgm_ref[7];

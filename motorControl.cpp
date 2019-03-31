@@ -22,7 +22,7 @@ motorControl::motorControl(double *offset, double *JR3_F)
     int32       error=0;
     angle = 0;
     velocity = 0;
-    trialTrigger = 0;
+    //trialTrigger = 0;
     gammaStatic1 = 0;
     gammaDynamic1 = 0;
     gammaStatic2 = 0;
@@ -61,7 +61,8 @@ motorControl::motorControl(double *offset, double *JR3_F)
     muscleLengthPreviousTick[1] = 1;
     muscleLengthOffset [0] = 0;
     muscleLengthOffset [1] = 0;
-    strcpy(header,"Time, Clock, Exp Prot, Len1, ForcMeas, ForcRef, Digit Force 1, Digit Force2, Digit Contact 1, Digit Contact 2");
+    //strcpy(header,"Time, Clock, Exp Prot, Len1, ForcMeas, ForcRef, Digit Force 1, Digit Force2, Digit Contact 1, Digit Contact 2");
+    strcpy(header,"Time, Trigger, CDMRP protocol Tick, M0 actual, M0 target, M1 actual, M1 target, M2 actual, M2 target, M3 actual, M3 target");
     if (dataAcquisitionFlag[0]){
         //strcat (header, "");
     }
@@ -369,8 +370,10 @@ void motorControl::controlLoop(void)
     timeData.resetTimer();
     tick = timeData.getCurrentTime();
     float64 goffsetLoadCell[2]={0};
-    int expProtocol = 0;
-    int expProtocoAdvance = 0;
+    
+    // int expProtocol = 0;
+    // int expProtocoAdvance = 0;
+
     uInt32 clockBit = 0x00000080;
     uInt32 clockBitXOR;
     clockBitXOR = ((clockBit>>7) | (dataEnable>>31));
@@ -482,11 +485,18 @@ void motorControl::controlLoop(void)
         //printf("Fx: %+2.4f, Fy: %+2.4f, Fz: %+2.4f; Mx: %+2.4f; My: %+2.4f; Mz: %+2.4f\r", JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
         //Print actual & target flexor force , JR3 data (low precision)
-        printf("%+5.1f/%4.1fN - Fx:%+6.2f, Fy:%+6.2f, Fz:%+6.2f; Mx:%+6.2f; My:%+6.2f; Mz:%+6.2f\r", loadCellData[0], motorRef[0], JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+        //printf("%+5.1f/%4.1fN - Fx:%+6.2f, Fy:%+6.2f, Fz:%+6.2f; Mx:%+6.2f; My:%+6.2f; Mz:%+6.2f\r", loadCellData[0], motorRef[0], JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+
+        //Print actual & target flexor force for 4 muscles
+        printf("M0: %+5.1f/%4.1fN || M1: %+5.1f/%4.1fN || M2: %+5.1f/%4.1fN || M3: %+5.1f/%4.1fN\r", loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
 
         ReleaseMutex( hIOMutex);
-        sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol,muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
+        //sprintf(dataSample,"%.3f,%d,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, expProtocol, muscleLength[0], loadCellData[0], motorRef[0],loadCellData[4],loadCellData[5],loadCellData[6],loadCellData[7]);
+        
+        sprintf(dataSample,"%.3f,%d,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f",tock,flg, CDMRPprotocolTick, loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
+        
         strcat (dataSample, dataTemp);
+        /*
         if (dataAcquisitionFlag[0]){
             //sprintf(dataTemp,",%.6f,%.6f",motorRef[0],motorCommand[0]);
             //strcat (dataSample, dataTemp);
@@ -535,7 +545,11 @@ void motorControl::controlLoop(void)
             cortexDrive[0] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick), 0);
             cortexDrive[1] = max((cortexVoluntaryAmp -0) * sin (2 * 3.1416 * cortexVoluntaryFreq * tick + 3.1416), 0);
         }
+        */
+
         //sprintf(dataTemp,",%d,%d,%d,%d,%.3f,%.3f,%d\n",gammaStatic1, gammaDynamic1, gammaStatic2, gammaDynamic2, cortexDrive[0], cortexDrive[1],newTrial);
+        
+        /*
         if (trialTrigger == 1){
             expProtocoAdvance = 1;
             trialTrigger = 0;
@@ -548,6 +562,7 @@ void motorControl::controlLoop(void)
             expProtocoAdvance = 11;
             trialTrigger = 0;
         }
+
         expProtocol = 0;
         switch(expProtocoAdvance){
             case 1:
@@ -567,6 +582,8 @@ void motorControl::controlLoop(void)
                 expProtocoAdvance = 0;
                 break;
         }
+        */
+
         fprintf(dataFile,dataSample);
         tick = timeData.getCurrentTime();
 

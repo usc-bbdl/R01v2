@@ -41,6 +41,8 @@ class expParadigmCDMRPimplant
 public:
     void sweepAngleForce(double forceMin, double forceMax, double forceResolution, double  angleMin, double angleMax, double angleResolution, int numberOfPerturbations);
     
+    double CDMRPprotocol;
+
     // SHELL -------------------------
     void sweepShell3D();
     int setPerturbationShell(long trial, long perts, double x, double y, double z, double flexF);

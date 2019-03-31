@@ -23,21 +23,22 @@ const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-     defaultEP[0] =   52.304; // x
-     defaultEP[1] = -472.677; // y
-     defaultEP[2] =  237.486; // z
-     defaultEP[3] = - 19.018; // a
-     defaultEP[4] =   85.054; // b
-     defaultEP[5] =  133.571; // c
+     defaultEP[0] =   52.309; // x
+     defaultEP[1] = -472.678; // y
+     defaultEP[2] =  237.474; // z
+     defaultEP[3] = - 19.017; // a
+     defaultEP[4] =   85.056; // b
+     defaultEP[5] =  133.575; // c
      
      defaultPos[0] = - 94.187; // J1
      defaultPos[1] = - 83.518; // J2
-     defaultPos[2] =  192.668; // J3
-     defaultPos[3] =   99.728; // J4
+     defaultPos[2] =  192.670; // J3
+     defaultPos[3] =   99.726; // J4
      defaultPos[4] =   77.724; // J5
-     defaultPos[5] =   22.728; // J6
+     defaultPos[5] =   22.731; // J6
      
-
+     CDMRPprotocol = 0.0;
+     
     //double defaultPos[6] = {154.548,-62.378,158.209,-92.896,-64.234,13.145};
 
     setAdeptDefaultPosition();
@@ -153,9 +154,9 @@ int expParadigmCDMRPimplant::perturbAdept()
             //motorObj->perturbationAngle = extendAngle;
             motorObj->setPerturbationAngle(extendAngle);
         }
-        motorObj->trialTrigger = 2;
+        //motorObj->trialTrigger = 2;
         newPoint = PPoint(angle[0],angle[1],angle[2],angle[3],angle[4],angle[5]);
-        motorObj->trialTrigger = 1;
+        //motorObj->trialTrigger = 1;
         adeptRobot.move(newPoint);
         Sleep(2000);
     }
@@ -169,6 +170,8 @@ int expParadigmCDMRPimplant::perturbAdept()
 void expParadigmCDMRPimplant::sweepShell3D() {
     long i = 0;
     this->numberOfPerturbations = numberOfPerturbations;
+
+    CDMRPprotocol = 1.0;
 
     for (; i < numTrials; i++)
     {
@@ -278,7 +281,7 @@ int expParadigmCDMRPimplant::perturbShellAdept()
         adeptRobot.movetrans(backPoint);
         Sleep(shellSleep);
 
-        motorObj->trialTrigger = 2;        
+        //motorObj->trialTrigger = 2;        
     }
 
     adeptRobot.move(defaultPoint);
