@@ -1,4 +1,4 @@
-DispX,DispY,DispZ,flexF
+DispX,DispY,DispZ
 200
 5
 -0.2868,0.45711,-0.8419

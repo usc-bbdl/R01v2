@@ -358,13 +358,14 @@ void expParadigmCDMRPimplant::readData()
     for(long i = 0; i < numTrials; i++){
         flexorForce[i] = 0;
         dispX[i] = 0; dispY[i] = 0; dispZ[i] = 0;
-        fscanf(configFile, "%lf,%lf,%lf,%lf\n", &(dispX[i]), &(dispY[i]), &(dispZ[i]), &(flexorForce[i]) );
+        fscanf(configFile, "%lf,%lf,%lf\n", &(dispX[i]), &(dispY[i]), &(dispZ[i]));
+        //fscanf(configFile, "%lf,%lf,%lf,%lf\n", &(dispX[i]), &(dispY[i]), &(dispZ[i]), &(flexorForce[i]) );
         //printf("\n\tDisp(X,Y,Z | %ld) = (%lf, %lf, %lf) : Tendon Force %2.2lfN.\n",i+1, dispX[i], dispY[i], dispZ[i], flexorForce[i]);
         
         // Scale displacements
         dispX[i] *= scaleDisp;
         dispY[i] *= scaleDisp;
-        dispZ[i] *= scaleDisp;        
+        dispZ[i] *= scaleDisp;
     }
 
     fclose(configFile);
