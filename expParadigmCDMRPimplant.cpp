@@ -3,15 +3,17 @@
 #include <stdio.h>
 #include <ctime>
 #include <math.h>
+
+#define shellForce  10 // 6 or 12 or 21 or 30
 #define shellSleep  1000
 #define ballSleep   1000
 #define scaleDisp   5 //in file - if units are mm, set 1
                       //        - if units are cm, set 10
 
 #define ballMinForce        3.0
-#define ballMaxForce        3.0
+#define ballMaxForce        30.0
 #define ballForceRes        3.0
-#define nBallPerts          10
+#define nBallPerts          5
 #define ballDisp            50
 #define interpolateBallPts  10
 #define InterpoBallSlpTime  5000
@@ -189,7 +191,10 @@ void expParadigmCDMRPimplant::sweepShell3D() {
         printf("\n\n\n3D Shell Trial %3ld/%3ld: Disp(%5.2lf, %5.2lf, %5.2lf), %5.2lfN Force\n",
                             i+1, numTrials,   dispX[i], dispY[i], dispZ[i], flexorForce[i]);
         printf("---------------------------------------------------------------\n");
-        setPerturbationShell(i,numPerts, dispX[i], dispY[i], dispZ[i], flexorForce[i]);
+        
+        //setPerturbationShell(i,numPerts, dispX[i], dispY[i], dispZ[i], flexorForce[i]);
+        setPerturbationShell(i,numPerts, dispX[i], dispY[i], dispZ[i], (double) shellForce); // setting flexor force
+
         motorObj->CDMRPtrialFlag = (int) (i+1);
         beginRobotShellThread();
     }
@@ -277,22 +282,27 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     
     //exp paradigm trial tick
 
-    int tempPert = motorObj->CDMRPpertuFlag;
+    int tempPert    = motorObj->CDMRPpertuFlag;
+    int tempWatch   = motorObj->CDMRPwatchFlag;
 
     for (long i = 0; i < Perts; i++)
     {
-        printf("\n\n\t3D Shell Pert %ld/%ld: Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force (Trial %ld)\n",
-                                 i+1, Perts,           X,      Y,      Z ,     flexForce, thisTrial);
+        printf("\n\n\n\t3D Shell Pert %ld/%ld: Disp(%3.2lf, %3.2lf, %3.2lf), %2.2lfN Force (Trial %ld)\n",
+                                   i+1, Perts,           X,      Y,      Z ,     flexForce, thisTrial);
         // perturb tick
         motorObj->CDMRPpertuFlag = (int) (i+1);
 
         // Move to new position
+        printf("\n\n\t\t\tGo to shell\n");
         adeptRobot.movetrans(dispPoint);
-        Sleep(shellSleep);
+        motorObj->CDMRPwatchFlag = 1;
+        Sleep(shellSleep*1.5);
+        motorObj->CDMRPwatchFlag = tempWatch;
 
         // MOVE BACK to default position
+        printf("\n\n\t\t\tReturn to default\n");
         adeptRobot.movetrans(backPoint);
-        Sleep(shellSleep);
+        Sleep(shellSleep/2);
 
         //motorObj->trialTrigger = 2;        
     }
@@ -301,6 +311,9 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     Sleep(shellSleep);
 
     motorObj->motorRef[0] = toneForce;
+    motorObj->motorRef[1] = toneForce;
+    motorObj->motorRef[2] = toneForce;
+    motorObj->motorRef[3] = toneForce;
 
     motorObj->CDMRPpertuFlag = tempPert;
     robotPerturbationLive = FALSE;
@@ -435,30 +448,29 @@ void expParadigmCDMRPimplant::oneBallPull()
     
     flexForce       = flexorTension;
 
-    int tempPert = motorObj->CDMRPpertuFlag;
-    
+    int tempPert    = motorObj->CDMRPpertuFlag;
+    int tempWatch   = motorObj->CDMRPwatchFlag;
     double extForce = flexForce;
     for (unsigned int pert = 0; pert < numPerturbations; pert++) {
-        printf("\n\n\tBall Pull Pert %u/%u: %5.2fN target flexor tension (Trial %u).\n", pert+1, numPerturbations, flexorTension, trialNum);
-        printf("\n\n\t\t\tOpening hand.\n");
-        
+        printf("\n\n\n\tBall Pull Pert %u/%u: %5.2fN target flexor tension (Trial %u).\n", pert+1, numPerturbations, flexorTension, trialNum);
+                
         // pert tick
         motorObj->CDMRPpertuFlag = (int) (pert+1);
     
         // open hand
+        printf("\n\n\t\t\tOpening hand.\n");
             // activate extensors
         motorObj->motorRef[2] = extForce; // finger extensors
         motorObj->motorRef[3] = extForce; // thumb  extensors        
             // tone our flexors
         motorObj->motorRef[0] = toneForce; // finger flexors
         motorObj->motorRef[1] = toneForce; // thumb  flexors
-        //newPdgm_ref
         Sleep(ballSleep/2);
 
         // perturbation tick
 
         // put ball in position and set movement velocity, then sleep
-        printf("\n\n\t\t\tmoving adept to default.\n");
+        printf("\n\n\t\t\tMoving adept to default.\n");
         adeptRobot.move(defaultPoint);
         Sleep(ballSleep/2);
         //printf("\n\n\t\t\tSetting adept speed.\n");
@@ -473,11 +485,11 @@ void expParadigmCDMRPimplant::oneBallPull()
             // tone out extensors
         motorObj->motorRef[2] = toneForce; // finger extensors
         motorObj->motorRef[3] = toneForce; // thumb  extensors
-
-        // sleep for specimen to get into position?
         Sleep(ballSleep/2);
-
+        
         // pull hand out
+        printf("\n\n\t\t\tClosing hand.\n");
+        motorObj->CDMRPwatchFlag = 1;
         if (ballGoSlowFlag == 1) {
             dispPoint.x = dispPoint.x / interpolateBallPts;
             for(unsigned int j = 0; j < interpolateBallPts; j++) {
@@ -488,6 +500,7 @@ void expParadigmCDMRPimplant::oneBallPull()
             adeptRobot.movetrans(dispPoint);
             Sleep(ballSleep);
         }
+        motorObj->CDMRPwatchFlag = tempWatch;
 
         // anything else?
 
