@@ -33,13 +33,13 @@ const double PI = 3.14159265358979323846;
 const double shaftRadius = 0.003;// motor shaft radius in cm
 
 // Motor Load cell calibration
-const double loadCellScale[7] = {   (1/sqrt(2.0)) * 57.815,  //From calibration test with weights
-                                    (1/sqrt(2.0)) * 77.069,  //From calibration test with weights
-                                    (1/sqrt(2.0)) * 59.105,  //From calibration test with weights
-                                    (1/sqrt(2.0)) * 56.236,  //From calibration test with weights
-                                    (1/sqrt(2.0)) * 61.450,  //From calibration test with weights
-                                    (1/sqrt(2.0)) * 62.350,  //From calibration test with weights
-                                    (1/sqrt(2.0)) * 58.827}; //From calibration test with weights
+const double loadCellScale[7] = {   (1/*/sqrt(2.0)*/) * 57.815,  //From calibration test with weights
+                                    (1/*/sqrt(2.0)*/) * 63.660,  //From calibration test with weights
+                                    (1/*/sqrt(2.0)*/) * 59.105,  //From calibration test with weights
+                                    (1/*/sqrt(2.0)*/) * 56.236,  //From calibration test with weights
+                                    (1/*/sqrt(2.0)*/) * 61.450,  //From calibration test with weights
+                                    (1/*/sqrt(2.0)*/) * 62.350,  //From calibration test with weights
+                                    (1/*/sqrt(2.0)*/) * 58.827}; //From calibration test with weights
 /*// OLD VALUES
 const double loadCellScale[7] = {   (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
                                     (1/sqrt(2.0)) * 50.53,  //From calibration test with weights
