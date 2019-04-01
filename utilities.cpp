@@ -62,9 +62,10 @@ int proceedState(int *state)
         printf("\t[5] CDMRP Implant\n\n User Input:");
         do{
             scanf("%d", &menu);
-            if (!((menu <= 5) || (menu >= 0)))
+            if ( (menu > 5) || (menu < 0) )
                 printf("Wrong input! try Again.\n");
-        }while (!((menu <= 5) || (menu >= 0)));
+        }while ( (menu > 5) || (menu < 0) );
+
         switch(menu)
         {
         case 1:

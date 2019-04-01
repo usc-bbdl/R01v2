@@ -168,14 +168,22 @@ int expParadigmCDMRPimplant::perturbAdept()
 
 // SHELL ------------------------------------------------------------------------------------------------------------
 void expParadigmCDMRPimplant::sweepShell3D() {
-    long i = 0;
+    long i = 0, lineNum = 1;
     this->numberOfPerturbations = numberOfPerturbations;
 
     int tempTrial = motorObj->CDMRPtrialFlag;
 
     CDMRPprotocol = 1.0;
 
-    for (; i < numTrials; i++)
+    //Select line/trial number with which to begin
+    printf("\n\nSelect starting line number [1 ~ %ld]: \n\n", numTrials);
+    do{
+            scanf("%ld", &lineNum);
+            if ( (lineNum > numTrials) || (lineNum < 1) )
+                printf("Wrong input! Permitted Line numbers are 1 ~ %ld. Try again: \n", numTrials);
+    } while    ( (lineNum > numTrials) || (lineNum < 1) );
+
+    for (i = lineNum-1; i < numTrials; i++)
     {
         while (robotPerturbationLive == TRUE) {}
         printf("\n\n\n3D Shell Trial %3ld/%3ld: Disp(%5.2lf, %5.2lf, %5.2lf), %5.2lfN Force\n",
@@ -528,9 +536,9 @@ void expParadigmCDMRPimplant::CDMRPmenu()
     printf("\n\nCMDRP submenu:\n\t0. Exit.\n\t1. 3D shell movement.\n\t2. Ball pulling.\n\t Select option...\n\n");
     do{
             scanf("%d", &menu);
-            if (!((menu <= 2) || (menu >= 0)))
+            if ( (menu > 2) || (menu < 0) )
                 printf("Wrong input! try Again.\n");
-    } while    (!((menu <= 2) || (menu >= 0)));
+    } while    ( (menu > 2) || (menu < 0) );
 
     tempProtocol = motorObj->CDMRPprotoFlag;
     motorObj->CDMRPprotoFlag = (int) menu;
