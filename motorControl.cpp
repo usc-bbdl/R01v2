@@ -522,9 +522,9 @@ void motorControl::controlLoop(void)
         //printf("M0: %+5.1f/%4.1fN || M1: %+5.1f/%4.1fN || M2: %+5.1f/%4.1fN || M3: %+5.1f/%4.1fN\r", loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
 
         // Print 4 muscles + 6 JR3
-        printf("%+5.1f | %+5.1f | %+5.1f | %+5.1f || %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f\r",
-            loadCellData[0], loadCellData[1], loadCellData[2], loadCellData[3],
-            JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+        //printf("%+5.1f | %+5.1f | %+5.1f | %+5.1f || %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f\r",
+        //    loadCellData[0], loadCellData[1], loadCellData[2], loadCellData[3],
+        //    JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
         // Print 7 muscles + 3 JR3
         printf("%+5.1f | %+5.1f || %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f || %+5.1f | %+5.1f | %+5.1f\r",
