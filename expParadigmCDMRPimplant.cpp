@@ -304,7 +304,7 @@ int expParadigmCDMRPimplant::perturbShellAdept()
         printf("\n\n\t\t\tGo to shell\n");
         adeptRobot.movetrans(dispPoint);
         motorObj->CDMRPwatchFlag = 1;
-        Sleep(shellSleep*.75);
+        Sleep(shellSleep);
         motorObj->CDMRPwatchFlag = tempWatch;
 
         // MOVE BACK to default position
@@ -488,7 +488,7 @@ void expParadigmCDMRPimplant::oneBallPull()
         // put ball in position and set movement velocity, then sleep
         printf("\n\n\t\t\tMoving adept to default.\n");
         adeptRobot.move(defaultPoint);
-        Sleep(ballSleep/2);
+        Sleep(ballSleep);
         //printf("\n\n\t\t\tSetting adept speed.\n");
         //adeptRobot.setVelocity(2, 2, VelocityType::MILLIMETERS_PER_SECOND, 0);
         //Sleep(ballSleep);
@@ -504,7 +504,7 @@ void expParadigmCDMRPimplant::oneBallPull()
         motorObj->motorRef[4] = toneForce; // finger 3extensor
         motorObj->motorRef[5] = toneForce; // finger 4 extensor
         motorObj->motorRef[6] = toneForce; // finger 5 extensor
-        Sleep(ballSleep*0.75);
+        Sleep(ballSleep);
         
         // pull hand out
         printf("\n\n\t\t\tPulling out hand.\n");
