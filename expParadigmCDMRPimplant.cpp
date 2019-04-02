@@ -282,11 +282,11 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     motorObj->motorRef[0] = flexForce; // finger flexors
     motorObj->motorRef[1] = flexForce; // thumb  flexors
         // tone out extensors
-    motorObj->motorRef[2] = toneForce; // finger 2 extensor
+    motorObj->motorRef[2] = toneForce/2; // finger 2 extensor
     motorObj->motorRef[3] = toneForce; // thumb  extensor
-    motorObj->motorRef[4] = toneForce; // finger 3extensor
-    motorObj->motorRef[5] = toneForce; // finger 4 extensor
-    motorObj->motorRef[6] = toneForce; // finger 5 extensor
+    motorObj->motorRef[4] = toneForce/2; // finger 3extensor
+    motorObj->motorRef[5] = toneForce/2; // finger 4 extensor
+    motorObj->motorRef[6] = toneForce/2; // finger 5 extensor
         
     //exp paradigm trial tick
 
@@ -320,11 +320,11 @@ int expParadigmCDMRPimplant::perturbShellAdept()
 
     motorObj->motorRef[0] = toneForce;
     motorObj->motorRef[1] = toneForce;
-    motorObj->motorRef[2] = toneForce;
+    motorObj->motorRef[2] = toneForce/2;
     motorObj->motorRef[3] = toneForce;
-    motorObj->motorRef[4] = toneForce;
-    motorObj->motorRef[5] = toneForce;
-    motorObj->motorRef[6] = toneForce;
+    motorObj->motorRef[4] = toneForce/2;
+    motorObj->motorRef[5] = toneForce/2;
+    motorObj->motorRef[6] = toneForce/2;
 
     motorObj->CDMRPpertuFlag = tempPert;
     robotPerturbationLive = FALSE;
@@ -461,11 +461,11 @@ void expParadigmCDMRPimplant::oneBallPull()
     // tone out all muscles
     motorObj->motorRef[0] = toneForce; // finger flexors
     motorObj->motorRef[1] = toneForce; // thumb  flexors
-    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[2] = toneForce/2; // finger extensors
     motorObj->motorRef[3] = toneForce; // thumb  extensors
-    motorObj->motorRef[4] = toneForce; // finger extensors
-    motorObj->motorRef[5] = toneForce; // finger extensors
-    motorObj->motorRef[6] = toneForce; // finger extensors
+    motorObj->motorRef[4] = toneForce/2; // finger extensors
+    motorObj->motorRef[5] = toneForce/2; // finger extensors
+    motorObj->motorRef[6] = toneForce/2; // finger extensors
     
     flexForce       = flexorTension;
 
@@ -504,11 +504,11 @@ void expParadigmCDMRPimplant::oneBallPull()
 
         // close hand
             // tone out extensors
-        motorObj->motorRef[2] = toneForce; // finger 2 extensor
+        motorObj->motorRef[2] = toneForce/2; // finger 2 extensor
         motorObj->motorRef[3] = toneForce; // thumb  extensor
-        motorObj->motorRef[4] = toneForce; // finger 3extensor
-        motorObj->motorRef[5] = toneForce; // finger 4 extensor
-        motorObj->motorRef[6] = toneForce; // finger 5 extensor
+        motorObj->motorRef[4] = toneForce/2; // finger 3extensor
+        motorObj->motorRef[5] = toneForce/2; // finger 4 extensor
+        motorObj->motorRef[6] = toneForce/2; // finger 5 extensor
         Sleep(ballSleep/4);
             // activate flexors
         printf("\n\n\t\t\tClosing hand.\n");
@@ -534,11 +534,11 @@ void expParadigmCDMRPimplant::oneBallPull()
         // tone out all muscles
     motorObj->motorRef[0] = toneForce; // finger flexors
     motorObj->motorRef[1] = toneForce; // thumb  flexors
-    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[2] = toneForce/2; // finger extensors
     motorObj->motorRef[3] = toneForce; // thumb  extensors
-    motorObj->motorRef[4] = toneForce; // finger extensors
-    motorObj->motorRef[5] = toneForce; // finger extensors
-    motorObj->motorRef[6] = toneForce; // finger extensors
+    motorObj->motorRef[4] = toneForce/2; // finger extensors
+    motorObj->motorRef[5] = toneForce/2; // finger extensors
+    motorObj->motorRef[6] = toneForce/2; // finger extensors
     Sleep(ballSleep/4);
 
     }
@@ -562,11 +562,11 @@ void expParadigmCDMRPimplant::oneBallPull()
     // tone out all muscles
     motorObj->motorRef[0] = toneForce; // finger flexors
     motorObj->motorRef[1] = toneForce; // thumb  flexors
-    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[2] = toneForce/2; // finger extensors
     motorObj->motorRef[3] = toneForce; // thumb  extensors
-    motorObj->motorRef[4] = toneForce; // finger extensors
-    motorObj->motorRef[5] = toneForce; // finger extensors
-    motorObj->motorRef[6] = toneForce; // finger extensors
+    motorObj->motorRef[4] = toneForce/2; // finger extensors
+    motorObj->motorRef[5] = toneForce/2; // finger extensors
+    motorObj->motorRef[6] = toneForce/2; // finger extensors
 
     std::cout<<std::endl<<std::endl;
     motorObj->CDMRPpertuFlag = tempPert;
@@ -583,11 +583,11 @@ void expParadigmCDMRPimplant::CDMRPmenu()
     // Put motor force activations here
     motorObj->motorRef[0] = toneForce; // finger flexors
     motorObj->motorRef[1] = toneForce; // thumb  flexors
-    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[2] = toneForce/2; // finger extensors
     motorObj->motorRef[3] = toneForce; // thumb  extensors
-    motorObj->motorRef[4] = toneForce;
-    motorObj->motorRef[5] = toneForce;
-    motorObj->motorRef[6] = toneForce;
+    motorObj->motorRef[4] = toneForce/2;
+    motorObj->motorRef[5] = toneForce/2;
+    motorObj->motorRef[6] = toneForce/2;
 
     printf("\n\nCMDRP submenu:\n\t0. Exit.\n\t1. 3D shell movement.\n\t2. Ball pulling.\n\t Select option...\n\n");
     do{
@@ -614,10 +614,10 @@ void expParadigmCDMRPimplant::CDMRPmenu()
 
     motorObj->motorRef[0] = toneForce;
     motorObj->motorRef[1] = toneForce;
-    motorObj->motorRef[2] = toneForce;
+    motorObj->motorRef[2] = toneForce/2;
     motorObj->motorRef[3] = toneForce;
-    motorObj->motorRef[4] = toneForce;
-    motorObj->motorRef[5] = toneForce;
-    motorObj->motorRef[6] = toneForce;
+    motorObj->motorRef[4] = toneForce/2;
+    motorObj->motorRef[5] = toneForce/2;
+    motorObj->motorRef[6] = toneForce/2;
 }
 //-------------------------------------------------------------------------------------------------------------------
