@@ -456,7 +456,16 @@ void expParadigmCDMRPimplant::oneBallPull()
     backPoint   = defaultPoint;
     backPoint.x = ballDisp;
     backPoint.y = 0;
-    backPoint.z = 0;   
+    backPoint.z = 0;
+
+    // tone out all muscles
+    motorObj->motorRef[0] = toneForce; // finger flexors
+    motorObj->motorRef[1] = toneForce; // thumb  flexors
+    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[3] = toneForce; // thumb  extensors
+    motorObj->motorRef[4] = toneForce; // finger extensors
+    motorObj->motorRef[5] = toneForce; // finger extensors
+    motorObj->motorRef[6] = toneForce; // finger extensors
     
     flexForce       = flexorTension;
 
@@ -478,7 +487,7 @@ void expParadigmCDMRPimplant::oneBallPull()
         motorObj->motorRef[5] = extForce; // finger 4 extensor
         motorObj->motorRef[6] = extForce; // finger 5 extensor
 
-            // tone our flexors
+            // tone out flexors
         motorObj->motorRef[0] = toneForce; // finger flexors
         motorObj->motorRef[1] = toneForce; // thumb  flexors
         Sleep(ballSleep/2);
@@ -488,22 +497,23 @@ void expParadigmCDMRPimplant::oneBallPull()
         // put ball in position and set movement velocity, then sleep
         printf("\n\n\t\t\tMoving adept to default.\n");
         adeptRobot.move(defaultPoint);
-        Sleep(ballSleep);
+        Sleep(ballSleep/2);
         //printf("\n\n\t\t\tSetting adept speed.\n");
         //adeptRobot.setVelocity(2, 2, VelocityType::MILLIMETERS_PER_SECOND, 0);
         //Sleep(ballSleep);
 
         // close hand
-            // activate flexors
-        printf("\n\n\t\t\tClosing hand.\n");
-        motorObj->motorRef[0] = flexForce; // finger flexors
-        motorObj->motorRef[1] = flexForce; // thumb  flexors
             // tone out extensors
         motorObj->motorRef[2] = toneForce; // finger 2 extensor
         motorObj->motorRef[3] = toneForce; // thumb  extensor
         motorObj->motorRef[4] = toneForce; // finger 3extensor
         motorObj->motorRef[5] = toneForce; // finger 4 extensor
         motorObj->motorRef[6] = toneForce; // finger 5 extensor
+        Sleep(ballSleep/4);
+            // activate flexors
+        printf("\n\n\t\t\tClosing hand.\n");
+        motorObj->motorRef[0] = flexForce; // finger flexors
+        motorObj->motorRef[1] = flexForce; // thumb  flexors
         Sleep(ballSleep);
         
         // pull hand out
@@ -521,7 +531,15 @@ void expParadigmCDMRPimplant::oneBallPull()
         }
         motorObj->CDMRPwatchFlag = tempWatch;
 
-        // anything else?
+        // tone out all muscles
+    motorObj->motorRef[0] = toneForce; // finger flexors
+    motorObj->motorRef[1] = toneForce; // thumb  flexors
+    motorObj->motorRef[2] = toneForce; // finger extensors
+    motorObj->motorRef[3] = toneForce; // thumb  extensors
+    motorObj->motorRef[4] = toneForce; // finger extensors
+    motorObj->motorRef[5] = toneForce; // finger extensors
+    motorObj->motorRef[6] = toneForce; // finger extensors
+    Sleep(ballSleep/4);
 
     }
 
