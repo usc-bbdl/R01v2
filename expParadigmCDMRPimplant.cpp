@@ -270,7 +270,7 @@ int expParadigmCDMRPimplant::perturbShellAdept()
 
     // Move back to default position
     adeptRobot.move(defaultPoint);
-    Sleep(shellSleep);
+    Sleep(shellSleep/2);
 
     // close hand
         // activate flexors
@@ -296,7 +296,7 @@ int expParadigmCDMRPimplant::perturbShellAdept()
         printf("\n\n\t\t\tGo to shell\n");
         adeptRobot.movetrans(dispPoint);
         motorObj->CDMRPwatchFlag = 1;
-        Sleep(shellSleep*1.5);
+        Sleep(shellSleep*.75);
         motorObj->CDMRPwatchFlag = tempWatch;
 
         // MOVE BACK to default position
@@ -308,7 +308,7 @@ int expParadigmCDMRPimplant::perturbShellAdept()
     }
 
     adeptRobot.move(defaultPoint);
-    Sleep(shellSleep);
+    Sleep(shellSleep/2);
 
     motorObj->motorRef[0] = toneForce;
     motorObj->motorRef[1] = toneForce;
@@ -486,10 +486,10 @@ void expParadigmCDMRPimplant::oneBallPull()
             // tone out extensors
         motorObj->motorRef[2] = toneForce; // finger extensors
         motorObj->motorRef[3] = toneForce; // thumb  extensors
-        Sleep(ballSleep/2);
+        Sleep(ballSleep*0.75);
         
         // pull hand out
-        printf("\n\n\t\t\tClosing hand.\n");
+        printf("\n\n\t\t\tPulling out hand.\n");
         motorObj->CDMRPwatchFlag = 1;
         if (ballGoSlowFlag == 1) {
             dispPoint.x = dispPoint.x / interpolateBallPts;
@@ -499,7 +499,7 @@ void expParadigmCDMRPimplant::oneBallPull()
             }
         } else {
             adeptRobot.movetrans(dispPoint);
-            Sleep(ballSleep);
+            Sleep(ballSleep*0.75);
         }
         motorObj->CDMRPwatchFlag = tempWatch;
 
