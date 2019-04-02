@@ -519,7 +519,18 @@ void motorControl::controlLoop(void)
         //printf("%+5.1f/%4.1fN - Fx:%+6.2f, Fy:%+6.2f, Fz:%+6.2f; Mx:%+6.2f; My:%+6.2f; Mz:%+6.2f\r", loadCellData[0], motorRef[0], JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
 
         //Print actual & target flexor force for 4 muscles
-        printf("M0: %+5.1f/%4.1fN || M1: %+5.1f/%4.1fN || M2: %+5.1f/%4.1fN || M3: %+5.1f/%4.1fN\r", loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
+        //printf("M0: %+5.1f/%4.1fN || M1: %+5.1f/%4.1fN || M2: %+5.1f/%4.1fN || M3: %+5.1f/%4.1fN\r", loadCellData[0],motorRef[0], loadCellData[1],motorRef[1], loadCellData[2],motorRef[2], loadCellData[3],motorRef[3]);
+
+        // Print 4 muscles + 6 JR3
+        printf("%+5.1f | %+5.1f | %+5.1f | %+5.1f || %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f\r",
+            loadCellData[0], loadCellData[1], loadCellData[2], loadCellData[3],
+            JR3F[0], JR3F[1], JR3F[2], JR3F[3], JR3F[4], JR3F[5]);
+
+        // Print 7 muscles + 3 JR3
+        printf("%+5.1f | %+5.1f || %+5.1f | %+5.1f | %+5.1f | %+5.1f | %+5.1f || %+5.1f | %+5.1f | %+5.1f\r",
+            loadCellData[0], loadCellData[1],
+            loadCellData[2], loadCellData[3], loadCellData[4], loadCellData[5], loadCellData[6],
+            JR3F[0], JR3F[1], JR3F[2]);
 
         ReleaseMutex( hIOMutex);
         
