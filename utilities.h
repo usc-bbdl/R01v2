@@ -20,7 +20,7 @@
 #define LBR 5
 #define EIP 6
 
-#define toneForce   1 // force needed to maintain tone on muscle
+#define toneForce   0.5 // force needed to maintain tone on muscle
 
 #define ENCODER_COUNT 4
 // MUSCLE COUNT
