@@ -356,7 +356,7 @@ void motorControl::controlLoop(void)
         if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
         //printf("F: %+3.1f; F: %+3.1f;L: %+3.1f; L: %+3.1f;, SA: %+3.1f, SP: %+3.1f, DA: %+3.1f, DP: %+3.1f,\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1],mGammaSA, mGammaSP, mGammaDA, mGammaDP);
-        printf("F0: %+5.1f; F1: %+5.1f | L0: %+4.1f; L1: %+4.1f | FRQ: %3.1f - SA: %+6.3f, SP: %+6.3f; DA: %+6.3f, DP: %+6.1f\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1], mFREQ, mGammaSA, mGammaSP, mGammaDA, mGammaDP);
+        printf("%+5.1f; %+5.1f | %+4.1f; %+4.1f | %4.1f; %+6.2f, %+6.2f; %+6.2f, %+6.2f\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1], mFREQ, mGammaSA, mGammaSP, mGammaDA, mGammaDP);
         ReleaseMutex( hIOMutex);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
