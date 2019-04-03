@@ -50,7 +50,7 @@ expParadigmVoluntaryMovement::expParadigmVoluntaryMovement(motorControl *mtr)
     for(unsigned long i = 0; i < numTrials; i++){
         fscanf(configFile,"%lf,%lf,%lf,%lf,%lf,%lf,%d\n",&tFREQ,&tCortexA,&tGammaSA,&tGammaSP,&tGammaDA,&tGammaDP,&treps);
         //printf("\n%f,%f,%f,%f,%f,%f,%d\n",tFREQ,tCortexA,tGammaSA,tGammaSP,tGammaDA,tGammaDP,treps);
-        FREQ[i] = tFREQ;
+        FREQ[i] = tFREQ*0.5;
         CortexA[i] = tCortexA;
         GammaSA[i] = tGammaSA;
         GammaSP[i] = tGammaSP;
