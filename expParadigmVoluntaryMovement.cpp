@@ -60,6 +60,15 @@ expParadigmVoluntaryMovement::expParadigmVoluntaryMovement(motorControl *mtr)
         //printf("\n%f,%f,%f,%f,%f,%f,%d\n",FREQ[i],CortexA[i],GammaSA[i],tGammaSP,tGammaDA,tGammaDP,treps);
     }
 
+    // What trial to start with to begin with
+    startTrial = 0;
+    printf("\n\nFrom what trial should we begin? [1 ~ %lu]:\n\n", numTrials);
+    do{
+            scanf("%d", &startTrial);
+            if ((startTrial > numTrials) || (startTrial < 1))
+                printf("Wrong input! try Again.\n");
+        }while ((startTrial > numTrials) || (startTrial < 1));
+        
 }
 
 
@@ -96,8 +105,8 @@ int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGACont
     //*vTempTick = *vtick + ( (1/(*vFREQ)) * (reps[0]) );
     dataAcquisitionFlag[11] = true;
     
-    unsigned long fileLine = 0;
-    printf("\n\nStarting Voluntary Paradigm with %lu Trials\n",numTrials);
+    unsigned long fileLine = startTrial-1;
+    printf("\n\n\nStarting Voluntary Paradigm:Testing %lu Trials [%lu ~ %lu]\n\n",startTrial, numTrials);
     while(fileLine<=numTrials)
     {
         //std::cout<<"\n\n"<<fileLine<<"\t"<<*vFlag<<"\n";
@@ -117,7 +126,7 @@ int expParadigmVoluntaryMovement::startParadigm(FPGAControl *bicepFPGA, FPGACont
                 *vFlag = 0;
                 *vTempTick = *vtick + ( (1/(*vFREQ)) * (*vreps) );
             
-                std::cout<<"\n\nVoluntary: Set "<<(fileLine + 1)<<std::endl;
+                std::cout<<"\n\n\nVoluntary: Trial "<<(fileLine + 1)<<"/"<<numTrials<<std::endl;
                 printf("\tSignal Frequency :: %+6.2f\n",*vFREQ);
                 printf("\tCortical Drive   :: A: %+6.2f\n",*vCortexA);
                 printf("\tGamma Static     :: A: %+6.2f  P: %+6.2f\n",*vGammaSA,*vGammaSP);

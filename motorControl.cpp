@@ -355,7 +355,8 @@ void motorControl::controlLoop(void)
             motorCommand[1] = motorMaxVoltage;
         if (motorCommand[1] < motorMinVoltage)
             motorCommand[1] = motorMinVoltage;
-        printf("F: %+3.1f; F: %+3.1f;L: %+3.1f; L: %+3.1f;, SA: %+3.1f, SP: %+3.1f, DA: %+3.1f, DP: %+3.1f,\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1],mGammaSA, mGammaSP, mGammaDA, mGammaDP);
+        //printf("F: %+3.1f; F: %+3.1f;L: %+3.1f; L: %+3.1f;, SA: %+3.1f, SP: %+3.1f, DA: %+3.1f, DP: %+3.1f,\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1],mGammaSA, mGammaSP, mGammaDA, mGammaDP);
+        printf("F0: %+5.1f; F1: %+5.1f | L0: %+4.1f; L1: %+4.1f | FRQ: %3.1f - SA: %+6.3f, SP: %+6.3f; DA: %+6.3f, DP: %+6.1f\r",loadCellData[0],loadCellData[1],muscleLength[0],muscleLength[1], mFREQ, mGammaSA, mGammaSP, mGammaDA, mGammaDP);
         ReleaseMutex( hIOMutex);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d\n",tock,loadCellData[0],loadCellData[1],motorRef[0],motorRef[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], isLate);
         //fprintf(dataFile,"%.3f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d\n",tock,loadCellData[0],loadCellData[1], muscleLength[0], muscleLength[1], muscleVel[0],muscleVel[1], muscleEMG[0], muscleEMG[1], gammaStatic, gammaDynamic, isLate);
@@ -414,14 +415,14 @@ void motorControl::controlLoop(void)
             }
             if(mFlag == 0)
             {
-                cortexDrive[0] = max(1*(mCortexA -0) * sin (2 * 3.1416 * (0.5*mFREQ) * tick                    ), 0); //BICEP
-                cortexDrive[1] = max(1*(mCortexA -0) * sin (2 * 3.1416 * (0.5*mFREQ) * tick            + 3.1416), 0); //TRICEP
+                cortexDrive[0] = max(1*(mCortexA -0) * sin (2 * 3.1416 * (mFREQ) * tick                    ), 0); //BICEP
+                cortexDrive[1] = max(1*(mCortexA -0) * sin (2 * 3.1416 * (mFREQ) * tick            + 3.1416), 0); //TRICEP
             
-                gammaS[0]      = max(  (mGammaSA -0) * sin (2 * 3.1416 * (0.5*mFREQ) * tick + mGammaSP         ), 0); //BICEP
-                gammaS[1]      = max(  (mGammaSA -0) * sin (2 * 3.1416 * (0.5*mFREQ) * tick + mGammaSP + 3.1416), 0); //TRICEP
+                gammaS[0]      = max(  (mGammaSA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaSP         ), 0); //BICEP
+                gammaS[1]      = max(  (mGammaSA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaSP + 3.1416), 0); //TRICEP
             
-                gammaD[0]      = max(  (mGammaDA -0) * sin (2 * 3.1416 * (0.5*mFREQ) * tick + mGammaDP         ), 0); //BICEP
-                gammaD[1]      = max(  (mGammaDA -0) * sin (2 * 3.1416 * (0.5*mFREQ) * tick + mGammaDP + 3.1416), 0); //TRICEP
+                gammaD[0]      = max(  (mGammaDA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaDP         ), 0); //BICEP
+                gammaD[1]      = max(  (mGammaDA -0) * sin (2 * 3.1416 * (mFREQ) * tick + mGammaDP + 3.1416), 0); //TRICEP
             }
             //sprintf(dataTemp,",%f,%f,%f,%f,%f,%f",cortexDrive[0], cortexDrive[1],gammaS[0], gammaS[1],gammaD[0], gammaD[1]);
             //strcat (dataSample, dataTemp);

@@ -18,6 +18,7 @@ class expParadigmVoluntaryMovement
     
     double *FREQ, *CortexA, *GammaSA, *GammaSP, *GammaDA, *GammaDP;
     unsigned int *reps;
+    unsigned int startTrial;
 
     double *vFREQ, *vCortexA, *vGammaSA, *vGammaSP, *vGammaDA, *vGammaDP;
     unsigned int *vreps;
