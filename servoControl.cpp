@@ -314,10 +314,10 @@ void servoControl::goDefault() {
     setVelocity(RESET_VELOCITY);
     Sleep(CONTROL_PERIOD);
     //printf("goDefault: setting position\n");
-    int flexPos     = -78;
-    int extPos      = 14;
+    int flexPos     = -75;
+    int extPos      = 20;
     int centerPos   = (flexPos - extPos) / 2;
-    //setPosition(defPos);
+    //setPosition(30);
     setPosition(centerPos); //flex: -78, extend: 14, center: -46
     //printf("goDefault: Motor in Default position\n");
 }
