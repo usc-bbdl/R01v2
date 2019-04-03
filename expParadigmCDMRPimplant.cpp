@@ -4,7 +4,7 @@
 #include <ctime>
 #include <math.h>
 
-#define shellForce  21 // 12 or 15 or 18 or 21
+#define shellForce  12  // 12 or 15 or 18 or 21
 #define shellSleep  1000
 #define ballSleep   1000
 #define scaleDisp   5 //in file - if units are mm, set 1
