@@ -26,19 +26,19 @@ const int Trials = 32; //replace numTrials with Trials and vice versa
 expParadigmCDMRPimplant::expParadigmCDMRPimplant(motorControl *temp)
 {
     this->motorObj = temp;
-     defaultEP[0] =   73.681; // x
-     defaultEP[1] = -491.983; // y
-     defaultEP[2] =  272.382; // z
-     defaultEP[3] = -  4.622; // a
-     defaultEP[4] =   88.144; // b
-     defaultEP[5] =  136.129; // c
+     defaultEP[0] =   80.724; // x
+     defaultEP[1] = -479.640; // y
+     defaultEP[2] =  269.327; // z
+     defaultEP[3] = -  0.946; // a
+     defaultEP[4] =   88.147; // b
+     defaultEP[5] =  136.135; // c
      
-     defaultPos[0] = - 91.888; // J1
-     defaultPos[1] = - 74.650; // J2
-     defaultPos[2] =  173.617; // J3
-     defaultPos[3] =   92.262; // J4
-     defaultPos[4] =   87.591; // J5
-     defaultPos[5] =   37.070; // J6
+     defaultPos[0] = - 91.104; // J1
+     defaultPos[1] = - 76.256; // J2
+     defaultPos[2] =  176.273; // J3
+     defaultPos[3] =   91.798; // J4
+     defaultPos[4] =   90.478; // J5
+     defaultPos[5] =   36.128; // J6
      
      CDMRPprotocol = 0.0;
      
