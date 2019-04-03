@@ -14,8 +14,17 @@ expParadigmMuscleLengthCalibration::expParadigmMuscleLengthCalibration(servoCont
     //printf("\n Enter final position (degrees):\t");
     //std::cin>>finalPos;
     //printf("\n");
-    initPos  = -18; // extension
-    finalPos = -72; // flexion
+
+    /*
+    int flexPos     = -57;
+    int extPos      = -7;
+    int centerPos   = (flexPos + extPos) / 2;
+    */
+
+    initPos  = servo->extPos ;//-18; // extension
+    finalPos = servo->flexPos;//-72; // flexion
+    printf("\n\nInitial Position (ext) = %d, Final Position (flex) = %d\n\n", initPos, finalPos);
+
 }
 int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeController)
 {

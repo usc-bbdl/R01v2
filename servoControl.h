@@ -65,7 +65,8 @@
         void formatCMD(int, int); // WARNING: function is a work in progress - do no call.
         int initPos, finalPos, rampVelocity, holdPeriod, servoTorque; //position must be provided in terms of angle
 
-    public: servoControl(int ID = 1);
+    public: int flexPos, extPos;
+            servoControl(int ID = 1);
             ~servoControl();
             int setPosition(int);
             int setVelocity(int);            
