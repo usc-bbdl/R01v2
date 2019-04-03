@@ -29,7 +29,7 @@ class motorControl
 
     matrixFunctions JR3map;
 
-    double I, perturbationAngle;
+    double P, I, perturbationAngle;
     TimeData timeData;
     static void motorControlLoop(void*);
     void controlLoop(void);

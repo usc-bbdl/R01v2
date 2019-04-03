@@ -20,7 +20,8 @@ motorControl::motorControl(double *offset, double *JR3_F)
     encoderBias[0] = encoderBias[1] = encoderBias[2] = encoderBias[3] = 0;
     encoderGain[0] = encoderGain[1] = encoderGain[2] = encoderGain[3] =  1;
     perturbationAngle = 0;
-    I = 3;
+    P = KP;
+    I = KI;
     cortexVoluntaryAmp = 10000;
     cortexVoluntaryFreq = 0.25;
     char        errBuff[2048]={'\0'};
@@ -44,12 +45,23 @@ motorControl::motorControl(double *offset, double *JR3_F)
     live = FALSE;
 
     // std::cout<<"\n\nLC offsets:";
+
+    // SETTING TONE ON MUSCLES
+    motorRef[0] = toneForce*4;
+    motorRef[1] = toneForce;
+    motorRef[2] = toneForce;
+    motorRef[3] = toneForce;
+    motorRef[4] = toneForce;
+    motorRef[5] = toneForce;
+    motorRef[6] = toneForce;
+
+
     for(int LCO_i = 0; LCO_i < MUSCLE_NUM; LCO_i++) {
         loadCellOffset[LCO_i] = offset[LCO_i];
         JR3F_offset   [LCO_i] = JR3_F [LCO_i];
         // std::cout<<"\n\t"<<LCO_i<<": "<<loadCellOffset[LCO_i];
         loadCellData[LCO_i] = 0;
-            motorRef[LCO_i] = toneForce;
+            //motorRef[LCO_i] = toneForce;
     }
     // std::cout<<std::endl;
 
@@ -346,9 +358,10 @@ void motorControl::controlLoop(void)
     bool keepReading=TRUE;
     bool32 isLate = {0};
     double tick=0.0,tock=0.0;
-    float64 motorCommand[7] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-              errorForce[7] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
-                integral[7] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+    float64 motorCommand[7]   = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+              errorForce[7]   = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                integral[7]   = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
+                proportion[7] = {0.0,0.0,0.0,0.0,0.0,0.0,0.0},
                      EMG    = {0.0};
     char        errBuff[2048]={'\0'};
     FILE *dataFile;
@@ -482,16 +495,31 @@ void motorControl::controlLoop(void)
             if(newPdgm_Flag) {
                 motorRef[LCO_j] = newPdgm_ref[LCO_j];
             }
-            errorForce[LCO_j] = motorRef[LCO_j] - loadCellData[LCO_j];
+            errorForce[LCO_j] = motorRef[LCO_j] - loadCellData[LCO_j]; // Proportional control
             
-            integral[LCO_j] = integral[LCO_j] + errorForce[LCO_j] * (tock - tick);
-            motorCommand[LCO_j] = integral[LCO_j] * I;
+            integral  [LCO_j] = integral[LCO_j] + errorForce[LCO_j] * (tock - tick);
+            proportion[LCO_j] = errorForce[LCO_j] * P;
+            motorCommand[LCO_j] = proportion[LCO_j] + (integral[LCO_j] * I); 
 
             if (motorCommand[LCO_j] > motorMaxVoltage)
                 motorCommand[LCO_j] = motorMaxVoltage;
             if (motorCommand[LCO_j] < motorMinVoltage)
                 motorCommand[LCO_j] = motorMinVoltage;
         } // end LCO_j loop
+
+        // integral[0] = integral[0] + errorForce[0] * (tock - tick);
+        // integral[1] = integral[1] + errorForce[1] * (tock - tick);
+        
+        // motorCommand[0] = integral[0] * I;
+        // motorCommand[1] = integral[1] * I;
+        
+        /*
+        motorCommand[2] = ;
+        motorCommand[3] = ;
+        motorCommand[4] = ;
+        motorCommand[5] = ;
+        motorCommand[6] = ;
+        */
 
         // Scale JR3 data from V to F
         for(int JR3_j = MUSCLE_NUM; JR3_j < NUM_ANALOG_IN; JR3_j++) {

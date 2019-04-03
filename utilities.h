@@ -11,6 +11,10 @@
 
 #define DAQmxErrChk(functionCall) if( DAQmxFailed(error=(functionCall)) ) goto Error; else
 
+// Motor controls parameters
+#define KP 0.2
+#define KI 1.2
+
 // Muscle motor ID
 #define SMARTA 0
 #define SMARTB 1
