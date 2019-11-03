@@ -37,29 +37,58 @@ int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeCont
   //GGAIN = 0;
   //TBIAS = 1;
 
-  //code here
+
+  // MOVE FINGER MANUALLY INSTEAD OF WITH SERVO -------
+  float64 newForce = 10; // Newtons
+  float64 tempFlex = realTimeController->motorRef[0];
+  float64 tempExtend = realTimeController->motorRef[1];
+
+  // EXTEND
+  
   servo->setVelocity(rampVelocity);
   servo->setPosition(initPos);
   Sleep(holdPeriod);
-  //realTimeController->resetMuscleLength = 1;
+  /*
+  printf("\n\nExtensor tension: Old = %lf N. New = %lf N.\n", tempExtend, newForce);
+  realTimeController->motorRef[1] = newForce;
+  Sleep(5000);
+  */
+  realTimeController->resetMuscleLength = 1;
   Sleep(10);
-  //Read Encoder data at initPos
+        //Read Encoder data at initPos
   muscleLengthBeforePert[0] = realTimeController->muscleLength[0];
-  muscleLengthBeforePert[1] = realTimeController->muscleLength[1];    
+  muscleLengthBeforePert[1] = realTimeController->muscleLength[1]; 
+  //printf("Resetting Extensor.\n\n");
+  //realTimeController->motorRef[1] = tempExtend;
+  Sleep(1000);
+  
+  // FLEX
+  
   servo->setPosition(finalPos);
-  //Read Encoder data at finalPos
   Sleep(holdPeriod);
+  /*
+  printf("\n\nflexor tension: Old = %lf N. New = %lf N.\n", tempFlex, newForce);
+  realTimeController->motorRef[0] = newForce;
+  Sleep(5000);
+  */
+          //Read Encoder data at finalPos
   muscleLengthAfterPert[0] = realTimeController->muscleLength[0];
   muscleLengthAfterPert[1] = realTimeController->muscleLength[1];
+  //printf("Resetting Flexor.\n\n");
+  //realTimeController->motorRef[0] = tempFlex;
+  Sleep(1000);
+  
   servo->goDefault();
+  
+
   gain[0] = 1/(muscleLengthBeforePert[0] - muscleLengthAfterPert[0]);
   gain[1] = 1/(muscleLengthAfterPert[1] - muscleLengthBeforePert[1]);
   printf("Muscle Length Before Pert: %f\n",muscleLengthBeforePert[1]);
   printf("Muscle Length After Pert: %f\n",muscleLengthAfterPert[1]);
   printf("Gain is: %f\n",gain[1]);
-  bias[0] = 0.6 - (gain[0] * muscleLengthAfterPert[0]);
-  bias[1] = 0.6 - (gain[1] * muscleLengthBeforePert[1]);
-  printf("Bias is: %f\n",bias[1]);
+  bias[0] = 1 - (gain[0] * muscleLengthAfterPert[0]); // old constant 0.6
+  bias[1] = 1 - (gain[1] * muscleLengthBeforePert[1]); // old constant 0.6
+  printf("Bias is: %f\n\n",bias[1]);
   realTimeController->encoderBias[0] = bias[0];
   realTimeController->encoderBias[1] = bias[1];
   realTimeController->encoderGain[0] = gain[0];
@@ -67,6 +96,8 @@ int expParadigmMuscleLengthCalibration::startParadigm(motorControl *realTimeCont
   
   //GGAIN = ggain;
   //TBIAS = tbias;
+
+  muscleCalibratedFlag = 1;
 
   printf("Calibration finished. Press space to continue.\n");
   return 1;
